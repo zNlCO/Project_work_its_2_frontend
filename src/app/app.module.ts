@@ -11,6 +11,10 @@ import { AuthInterceptor } from './utils/auth.interceptor';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
 import { BackofficeHomeComponent } from './pages/backoffice-home/backoffice-home.component';
 import { BikeListComponent } from './components/bike-list/bike-list.component';
+import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
+import { GestionebicicletteComponent } from './pages/gestionebiciclette/gestionebiciclette.component';
+import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.component';
+import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +22,11 @@ import { BikeListComponent } from './components/bike-list/bike-list.component';
     LoginComponent,
     LandingpageComponent,
     BackofficeHomeComponent,
-    BikeListComponent
+    BikeListComponent,
+    PuntivenditaComponent,
+    GestionebicicletteComponent,
+    GestioneprezziComponent,
+    GestioneprenotazioniComponent
   ],
   imports: [
     BrowserModule,  
