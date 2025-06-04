@@ -12,27 +12,35 @@ import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 import { BackofficeHomeComponent } from './pages/backoffice-home/backoffice-home.component';
 import { BikeListComponent } from './components/bike-list/bike-list.component';
 import { ReservationComponent } from './pages/reservation/reservation.component';
+import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
+import { GestionebicicletteComponent } from './pages/gestionebiciclette/gestionebiciclette.component';
+import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.component';
+import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    LandingpageComponent,
-    BackofficeHomeComponent,
-    BikeListComponent,
-    ReservationComponent
-  ],
-  imports: [
-    BrowserModule,  
-    AppRoutingModule,
-    NgbModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule
-  ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, provideClientHydration()
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        LandingpageComponent,
+        BackofficeHomeComponent,
+        BikeListComponent,
+        ReservationComponent,
+        PuntivenditaComponent,
+        GestionebicicletteComponent,
+        GestioneprezziComponent,
+        GestioneprenotazioniComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        NgbModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, provideClientHydration()
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

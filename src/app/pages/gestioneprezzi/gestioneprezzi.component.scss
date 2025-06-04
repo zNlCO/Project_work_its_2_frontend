@@ -1,0 +1,190 @@
+/* gestione-prezzi.component.css */
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.gestione-prezzi-page.dark-theme {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  padding: 20px;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #444;
+}
+
+.page-header h1 {
+  font-size: 1.8em;
+  color: #00aaff;
+  font-weight: 600;
+  margin: 0;
+}
+.page-header h1 i {
+  margin-right: 10px;
+}
+
+.content-area {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.price-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.price-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-header-actions {
+  display: flex;
+  /* justify-content: space-between; Non più necessario se c'è solo il titolo */
+  justify-content: flex-start; /* Allinea il titolo a sinistra */
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #404040;
+}
+
+.section-header-actions h2 {
+  font-size: 1.3em;
+  color: #e0e0e0;
+  margin: 0;
+  font-weight: 500;
+}
+.section-header-actions h2 i {
+  margin-right: 8px;
+  color: #00aaff;
+}
+
+/* Rimosso stile per .btn.btn-primary.btn-add-item
+   .btn.btn-primary.btn-add-item {
+     padding: 8px 12px;
+     font-size: 0.85em;
+     background-color: #28a745;
+     border-color: #28a745;
+   }
+   .btn.btn-primary.btn-add-item:hover {
+     background-color: #1e7e34;
+     border-color: #1e7e34;
+   }
+   .btn.btn-primary.btn-add-item i {
+     margin-right: 5px;
+   }
+*/
+
+.table-responsive-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table.dark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  color: #c0c0c0;
+}
+
+.data-table.dark-table th,
+.data-table.dark-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+  vertical-align: middle;
+}
+
+.data-table.dark-table th {
+  background-color: #333;
+  color: #00aaff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table.dark-table tbody tr:hover {
+  background-color: #383838;
+}
+
+.actions-column {
+  width: auto;
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.actions-cell {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btn-table-action {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+  font-weight: 500;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.btn-table-action i {
+  margin-right: 5px;
+  font-size: 0.9em;
+}
+
+.btn-table-action.btn-edit {
+  background-color: #ffc107;
+  color: #212529;
+}
+.btn-table-action.btn-edit:hover {
+  background-color: #e0a800;
+  opacity: 0.9;
+}
+
+@media (max-width: 576px) {
+  .btn-table-action .btn-action-text {
+    display: none;
+  }
+  .btn-table-action i {
+    margin-right: 0;
+  }
+  .btn-table-action {
+    padding: 6px 8px;
+  }
+  .actions-column {
+    width: auto;
+  }
+}
+
+.backoffice-page-footer.dark-theme {
+  background-color: #111;
+  color: #a0a0a0;
+  text-align: center;
+  padding: 12px 20px;
+  font-size: 0.8em;
+  margin-top: auto;
+  border-top: 1px solid #333;
+}
+
+@media (max-width: 768px) {
+
+
+  .data-table.dark-table th,
+  .data-table.dark-table td {
+    padding: 8px 10px;
+    font-size: 0.85em;
+  }
+}

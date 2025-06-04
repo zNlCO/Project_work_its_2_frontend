@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-backoffice-home',
   templateUrl: './backoffice-home.component.html',
-  styleUrl: './backoffice-home.component.scss'
+  styleUrls: ['./backoffice-home.component.scss', '../../app.component.scss']
 })
 export class BackofficeHomeComponent {
 

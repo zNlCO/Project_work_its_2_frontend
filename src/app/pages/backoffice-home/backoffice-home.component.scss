@@ -1,0 +1,216 @@
+/* backoffice-home.component.css */
+
+/* ... (stili per .backoffice-page-content, .main-content-area-home, .reportistica-showcase, 
+        .reportistica-header-main, .reportistica-showcase h2, .reportistica-description,
+        .key-stats-grid, .stat-card, .stat-icon, .stat-info rimangono come prima) ... */
+
+.backoffice-page-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.main-content-area-home {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.reportistica-showcase {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 20px 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 1100px;
+  text-align: left;
+}
+
+.reportistica-header-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #444444;
+}
+
+.reportistica-header-main i {
+  margin-right: 12px;
+  color: #00aaff;
+  font-size: 1.8em;
+}
+
+.reportistica-showcase h2 {
+  font-size: 1.7em;
+  font-weight: 600;
+  margin: 0;
+  color: #f0f0f0;
+}
+
+.reportistica-description {
+  font-size: 0.95em;
+  color: #b0b0b0;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.key-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background-color: #333333;
+  border-radius: 6px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  border-left: 4px solid;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.stat-card:nth-child(1) { border-left-color: #00aaff; }
+.stat-card:nth-child(1) .stat-icon i { color: #00aaff; }
+.stat-card:nth-child(2) { border-left-color: #28a745; }
+.stat-card:nth-child(2) .stat-icon i { color: #28a745; }
+.stat-card:nth-child(3) { border-left-color: #fd7e14; }
+.stat-card:nth-child(3) .stat-icon i { color: #fd7e14; }
+.stat-card:nth-child(4) { border-left-color: #dc3545; }
+.stat-card:nth-child(4) .stat-icon i { color: #dc3545; }
+
+.stat-icon {
+  font-size: 1.8em;
+  margin-right: 12px;
+  width: 40px;
+  text-align: center;
+}
+
+.stat-info .stat-value {
+  display: block;
+  font-size: 1.7em;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stat-info .stat-label {
+  display: block;
+  font-size: 0.8em;
+  color: #a0a0a0;
+  margin-top: 2px;
+}
+
+/* Stili per i grafici (modificato per due grafici grandi) */
+.charts-container.large-charts-container { /* Aggiunta specificità */
+  display: grid;
+  /* Due colonne fisse se lo schermo è abbastanza largo, altrimenti una colonna (gestito da media query) */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Mantiene la responsività, i grafici si espanderanno */
+  /* Se vuoi forzare due colonne su schermi larghi e una su schermi stretti:
+     grid-template-columns: 1fr; (default)
+     @media (min-width: 768px) { grid-template-columns: 1fr 1fr; } */
+  gap: 25px; /* Aumentato un po' il gap se i grafici sono più grandi */
+  margin-bottom: 20px; /* Ridotto margin-bottom dato che non c'è più il pulsante sotto */
+}
+
+.chart-widget { /* Lo stile del widget rimane lo stesso */
+  background-color: #333333;
+  border-radius: 6px;
+  padding: 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  display: flex; /* Per allineare il titolo sopra il grafico e controllare l'altezza */
+  flex-direction: column;
+}
+
+.chart-widget h3 {
+  font-size: 1.1em; /* Titolo leggermente più grande per grafici importanti */
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #00aaff;
+  border-bottom: 1px solid #484848;
+  padding-bottom: 10px;
+  font-weight: 500;
+}
+
+.chart-placeholder.large-chart { /* Stile per i placeholder dei grafici più grandi */
+  width: 100%;
+  min-height: 280px; /* Aumentata altezza minima per grafici "grandi" */
+  /* max-height: 350px; Puoi impostare un max se necessario */
+  aspect-ratio: 16 / 9; /* Mantiene le proporzioni */
+  background-color: #272727;
+  border: 1px dashed #555555;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777777;
+  font-style: italic;
+  flex-grow: 1; /* Permette al placeholder di occupare lo spazio disponibile nel widget */
+}
+.chart-alt-text {
+  padding: 10px;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+/* Rimossi gli stili per .report-actions e .btn.btn-action (o .btn-secondary) */
+
+.backoffice-page-footer {
+  background-color: #111111;
+  color: #a0a0a0;
+  text-align: center;
+  padding: 15px 20px;
+  font-size: 0.85em;
+  margin-top: auto;
+  border-top: 1px solid #2c2c2c;
+}
+
+/* Media Query per aggiustamenti */
+@media (max-width: 992px) { /* Potresti voler cambiare il breakpoint per quando i due grafici vanno in colonna */
+  .charts-container.large-charts-container {
+    grid-template-columns: 1fr; /* Un grafico per riga su schermi più piccoli/medi */
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content-area-home {
+    padding: 15px 10px;
+  }
+  .reportistica-showcase {
+    padding: 15px;
+  }
+  .reportistica-showcase h2 {
+    font-size: 1.5em;
+  }
+  .reportistica-header-main i {
+    font-size: 1.6em;
+  }
+  .key-stats-grid { /* Già gestito da auto-fit, ma puoi forzarlo se necessario */
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .stat-card, .chart-widget {
+    padding: 12px;
+  }
+  .stat-icon { font-size: 1.6em; margin-right: 10px; width: 35px; }
+  .stat-info .stat-value { font-size: 1.5em; }
+  .stat-info .stat-label { font-size: 0.75em; }
+
+  .chart-widget h3 {
+    font-size: 1em; /* Leggermente più grande per maggiore importanza dei titoli dei grafici */
+   }
+  .chart-placeholder.large-chart {
+    min-height: 220px; /* Altezza minima leggermente ridotta per mobile */
+  }
+}
