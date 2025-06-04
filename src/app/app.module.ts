@@ -9,12 +9,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthInterceptor } from './utils/auth.interceptor';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
+import { BackofficeHomeComponent } from './pages/backoffice-home/backoffice-home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    LandingpageComponent
+    LandingpageComponent,
+    BackofficeHomeComponent
   ],
   imports: [
     BrowserModule,  
