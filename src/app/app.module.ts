@@ -10,13 +10,15 @@ import { LoginComponent } from './pages/login/login.component';
 import { AuthInterceptor } from './utils/auth.interceptor';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
 import { BackofficeHomeComponent } from './pages/backoffice-home/backoffice-home.component';
+import { BikeListComponent } from './components/bike-list/bike-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LandingpageComponent,
-    BackofficeHomeComponent
+    BackofficeHomeComponent,
+    BikeListComponent
   ],
   imports: [
     BrowserModule,  
