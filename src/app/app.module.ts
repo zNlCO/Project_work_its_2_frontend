@@ -11,6 +11,7 @@ import { AuthInterceptor } from './utils/auth.interceptor';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
 import { BackofficeHomeComponent } from './pages/backoffice-home/backoffice-home.component';
 import { BikeListComponent } from './components/bike-list/bike-list.component';
+import { ReservationComponent } from './pages/reservation/reservation.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { BikeListComponent } from './components/bike-list/bike-list.component';
     LoginComponent,
     LandingpageComponent,
     BackofficeHomeComponent,
-    BikeListComponent
+    BikeListComponent,
+    ReservationComponent
   ],
   imports: [
     BrowserModule,  
