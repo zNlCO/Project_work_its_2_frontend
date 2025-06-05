@@ -1,0 +1,146 @@
+/* app.component.css (o .scss) */
+
+.backoffice-global-header-container {
+    /* Questo contenitore ha uno sfondo scuro che fa da base.
+     Potrebbe non essere visibile se l'immagine e la navbar sottostante coprono tutto,
+     ma è un buon fallback. */
+    background-color: #1a1a1a;
+    /* Un nero o grigio molto scuro di base */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Stili per l'intestazione principale del Backoffice con l'immagine */
+.app-backoffice-title-header {
+    background-image: url('../../../assets/images/black-bike.jpg');
+    /* Il tuo sfondo nero moderno */
+    background-size: cover;
+    background-position: center center;
+    /* Centra l'immagine, importante per le bici */
+    background-repeat: no-repeat;
+
+    color: #ffffff;
+    /* Testo bianco puro per massimo contrasto */
+    padding: 40px 30px;
+    /* Aumentato padding per dare più aria e importanza */
+    text-align: center;
+    position: relative;
+    /* Per l'overlay */
+    z-index: 0;
+    /* Per l'overlay */
+    /* Non c'è bisogno di border-bottom se la navbar sotto ha un colore che stacca leggermente */
+}
+
+/* Overlay per migliorare la leggibilità del testo sull'immagine scura.
+   Anche se l'immagine è "nera", un leggero overlay può aiutare a uniformare
+   e a far risaltare il testo se ci sono dettagli nell'immagine. */
+.app-backoffice-title-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 10, 10, 0.35);
+    /* Nero molto leggero, quasi impercettibile ma utile */
+    z-index: -1;
+}
+
+.app-backoffice-title-header h1 {
+    margin: 0 0 8px 0;
+    font-size: 2.4em;
+    /* Titolo più grande e d'impatto */
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    /* Leggera spaziatura tra le lettere */
+    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8),
+        /* Ombra più marcata per staccare dall'immagine */
+        0px 0px 4px rgba(0, 0, 0, 0.6);
+}
+
+.app-backoffice-title-header h1 i {
+    margin-right: 12px;
+    /* Potresti voler dare un colore specifico all'icona se si abbina bene */
+    /* color: #00aaff; */
+}
+
+.app-backoffice-title-header p {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: 300;
+    /* Più leggero per contrasto con H1 */
+    opacity: 0.9;
+    /* Leggermente trasparente per un look più soft */
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
+}
+
+/* Stili per la barra delle sezioni di gestione */
+.management-sections-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Un grigio scuro che si abbini bene con il nero dell'immagine e dell'header */
+    background-color: #222222;
+    /* Grigio antracite, leggermente più chiaro del nero puro */
+    padding: 12px 10px;
+    /* Aggiungiamo un sottile bordo superiore per staccare dall'header se hanno colori simili */
+    border-top: 1px solid #383838;
+}
+
+.management-link-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    margin: 5px 7px;
+    /* Aumentato leggermente il margine laterale */
+    border-radius: 4px;
+    /* Bordi meno arrotondati per un look più "tagliente"/moderno */
+    background-color: #333333;
+    /* Sfondo delle card leggermente più chiaro della barra */
+    color: #d0d0d0;
+    /* Grigio chiaro per il testo, non bianco puro per un look più soft */
+    text-decoration: none;
+    font-size: 0.85em;
+    /* Un po' più grande per leggibilità */
+    font-weight: 400;
+    text-align: center;
+    min-width: 115px;
+    /* Leggermente più larghi */
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    border: 1px solid #444444;
+    /* Bordo sottile per definizione */
+}
+
+.management-link-card i {
+    font-size: 1.6em;
+    margin-bottom: 7px;
+    color: #888888;
+    /* Grigio medio per le icone, si illumineranno all'hover */
+    transition: color 0.2s ease;
+}
+
+.management-link-card:hover {
+    background-color: #007bff;
+    /* Un blu acceso per l'hover, per un tocco di colore moderno */
+    color: #ffffff;
+    transform: translateY(-2px);
+    border-color: #0056b3;
+}
+
+.management-link-card:hover i {
+    color: #ffffff;
+    /* Icona bianca all'hover */
+}
+
+.management-link-card.active-link {
+    background-color: #0056b3;
+    /* Blu più scuro per l'attivo, coerente con l'hover */
+    color: #ffffff;
+    border-color: #004085;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+.management-link-card.active-link i {
+    color: #ffffff;
+}

@@ -16,6 +16,8 @@ import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.compone
 import { GestionebicicletteComponent } from './pages/gestionebiciclette/gestionebiciclette.component';
 import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.component';
 import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
+import { BackofficeNavbarComponent } from './components/backoffice-navbar/backoffice-navbar.component';
+import { IfAuthenticatedDirective } from './directives/if-authenticated.directive';
 
 @NgModule({
     declarations: [
@@ -28,7 +30,9 @@ import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gest
         PuntivenditaComponent,
         GestionebicicletteComponent,
         GestioneprezziComponent,
-        GestioneprenotazioniComponent
+        GestioneprenotazioniComponent,
+        BackofficeNavbarComponent,
+        IfAuthenticatedDirective
     ],
     imports: [
         BrowserModule,
