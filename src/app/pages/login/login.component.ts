@@ -14,6 +14,7 @@ export class LoginComponent {
         email: ['', [Validators.required, Validators.email]],
         password: ['', Validators.required]
     })
+    /** If the user has submitted the form */
     isSubmitted = false;
     private intervalId: any;
     loginError = '';

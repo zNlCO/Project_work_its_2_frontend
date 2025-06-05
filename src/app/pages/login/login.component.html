@@ -16,9 +16,6 @@
                                     && (loginForm.get('email')?.dirty
                                     || loginForm.get('email')?.touched
                                     || isSubmitted)" />
-                        <div class="invalid-tooltip">
-                            {{ loginForm.get('email')?.invalid ? "Email non valida" : undefined }}
-                        </div>
                     </div>
                     <div class="mb-4">
                         <label for="password" class="form-label text-white bai-jamjuree-medium">Password</label>
@@ -27,9 +24,6 @@
                             && (loginForm.get('password')?.dirty
                             || loginForm.get('password')?.touched
                             || isSubmitted)" />
-                        <div class="invalid-tooltip">
-                            {{ loginForm.get('password')?.invalid ? "Password non valida" : undefined }}
-                        </div>
                     </div>
 
                     <div class="text-danger bai-jamjuree-semibold mb-3" *ngIf="loginError">
