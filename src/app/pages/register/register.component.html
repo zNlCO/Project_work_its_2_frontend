@@ -34,7 +34,7 @@
                         <label for="password" class="form-label text-white bai-jamjuree-medium">Conferma
                             Password</label>
                         <input type="password" class="form-control bai-jamjuree-medium"
-                            formControlName="confirmpassword" placeholder="Inserisci la password" [class.is-invalid]="signUpForm.get('confirmpassword')?.invalid
+                            formControlName="confirmpassword" placeholder="••••••••" [class.is-invalid]="signUpForm.get('confirmpassword')?.invalid
                         && (signUpForm.get('confirmpassword')?.dirty
                         || signUpForm.get('confirmpassword')?.touched
                         || isSubmitted)">
@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary bai-jamjuree-bold mb-4">Registrati</button>
+                        <button type="submit" class="btn my-red-btn bai-jamjuree-bold-italic mb-4">Registrati</button>
                     </div>
                 </form>
             </div>

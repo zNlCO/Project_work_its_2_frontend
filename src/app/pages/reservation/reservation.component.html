@@ -5,33 +5,100 @@
         <div class="step-circle" [ngClass]="{ 'active-step': currentStep === 2 }">2</div>
     </div>
 
-    <!-- Tabs -->
+    <!-- Step 1 -->
     <div *ngIf="currentStep === 1">
+        <!-- Luogo di ritiro -->
         <div class="mb-3">
             <label class="form-label bai-jamjuree-semibold">Luogo di ritiro</label>
-            <input type="text" class="form-control" [(ngModel)]="pickupLocation" (ngModelChange)="autoFillDropoff()">
+            <select class="form-select" [(ngModel)]="pickupLocation" (ngModelChange)="autoFillDropoff()">
+                <option *ngFor="let point of locations" [value]="point">{{ point }}</option>
+            </select>
         </div>
 
+        <!-- Luogo di consegna -->
         <div class="mb-3">
             <label class="form-label bai-jamjuree-semibold">Luogo di consegna</label>
-            <input type="text" class="form-control" [(ngModel)]="dropoffLocation">
+            <select class="form-select" [(ngModel)]="dropoffLocation">
+                <option *ngFor="let point of locations" [value]="point">{{ point }}</option>
+            </select>
         </div>
 
+        <!-- Data e ora di ritiro -->
         <div class="mb-3">
             <label class="form-label bai-jamjuree-semibold">Data di ritiro</label>
-            <input type="date" class="form-control" [(ngModel)]="pickupDate">
+            <input type="date" class="form-control" [(ngModel)]="pickupDate" (change)="checkDates()">
         </div>
 
         <div class="mb-3">
-            <label class="form-label bai-jamjuree-semibold">Data di consegna</label>
-            <input type="date" class="form-control" [(ngModel)]="dropoffDate">
+            <label class="form-label bai-jamjuree-semibold">Ora di ritiro</label>
+            <select class="form-select" [(ngModel)]="pickupTime" (change)="checkDates()">
+                <option *ngFor="let hour of hours" [value]="hour">{{ hour }}</option>
+            </select>
         </div>
 
-        <button class="btn btn-login bai-jamjuree-semibold mt-3" (click)="goToStep(2)">Continua</button>
+        <!-- Data e ora di consegna -->
+        <div class="mb-3">
+            <label class="form-label bai-jamjuree-semibold">Data di consegna</label>
+            <input type="date" class="form-control" [(ngModel)]="dropoffDate" (change)="checkDates()">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label bai-jamjuree-semibold">Ora di consegna</label>
+            <select class="form-select" [(ngModel)]="dropoffTime" (change)="checkDates()">
+                <option *ngFor="let hour of hours" [value]="hour">{{ hour }}</option>
+            </select>
+        </div>
+
+        <!-- Messaggio di errore -->
+        <div *ngIf="invalidDateRange" class="alert alert-danger p-2">
+            La data e l'ora di consegna devono essere successive a quelle di ritiro.
+        </div>
+
+        <!-- Pulsante continua -->
+        <div class="text-end">
+            <button class="btn my-red-btn bai-jamjuree-semibold mt-3"
+                [disabled]="!pickupLocation || !dropoffLocation || !pickupDate || !dropoffDate || !pickupTime || !dropoffTime || invalidDateRange"
+                (click)="goToStep(2)">Continua</button>
+        </div>
     </div>
 
+    <!-- Step 2 -->
     <div *ngIf="currentStep === 2">
-        <!-- Contenuto della seconda tab: da completare -->
-        <p class="text-center text-muted">Seconda fase: conferma e pagamento (work in progress)</p>
+        <div class="container py-4">
+            <div class="row bg-light rounded shadow p-4 mb-4">
+                <!-- Riepilogo dati prima tab -->
+                <div class="col-12 mb-3">
+                    <h5 class="bai-jamjuree-semibold">Dati prenotazione</h5>
+                    <p class="mb-1"><strong>Luogo ritiro:</strong> {{ pickupLocation }}</p>
+                    <p class="mb-1"><strong>Luogo consegna:</strong> {{ dropoffLocation }}</p>
+                    <p class="mb-1"><strong>Data ritiro:</strong> {{ pickupDate }} ore {{ pickupTime }}</p>
+                    <p class="mb-1"><strong>Data consegna:</strong> {{ dropoffDate }} ore {{ dropoffTime }}</p>
+                </div>
+
+                <!-- Dettagli bici -->
+                <div class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0">
+                    <img [src]="bikeImageUrl" alt="Immagine bici" class="img-fluid rounded"
+                        style="max-height: 200px;" />
+                </div>
+
+                <div class="col-md-8">
+                    <h5 class="bai-jamjuree-semibold mb-2">{{ bikeModel }}</h5>
+                    <p class="mb-1"><strong>Taglia:</strong> {{ bikeSize }}</p>
+                    <p class="mb-1"><strong>Assicurazione:</strong> {{ insuranceSelected ? 'Sì' : 'No' }}</p>
+                    <p class="mb-3"><strong>Accessori:</strong> {{ accessories.length > 0 ? accessories.join(', ') :
+                        'Nessuno' }}</p>
+
+                    <div class="text-end">
+                        <h5 class="bai-jamjuree-semibold text-danger">Totale: € {{ totalPrice.toFixed(2) }}</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pulsanti -->
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-secondary" (click)="confirmGoBack()">Indietro</button>
+                <button class="btn my-red-btn bai-jamjuree-semibold">Prenota</button>
+            </div>
+        </div>
     </div>
 </div>

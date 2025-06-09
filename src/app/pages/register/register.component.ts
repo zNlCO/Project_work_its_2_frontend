@@ -12,6 +12,7 @@ import { catchError, throwError } from 'rxjs';
 export class RegisterComponent {
 
     isSubmitted = false;
+    loginError = '';
 
     signUpForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]],
@@ -42,15 +43,16 @@ export class RegisterComponent {
             if (this.checkMatchPassword(this.signUpForm.get('password')?.value, this.signUpForm.get('confirmpassword')?.value)) {
 
                 const { name, email, password, } = this.signUpForm.value;
-                this.authSrv.register(email!, password!, name!)
+                this.authSrv.register(name!, email!, password!)
                     .pipe(
                         catchError(err => {
+                            this.loginError = err.error.error || "Errore durante la registrazione";
                             return throwError(() => err);
                         })
                     )
                     .subscribe(user => {
                         if (user) {
-                            // TODO OPT SERVICE
+                            this.router.navigate(['/activate']);
                         }
                     });
 

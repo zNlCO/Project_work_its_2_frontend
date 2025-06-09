@@ -35,7 +35,6 @@ const routes: Routes = [
         path: 'landingpage',
         component: LandingpageComponent
     },
-
     {
         path: 'reservation',
         component: ReservationComponent

@@ -6,10 +6,8 @@ import { JwtService } from "./jwt.service";
 
 export interface User {
     id: string;
-    firstName: string;
-    lastName: string;
-    fullName: string;
-    picture: string;
+    name: string;
+    email: string;
 }
 
 @Injectable({
@@ -32,8 +30,8 @@ export class AuthService {
         return this.jwtSrv.hasToken();
     }
 
-    login(username: string, password: string) {
-        return this.http.post<{ user: User, token: string }>('/api/login', { username, password })
+    login(email: string, password: string) {
+        return this.http.post<{ user: User, token: string }>('/api/auth/login', { email, password })
             .pipe(
                 tap(res => this.jwtSrv.setToken(res.token)),
                 tap(res => this._currentUser$.next(res.user)),
@@ -41,8 +39,8 @@ export class AuthService {
             );
     }
 
-    register(name: string, username: string, password: string) {
-        return this.http.post<User>('/api/register', { name, username, password });
+    register(name: string, email: string, password: string) {
+        return this.http.post<User>('/api/auth/register', { name, email, password });
     }
 
     logout() {
@@ -56,8 +54,10 @@ export class AuthService {
             .subscribe(user => this._currentUser$.next(user));
     }
 
+    /*
     fetchUsers() {
         this.http.get<User[]>('/api/users/fetch')
             .subscribe(users => this._users$.next(users));
     }
+    */
 }

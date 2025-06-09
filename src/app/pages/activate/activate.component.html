@@ -14,7 +14,7 @@
         <ng-container *ngIf="status === 'success'">
             <h1 class="activation-title bai-jamjuree-semibold">Fatto!</h1>
             <p class="activation-text bai-jamjuree-regular">La tua email è stata verificata con successo!</p>
-            <a [routerLink]="['/login']" class="btn btn-login bai-jamjuree-semibold">Vai al login</a>
+            <a [routerLink]="['/login']" class="btn my-red-btn bai-jamjuree-semibold">Vai al login</a>
         </ng-container>
 
         <!-- ERRORE -->
@@ -24,7 +24,7 @@
                 Qualcosa è andato storto durante la verifica della mail.<br>
                 Contatta il supporto o riprova la registrazione.
             </p>
-            <a [routerLink]="['/register']" class="btn btn-login bai-jamjuree-semibold">Riprova</a>
+            <a [routerLink]="['/register']" class="btn my-red-btn bai-jamjuree-semibold">Riprova</a>
         </ng-container>
 
         <!-- Footer -->

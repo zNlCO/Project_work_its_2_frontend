@@ -26,15 +26,17 @@
                             || isSubmitted)" />
                     </div>
 
-                    <div class="text-danger bai-jamjuree-semibold mb-3" *ngIf="loginError">
-                        {{ loginError }}
+                    <div class="alert alert-danger d-flex align-items-center gap-2 p-2" *ngIf="loginError">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span> {{ loginError }}</span>
                     </div>
 
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary bai-jamjuree-bold">Entra</button>
+                        <button type="submit" class="btn my-red-btn bai-jamjuree-bold-italic">Entra</button>
                     </div>
                     <div class="text-center">
-                        <small class="text-white bai-jamjuree-regular">Non hai un account? <a href="#"
+                        <small class="text-white bai-jamjuree-regular">Non hai un account? <a
+                                [routerLink]="['/register']"
                                 class="text-decoration-none bai-jamjuree-regular">Registrati</a></small>
                     </div>
                 </form>

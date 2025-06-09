@@ -28,7 +28,7 @@ export class LoginComponent {
     ngOnInit(): void {
         this.intervalId = setInterval(() => {
             this.refreshPage();
-        }, 30000);
+        }, 300000);
     }
     ngOnDestroy(): void {
         clearInterval(this.intervalId);
@@ -44,7 +44,7 @@ export class LoginComponent {
             this.authSrv.login(email!, password!)
                 .pipe(
                     catchError(err => {
-                        this.loginError = err.error.message;
+                        this.loginError = err.error.error || "Email o password errati";
                         return throwError(() => err);
                     })
                 )

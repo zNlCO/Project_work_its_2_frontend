@@ -1,6 +1,12 @@
 {
   "/api": {
-    "target": "http://localhost:3000",
-    "secure": false
+    "target": "https://cloneride-spa.onrender.com",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Origin": "https://cloneride-spa.onrender.com"
+    }
   }
 }
