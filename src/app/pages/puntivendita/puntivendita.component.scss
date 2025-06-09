@@ -1,14 +1,14 @@
 /* punti-vendita.component.css */
 
-:host { /* Assicura che il componente occupi spazio e possa essere stilizzato */
+:host {
   display: block;
-  height: 100%; /* O l'altezza necessaria */
+  height: 100%;
 }
 
 .punti-vendita-page.dark-theme {
   background-color: #1e1e1e;
   color: #e0e0e0;
-  padding: 20px; /* Padding generale per la pagina */
+  padding: 20px;
   box-sizing: border-box;
   height: 100%;
   display: flex;
@@ -23,7 +23,7 @@
 
 .page-header h1 {
   font-size: 1.8em;
-  color: #00aaff; /* Blu accento per il titolo */
+  color: #00aaff;
   font-weight: 600;
   margin: 0;
 }
@@ -36,15 +36,15 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-  flex-wrap: wrap; /* Per schermi piccoli */
-  gap: 15px; /* Spazio tra gli elementi se vanno a capo */
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .search-container {
   display: flex;
   align-items: center;
-  flex-grow: 1; /* Permette al contenitore di ricerca di espandersi */
-  max-width: 500px; /* Limita la larghezza massima della ricerca */
+  flex-grow: 1;
+  max-width: 500px;
 }
 
 .search-input.dark-input {
@@ -53,7 +53,7 @@
   border: 1px solid #444;
   background-color: #2c2c2c;
   color: #e0e0e0;
-  border-radius: 4px 0 0 4px; /* Angoli arrotondati solo a sinistra */
+  border-radius: 4px 0 0 4px;
   font-size: 0.9em;
   outline: none;
 }
@@ -62,12 +62,16 @@
   box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.2);
 }
 
-.btn.btn-search { /* Stile per il pulsante di ricerca */
+.btn.btn-search {
   padding: 10px 12px;
-  border-radius: 0 4px 4px 0; /* Angoli arrotondati solo a destra */
-  margin-left: -1px; /* Per sovrapporre leggermente il bordo */
+  border-radius: 0 4px 4px 0;
+  margin-left: -1px;
   background-color: #007bff;
   border-color: #007bff;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 .btn.btn-search:hover {
   background-color: #0056b3;
@@ -77,8 +81,13 @@
 .btn.btn-primary.btn-add-location {
   padding: 10px 15px;
   font-size: 0.9em;
-  background-color: #28a745; /* Verde per "Aggiungi" */
+  background-color: #28a745;
   border-color: #28a745;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 .btn.btn-primary.btn-add-location:hover {
   background-color: #1e7e34;
@@ -89,23 +98,23 @@
 }
 
 .content-area {
-  flex-grow: 1; /* Occupa lo spazio rimanente */
-  overflow-y: auto; /* Scroll se le card sono troppe */
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .sales-points-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Colonne responsive */
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 20px;
 }
 
 .sales-point-card {
-  background-color: #2c2c2c; /* Sfondo scuro per le card */
+  background-color: #2c2c2c;
   border-radius: 6px;
   box-shadow: 0 3px 7px rgba(0,0,0,0.3);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Per contenere bordi e ombre interne */
+  overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .sales-point-card:hover {
@@ -113,10 +122,9 @@
     box-shadow: 0 5px 12px rgba(0,0,0,0.4);
 }
 
-
 .card-header {
   padding: 12px 15px;
-  background-color: #333; /* Header della card leggermente diverso */
+  background-color: #333;
   border-bottom: 1px solid #444;
   display: flex;
   justify-content: space-between;
@@ -125,7 +133,7 @@
 .card-header h3 {
   margin: 0;
   font-size: 1.2em;
-  color: #00aaff; /* Blu accento per il nome del punto vendita */
+  color: #00aaff;
   font-weight: 600;
 }
 .location-status {
@@ -135,24 +143,23 @@
     font-weight: 500;
     color: #fff;
 }
-.location-status.active { background-color: #28a745; } /* Esempio: verde per attivo */
-.location-status.inactive { background-color: #dc3545; } /* Esempio: rosso per inattivo */
-
+.location-status.active { background-color: #28a745; }
+.location-status.inactive { background-color: #dc3545; }
 
 .card-body {
   padding: 15px;
   font-size: 0.9em;
   line-height: 1.5;
-  flex-grow: 1; /* Permette al corpo di espandersi */
+  flex-grow: 1;
 }
 .card-body p {
   margin: 0 0 8px 0;
-  color: #c0c0c0; /* Testo leggermente più scuro del bianco puro */
+  color: #c0c0c0;
 }
 .card-body p i {
   margin-right: 8px;
-  color: #777; /* Icone informative grigie */
-  width: 16px; /* Allineamento icone */
+  color: #777;
+  width: 16px;
 }
 
 .bike-inventory-summary {
@@ -179,7 +186,7 @@
   margin-bottom: 4px;
   color: #a0a0a0;
 }
-.bike-inventory-summary ul li span { /* Quantità */
+.bike-inventory-summary ul li span {
   font-weight: 600;
   color: #e0e0e0;
 }
@@ -191,12 +198,24 @@
 
 .card-actions {
   padding: 10px 15px;
-  background-color: #333; /* Stesso colore dell'header card */
+  background-color: #333;
   border-top: 1px solid #444;
   display: flex;
-  justify-content: flex-end; /* Pulsanti a destra */
-  gap: 10px; /* Spazio tra i pulsanti */
-  flex-wrap: wrap; /* Pulsanti a capo se necessario */
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 0.9em;
 }
 
 .btn.btn-icon {
@@ -208,18 +227,69 @@
 .btn.btn-icon i {
   margin-right: 5px;
 }
-.btn.btn-icon .btn-text { /* Testo del pulsante nascosto su schermi piccoli */
+.btn.btn-icon .btn-text {
     display: none;
 }
 
-.btn-edit { background-color: #ffc107; border-color: #ffc107; color: #212529;}
-.btn-edit:hover { background-color: #e0a800; border-color: #d39e00;}
+.btn-edit { 
+  background-color: #ffc107; 
+  border-color: #ffc107; 
+  color: #212529;
+}
+.btn-edit:hover { 
+  background-color: #e0a800; 
+  border-color: #d39e00;
+}
 
-.btn-manage-inventory { background-color: #17a2b8; border-color: #17a2b8; color: white;}
-.btn-manage-inventory:hover { background-color: #117a8b; border-color: #10707f;}
+.btn-manage-inventory { 
+  background-color: #17a2b8; 
+  border-color: #17a2b8; 
+  color: white;
+}
+.btn-manage-inventory:hover { 
+  background-color: #117a8b; 
+  border-color: #10707f;
+}
 
-.btn-delete.btn-danger { background-color: #dc3545; border-color: #dc3545; color: white;} /* Già definito in app.component.css? Se sì, potrebbe non servire qui */
-.btn-delete.btn-danger:hover { background-color: #c82333; border-color: #bd2130;}
+.btn-delete.btn-danger { 
+  background-color: #dc3545; 
+  border-color: #dc3545; 
+  color: white;
+}
+.btn-delete.btn-danger:hover { 
+  background-color: #c82333; 
+  border-color: #bd2130;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+.btn-secondary:hover {
+  background-color: #545b62;
+  border-color: #4e555b;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.8em;
+}
 
 .empty-state {
   text-align: center;
@@ -232,12 +302,214 @@
   display: block;
 }
 
-/* Media query per schermi più larghi per mostrare il testo nei pulsanti icona */
+/* STILI MODALI */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-dialog {
+  background-color: #2c2c2c;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-dialog {
+  transform: scale(1);
+}
+
+.modal-dialog.modal-lg {
+  max-width: 800px;
+}
+
+.modal-dialog.modal-sm {
+  max-width: 400px;
+}
+
+.modal-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #00aaff;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s ease;
+}
+
+.btn-close:hover {
+  color: #fff;
+}
+
+.modal-body {
+  padding: 20px;
+  color: #e0e0e0;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #444;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background-color: #333;
+  border-radius: 0 0 8px 8px;
+}
+
+/* STILI FORM */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #c0c0c0;
+}
+
+.form-control.dark-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #444;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-radius: 4px;
+  font-size: 0.9em;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-control.dark-input:focus {
+  border-color: #00aaff;
+  box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.2);
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+}
+
+/* STILI INVENTARIO */
+.inventory-actions {
+  margin-bottom: 20px;
+}
+
+.inventory-table {
+  margin-top: 15px;
+}
+
+.table.dark-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1e1e1e;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.table.dark-table th,
+.table.dark-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.table.dark-table th {
+  background-color: #333;
+  color: #00aaff;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.table.dark-table td {
+  color: #e0e0e0;
+  font-size: 0.85em;
+}
+
+.table.dark-table tr:hover {
+  background-color: #333;
+}
+
+.empty-inventory {
+  text-align: center;
+  padding: 40px 20px;
+  color: #777;
+}
+
+.empty-inventory i {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.warning-text {
+  color: #ffc107;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Media query per schermi più larghi */
 @media (min-width: 768px) {
   .btn.btn-icon .btn-text {
-    display: inline; /* Mostra il testo */
+    display: inline;
   }
-  .btn.btn-icon i { /* Aggiusta margine se il testo è visibile */
+  .btn.btn-icon i {
     margin-right: 8px;
   }
 }
@@ -246,13 +518,27 @@
 @media (max-width: 576px) {
   .action-bar {
     flex-direction: column;
-    align-items: stretch; /* Elementi prendono tutta la larghezza */
+    align-items: stretch;
   }
   .search-container {
-    max-width: none; /* Occupa tutta la larghezza disponibile */
+    max-width: none;
     margin-bottom: 10px;
   }
   .btn.btn-add-location {
-    width: 100%; /* Pulsante Aggiungi a larghezza piena */
+    width: 100%;
+  }
+  
+  .modal-dialog {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .card-actions {
+    justify-content: center;
   }
 }

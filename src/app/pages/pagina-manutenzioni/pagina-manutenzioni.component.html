@@ -1,0 +1,92 @@
+<div class="page-container dark-theme gestione-manutenzione-page">
+  <header class="page-header">
+    <h1><i class="fas fa-tools"></i> Gestione Manutenzione e Disponibilità</h1>
+  </header>
+
+  <section class="action-bar">
+    <div class="filter-group">
+      <label for="locationFilter">Seleziona un Punto Vendita per gestire l'inventario:</label>
+      <select id="locationFilter" class="custom-select dark-select">
+        <option value="stazione">Noleggio Centrale Stazione</option>
+        <option value="rialto">Bike Point Rialto</option>
+        <option value="lido">Deposito Lido</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="content-area">
+    <div class="inventory-header">
+      <h2>Inventario per: <span class="location-name">Noleggio Centrale Stazione</span></h2>
+      <p>Modifica il numero di bici "In Manutenzione" per aggiornare la disponibilità per i noleggi.</p>
+    </div>
+
+    <div class="table-responsive-container">
+      <table class="data-table dark-table maintenance-table">
+        <thead>
+          <tr>
+            <th>Nome Modello</th>
+            <th>Propulsione</th>
+            <th>Quantità Totale</th>
+            <th>Attualmente Noleggiate</th>
+            <th class="maintenance-column">In Manutenzione</th>
+            <th class="availability-column">Disponibili per Noleggio</th>
+            <th class="actions-column">Azione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>City Voyager X</td>
+            <td>Muscolare</td>
+            <td class="text-center">15</td>
+            <td class="text-center">4</td>
+            <td class="maintenance-cell">
+              <input type="number" min="0" max="15" value="1" class="maintenance-input dark-input">
+            </td>
+            <td class="availability-value text-center">10</td>
+            <td class="actions-cell">
+              <button class="btn btn-table-action btn-save" title="Salva Modifiche">
+                <i class="fas fa-save"></i> <span class="btn-action-text">Salva</span>
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>City Voyager X</td>
+            <td>Elettrica</td>
+            <td class="text-center">8</td>
+            <td class="text-center">5</td>
+            <td class="maintenance-cell">
+              <input type="number" min="0" max="8" value="0" class="maintenance-input dark-input">
+            </td>
+            <td class="availability-value text-center">3</td>
+            <td class="actions-cell">
+              <button class="btn btn-table-action btn-save" title="Salva Modifiche">
+                <i class="fas fa-save"></i> <span class="btn-action-text">Salva</span>
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Mountain Peak E-Pro</td>
+            <td>Elettrica</td>
+            <td class="text-center">10</td>
+            <td class="text-center">2</td>
+            <td class="maintenance-cell">
+              <input type="number" min="0" max="10" value="2" class="maintenance-input dark-input">
+            </td>
+            <td class="availability-value text-center">6</td>
+            <td class="actions-cell">
+              <button class="btn btn-table-action btn-save" title="Salva Modifiche">
+                <i class="fas fa-save"></i> <span class="btn-action-text">Salva</span>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="backoffice-page-footer dark-theme">
+    <p>&copy; 2025 Bike Rental System - Backoffice</p>
+  </footer>
+</div>

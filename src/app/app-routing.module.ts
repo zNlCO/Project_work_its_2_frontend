@@ -8,6 +8,8 @@ import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.compone
 import { GestionebicicletteComponent } from './pages/gestionebiciclette/gestionebiciclette.component';
 import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.component';
 import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
+import { PaginaManutenzioniComponent } from './pages/pagina-manutenzioni/pagina-manutenzioni.component';
+import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-operatori.component';
 
 const routes: Routes = [
     {
@@ -46,8 +48,16 @@ const routes: Routes = [
 
     },
     {
-        path: 'gestioneprenotazioni',
-        component: GestioneprenotazioniComponent
+      path:'gestioneprenotazioni',
+      component: GestioneprenotazioniComponent
+    },
+    {
+      path:'pagina-manutenzioni',
+      component: PaginaManutenzioniComponent
+    },
+     {
+      path:'gestione-operatori',
+      component: GestioneOperatoriComponent
     }
 ];
 

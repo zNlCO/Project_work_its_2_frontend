@@ -18,6 +18,8 @@ import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.c
 import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
 import { BackofficeNavbarComponent } from './components/backoffice-navbar/backoffice-navbar.component';
 import { IfAuthenticatedDirective } from './directives/if-authenticated.directive';
+import { PaginaManutenzioniComponent } from './pages/pagina-manutenzioni/pagina-manutenzioni.component';
+import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-operatori.component';
 
 @NgModule({
     declarations: [
@@ -32,7 +34,9 @@ import { IfAuthenticatedDirective } from './directives/if-authenticated.directiv
         GestioneprezziComponent,
         GestioneprenotazioniComponent,
         BackofficeNavbarComponent,
-        IfAuthenticatedDirective
+        IfAuthenticatedDirective,
+    PaginaManutenzioniComponent,
+    GestioneOperatoriComponent
     ],
     imports: [
         BrowserModule,
