@@ -1,0 +1,35 @@
+<div class="my-bg-black d-flex justify-content-center align-items-center min-vh-100">
+    <div class="activation-card col-12 col-sm-10 col-md-6 col-lg-4 text-center">
+
+        <!-- LOADER -->
+        <ng-container *ngIf="status === 'loading'">
+            <h1 class="activation-title bai-jamjuree-semibold">Verifica in corso</h1>
+            <p class="activation-text bai-jamjuree-regular">Stiamo verificando la tua email, attendi un momento...</p>
+            <div class="spinner-border text-danger mt-3" role="status">
+                <span class="visually-hidden">Caricamento...</span>
+            </div>
+        </ng-container>
+
+        <!-- SUCCESSO -->
+        <ng-container *ngIf="status === 'success'">
+            <h1 class="activation-title bai-jamjuree-semibold">Fatto!</h1>
+            <p class="activation-text bai-jamjuree-regular">La tua email è stata verificata con successo!</p>
+            <a [routerLink]="['/login']" class="btn btn-login bai-jamjuree-semibold">Vai al login</a>
+        </ng-container>
+
+        <!-- ERRORE -->
+        <ng-container *ngIf="status === 'error'">
+            <h1 class="activation-title bai-jamjuree-semibold text-danger">Errore</h1>
+            <p class="activation-text bai-jamjuree-regular">
+                Qualcosa è andato storto durante la verifica della mail.<br>
+                Contatta il supporto o riprova la registrazione.
+            </p>
+            <a [routerLink]="['/register']" class="btn btn-login bai-jamjuree-semibold">Riprova</a>
+        </ng-container>
+
+        <!-- Footer -->
+        <div class="footer-logo mt-4 my-secondary-color bai-jamjuree-bold-italic">
+            <a [routerLink]="['/']" style="color: inherit;">RideClone</a>
+        </div>
+    </div>
+</div>

@@ -10,6 +10,8 @@ import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.c
 import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
 import { PaginaManutenzioniComponent } from './pages/pagina-manutenzioni/pagina-manutenzioni.component';
 import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-operatori.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { ActivateComponent } from './pages/activate/activate.component';
 
 const routes: Routes = [
     {
@@ -22,11 +24,20 @@ const routes: Routes = [
         component: LoginComponent
     },
     {
+        path: 'register',
+        component: RegisterComponent,
+    },
+    {
+        path: 'activate',
+        component: ActivateComponent,
+    },
+    {
         path: 'landingpage',
         component: LandingpageComponent
     },
+
     {
-        path: 'reservations',
+        path: 'reservation',
         component: ReservationComponent
     },
     {
@@ -48,16 +59,16 @@ const routes: Routes = [
 
     },
     {
-      path:'gestioneprenotazioni',
-      component: GestioneprenotazioniComponent
+        path: 'gestioneprenotazioni',
+        component: GestioneprenotazioniComponent
     },
     {
-      path:'pagina-manutenzioni',
-      component: PaginaManutenzioniComponent
+        path: 'pagina-manutenzioni',
+        component: PaginaManutenzioniComponent
     },
-     {
-      path:'gestione-operatori',
-      component: GestioneOperatoriComponent
+    {
+        path: 'gestione-operatori',
+        component: GestioneOperatoriComponent
     }
 ];
 

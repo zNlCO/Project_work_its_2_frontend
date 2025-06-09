@@ -1,1 +1,37 @@
-<p>reservation works!</p>
+<div class="container py-5">
+    <!-- Step Indicator -->
+    <div class="d-flex justify-content-center mb-4">
+        <div class="step-circle me-3" [ngClass]="{ 'active-step': currentStep === 1 }">1</div>
+        <div class="step-circle" [ngClass]="{ 'active-step': currentStep === 2 }">2</div>
+    </div>
+
+    <!-- Tabs -->
+    <div *ngIf="currentStep === 1">
+        <div class="mb-3">
+            <label class="form-label bai-jamjuree-semibold">Luogo di ritiro</label>
+            <input type="text" class="form-control" [(ngModel)]="pickupLocation" (ngModelChange)="autoFillDropoff()">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label bai-jamjuree-semibold">Luogo di consegna</label>
+            <input type="text" class="form-control" [(ngModel)]="dropoffLocation">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label bai-jamjuree-semibold">Data di ritiro</label>
+            <input type="date" class="form-control" [(ngModel)]="pickupDate">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label bai-jamjuree-semibold">Data di consegna</label>
+            <input type="date" class="form-control" [(ngModel)]="dropoffDate">
+        </div>
+
+        <button class="btn btn-login bai-jamjuree-semibold mt-3" (click)="goToStep(2)">Continua</button>
+    </div>
+
+    <div *ngIf="currentStep === 2">
+        <!-- Contenuto della seconda tab: da completare -->
+        <p class="text-center text-muted">Seconda fase: conferma e pagamento (work in progress)</p>
+    </div>
+</div>

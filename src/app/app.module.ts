@@ -20,6 +20,8 @@ import { BackofficeNavbarComponent } from './components/backoffice-navbar/backof
 import { IfAuthenticatedDirective } from './directives/if-authenticated.directive';
 import { PaginaManutenzioniComponent } from './pages/pagina-manutenzioni/pagina-manutenzioni.component';
 import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-operatori.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { ActivateComponent } from './pages/activate/activate.component';
 
 @NgModule({
     declarations: [
@@ -35,8 +37,10 @@ import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-
         GestioneprenotazioniComponent,
         BackofficeNavbarComponent,
         IfAuthenticatedDirective,
-    PaginaManutenzioniComponent,
-    GestioneOperatoriComponent
+        PaginaManutenzioniComponent,
+        GestioneOperatoriComponent,
+        RegisterComponent,
+        ActivateComponent,
     ],
     imports: [
         BrowserModule,
