@@ -1,31 +1,26 @@
-<section class="container my-5">
-    <div class="row g-4">
-        <div class="col-sm-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
-                <img src="../../../assets/images/bike1.jpg" class="card-img-top" alt="Bici 1">
-                <div class="card-body">
-                    <h5 class="card-title">Bici di Amine</h5>
-                    <p class="card-text">Perfetta per le strade venete. Da 18€/giorno.</p>
+<section class="container my-5 py-4 rounded-4 bike-section">
+    <h3 class="text-center mb-5 bai-jamjuree-bold-italic text-white display-6">Le nostre bici</h3>
+    <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-light me-2" (click)="prev()" [disabled]="currentIndex === 0">
+            ‹
+        </button>
+        <div class="row flex-nowrap overflow-visible w-100 justify-content-center mx-auto">
+            <div class="col" *ngFor="let bike of visibleBikes">
+                <div class="card h-100 shadow bike-card border-0 mx-2">
+                    <img [src]="bike.img" class="card-img-top bike-img" [alt]="bike.title">
+                    <div class="card-body text-center">
+                        <h5 class="card-title bai-jamjuree-bold text-white">{{ bike.title }}</h5>
+                        <p class="card-text text-light">{{ bike.desc }}</p>
+                        <div class="bike-price mb-3 text-light">Da <span class="fw-bold text-danger">{{ bike.price
+                                }}€</span>/giorno</div>
+                        <button class="btn my-red-btn bai-jamjuree-semibold px-4">Prenota</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
-                <img src="../../../assets/images/bike2.jpg" class="card-img-top" alt="Bici 2">
-                <div class="card-body">
-                    <h5 class="card-title">MTB Hardtail</h5>
-                    <p class="card-text">Pronta per i colli Berici. Da 22€/giorno.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
-                <img src="../../../assets/images/bike3.jpg" class="card-img-top" alt="Bici 3">
-                <div class="card-body">
-                    <h5 class="card-title">E-Bike</h5>
-                    <p class="card-text">Assistenza elettrica inclusa. Da 28€/giorno.</p>
-                </div>
-            </div>
-        </div>
+        <button class="btn btn-outline-light ms-2" (click)="next()"
+            [disabled]="currentIndex >= bikes.length - visibleCount">
+            ›
+        </button>
     </div>
 </section>

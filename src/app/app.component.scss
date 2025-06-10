@@ -104,3 +104,8 @@
     color: #d82244;
     background-color: lightgray;
 }
+
+.my-bg-black {
+    --bs-bg-opacity: 1;
+    background-color: #1a1a1a !important;
+}
