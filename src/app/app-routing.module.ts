@@ -4,7 +4,6 @@ import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 import { BackofficeHomeComponent } from './pages/backoffice-home/backoffice-home.component';
 import { ReservationComponent } from './pages/reservation/reservation.component';
 import { LoginComponent } from './pages/login/login.component';
-import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
 import { GestionebicicletteComponent } from './pages/gestionebiciclette/gestionebiciclette.component';
 import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.component';
 import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
@@ -14,6 +13,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { ActivateComponent } from './pages/activate/activate.component';
 import { MainComponent } from './pages/main/main.component';
 import { BackofficeComponent } from './pages/backoffice/backoffice.component';
+import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
 
 const routes: Routes = [
     {

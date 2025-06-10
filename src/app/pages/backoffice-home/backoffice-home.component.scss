@@ -1,9 +1,6 @@
-/* backoffice-home.component.css */
+/* backoffice-home.component.scss */
 
-/* ... (stili per .backoffice-page-content, .main-content-area-home, .reportistica-showcase, 
-        .reportistica-header-main, .reportistica-showcase h2, .reportistica-description,
-        .key-stats-grid, .stat-card, .stat-icon, .stat-info rimangono come prima) ... */
-
+/* Stili per il contenitore principale della pagina */
 .backoffice-page-content {
   display: flex;
   flex-direction: column;
@@ -12,6 +9,7 @@
   color: #e0e0e0;
 }
 
+/* Stili per l'area del contenuto principale */
 .main-content-area-home {
   flex-grow: 1;
   display: flex;
@@ -22,6 +20,7 @@
   box-sizing: border-box;
 }
 
+/* Stili per il contenitore della sezione reportistica */
 .reportistica-showcase {
   background-color: #2a2a2a;
   border-radius: 8px;
@@ -32,6 +31,7 @@
   text-align: left;
 }
 
+/* Header della sezione reportistica */
 .reportistica-header-main {
   display: flex;
   align-items: center;
@@ -53,6 +53,7 @@
   color: #f0f0f0;
 }
 
+/* Descrizione sotto l'header */
 .reportistica-description {
   font-size: 0.95em;
   color: #b0b0b0;
@@ -60,6 +61,7 @@
   line-height: 1.6;
 }
 
+/* Griglia per le statistiche chiave */
 .key-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -67,21 +69,23 @@
   margin-bottom: 30px;
 }
 
+/* Stile delle card per le statistiche */
 .stat-card {
   background-color: #333333;
   border-radius: 6px;
   padding: 15px;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   border-left: 4px solid;
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 }
 .stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+/* Colori specifici per ogni card */
 .stat-card:nth-child(1) { border-left-color: #00aaff; }
 .stat-card:nth-child(1) .stat-icon i { color: #00aaff; }
 .stat-card:nth-child(2) { border-left-color: #28a745; }
@@ -112,29 +116,26 @@
   margin-top: 2px;
 }
 
-/* Stili per i grafici (modificato per due grafici grandi) */
-.charts-container.large-charts-container { /* Aggiunta specificità */
+/* Stili per i contenitori dei grafici */
+.charts-container.large-charts-container {
   display: grid;
-  /* Due colonne fisse se lo schermo è abbastanza largo, altrimenti una colonna (gestito da media query) */
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Mantiene la responsività, i grafici si espanderanno */
-  /* Se vuoi forzare due colonne su schermi larghi e una su schermi stretti:
-     grid-template-columns: 1fr; (default)
-     @media (min-width: 768px) { grid-template-columns: 1fr 1fr; } */
-  gap: 25px; /* Aumentato un po' il gap se i grafici sono più grandi */
-  margin-bottom: 20px; /* Ridotto margin-bottom dato che non c'è più il pulsante sotto */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin-bottom: 20px;
 }
 
-.chart-widget { /* Lo stile del widget rimane lo stesso */
+/* Stile per il widget che contiene il grafico */
+.chart-widget {
   background-color: #333333;
   border-radius: 6px;
   padding: 18px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  display: flex; /* Per allineare il titolo sopra il grafico e controllare l'altezza */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  display: flex;
   flex-direction: column;
 }
 
 .chart-widget h3 {
-  font-size: 1.1em; /* Titolo leggermente più grande per grafici importanti */
+  font-size: 1.1em;
   margin-top: 0;
   margin-bottom: 15px;
   color: #00aaff;
@@ -143,29 +144,21 @@
   font-weight: 500;
 }
 
-.chart-placeholder.large-chart { /* Stile per i placeholder dei grafici più grandi */
+/* Wrapper per il canvas per controllare dimensioni e responsività */
+.chart-wrapper {
+  position: relative; // Necessario per il corretto funzionamento di maintainAspectRatio
   width: 100%;
-  min-height: 280px; /* Aumentata altezza minima per grafici "grandi" */
-  /* max-height: 350px; Puoi impostare un max se necessario */
-  aspect-ratio: 16 / 9; /* Mantiene le proporzioni */
-  background-color: #272727;
-  border: 1px dashed #555555;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #777777;
-  font-style: italic;
-  flex-grow: 1; /* Permette al placeholder di occupare lo spazio disponibile nel widget */
-}
-.chart-alt-text {
-  padding: 10px;
-  text-align: center;
-  font-size: 0.9em;
+  flex-grow: 1; // Occupa lo spazio rimanente nel widget
+  min-height: 280px; // Altezza minima per i grafici
 }
 
-/* Rimossi gli stili per .report-actions e .btn.btn-action (o .btn-secondary) */
+/* Stile per il canvas stesso per garantire che riempia il wrapper */
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
 
+/* Footer della pagina */
 .backoffice-page-footer {
   background-color: #111111;
   color: #a0a0a0;
@@ -176,10 +169,10 @@
   border-top: 1px solid #2c2c2c;
 }
 
-/* Media Query per aggiustamenti */
-@media (max-width: 992px) { /* Potresti voler cambiare il breakpoint per quando i due grafici vanno in colonna */
+/* Media Query per aggiustamenti su schermi più piccoli */
+@media (max-width: 992px) {
   .charts-container.large-charts-container {
-    grid-template-columns: 1fr; /* Un grafico per riga su schermi più piccoli/medi */
+    grid-template-columns: 1fr; /* Un grafico per riga */
   }
 }
 
@@ -196,21 +189,28 @@
   .reportistica-header-main i {
     font-size: 1.6em;
   }
-  .key-stats-grid { /* Già gestito da auto-fit, ma puoi forzarlo se necessario */
+  .key-stats-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
   .stat-card, .chart-widget {
     padding: 12px;
   }
-  .stat-icon { font-size: 1.6em; margin-right: 10px; width: 35px; }
-  .stat-info .stat-value { font-size: 1.5em; }
-  .stat-info .stat-label { font-size: 0.75em; }
-
+  .stat-icon {
+    font-size: 1.6em;
+    margin-right: 10px;
+    width: 35px;
+  }
+  .stat-info .stat-value {
+    font-size: 1.5em;
+  }
+  .stat-info .stat-label {
+    font-size: 0.75em;
+  }
   .chart-widget h3 {
-    font-size: 1em; /* Leggermente più grande per maggiore importanza dei titoli dei grafici */
-   }
-  .chart-placeholder.large-chart {
-    min-height: 220px; /* Altezza minima leggermente ridotta per mobile */
+    font-size: 1em;
+  }
+  .chart-wrapper {
+    min-height: 220px; /* Altezza minima ridotta per mobile */
   }
 }

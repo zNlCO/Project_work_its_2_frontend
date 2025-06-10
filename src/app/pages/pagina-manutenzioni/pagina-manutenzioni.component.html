@@ -6,17 +6,17 @@
   <section class="action-bar">
     <div class="filter-group">
       <label for="locationFilter">Seleziona un Punto Vendita per gestire l'inventario:</label>
-      <select id="locationFilter" class="custom-select dark-select">
-        <option value="stazione">Noleggio Centrale Stazione</option>
-        <option value="rialto">Bike Point Rialto</option>
-        <option value="lido">Deposito Lido</option>
+      <select id="locationFilter" class="custom-select dark-select" [(ngModel)]="selectedLocationId" (ngModelChange)="onLocationChange()">
+        <option *ngFor="let location of locations" [value]="location.id">
+          {{ location.name }}
+        </option>
       </select>
     </div>
   </section>
 
   <section class="content-area">
     <div class="inventory-header">
-      <h2>Inventario per: <span class="location-name">Noleggio Centrale Stazione</span></h2>
+      <h2>Inventario per: <span class="location-name">{{ selectedLocationName }}</span></h2>
       <p>Modifica il numero di bici "In Manutenzione" per aggiornare la disponibilità per i noleggi.</p>
     </div>
 
@@ -34,54 +34,38 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>City Voyager X</td>
-            <td>Muscolare</td>
-            <td class="text-center">15</td>
-            <td class="text-center">4</td>
+          <tr *ngFor="let bike of currentInventory">
+            <td>{{ bike.modelName }}</td>
+            <td>{{ bike.propulsion }}</td>
+            <td class="text-center">{{ bike.totalQuantity }}</td>
+            <td class="text-center">{{ bike.currentlyRented }}</td>
             <td class="maintenance-cell">
-              <input type="number" min="0" max="15" value="1" class="maintenance-input dark-input">
+              <input 
+                type="number" 
+                min="0" 
+                [max]="getMaxMaintenanceValue(bike)" 
+                class="maintenance-input dark-input"
+                [(ngModel)]="bike.inMaintenance">
             </td>
-            <td class="availability-value text-center">10</td>
+            <td 
+              class="availability-value text-center"
+              [class.text-danger]="getAvailability(bike) < 0">
+              {{ getAvailability(bike) }}
+            </td>
             <td class="actions-cell">
-              <button class="btn btn-table-action btn-save" title="Salva Modifiche">
+              <button 
+                class="btn btn-table-action btn-save" 
+                title="Salva Modifiche"
+                (click)="openSaveConfirmation(bike)"
+                [disabled]="bike.inMaintenance === bike.originalInMaintenance">
                 <i class="fas fa-save"></i> <span class="btn-action-text">Salva</span>
               </button>
             </td>
           </tr>
-
-          <tr>
-            <td>City Voyager X</td>
-            <td>Elettrica</td>
-            <td class="text-center">8</td>
-            <td class="text-center">5</td>
-            <td class="maintenance-cell">
-              <input type="number" min="0" max="8" value="0" class="maintenance-input dark-input">
-            </td>
-            <td class="availability-value text-center">3</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-save" title="Salva Modifiche">
-                <i class="fas fa-save"></i> <span class="btn-action-text">Salva</span>
-              </button>
-            </td>
+          <tr *ngIf="currentInventory.length === 0">
+            <td colspan="7" class="text-center">Nessun dato di inventario disponibile per questo punto vendita.</td>
           </tr>
-
-          <tr>
-            <td>Mountain Peak E-Pro</td>
-            <td>Elettrica</td>
-            <td class="text-center">10</td>
-            <td class="text-center">2</td>
-            <td class="maintenance-cell">
-              <input type="number" min="0" max="10" value="2" class="maintenance-input dark-input">
-            </td>
-            <td class="availability-value text-center">6</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-save" title="Salva Modifiche">
-                <i class="fas fa-save"></i> <span class="btn-action-text">Salva</span>
-              </button>
-            </td>
-          </tr>
-          </tbody>
+        </tbody>
       </table>
     </div>
   </section>
@@ -89,4 +73,37 @@
   <footer class="backoffice-page-footer dark-theme">
     <p>&copy; 2025 Bike Rental System - Backoffice</p>
   </footer>
+</div>
+
+
+<div class="modal-overlay" *ngIf="showConfirmationModal">
+  <div class="modal-content dark-theme">
+    <div class="modal-header">
+      <h3>Conferma Salvataggio</h3>
+    </div>
+    <div class="modal-body">
+      <p>Sei sicuro di voler salvare le modifiche per il modello <strong>{{ bikeToSave?.modelName }} ({{ bikeToSave?.propulsion }})</strong>?</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="cancelSave()">Annulla</button>
+      <button class="btn btn-primary" (click)="confirmSave()">Conferma e Salva</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showNotificationModal">
+  <div class="modal-content dark-theme">
+    <div class="modal-header">
+      <h3 [class.text-success]="notificationSuccess" [class.text-danger]="!notificationSuccess">
+        <i class="fas" [class.fa-check-circle]="notificationSuccess" [class.fa-times-circle]="!notificationSuccess"></i>
+        Esito Operazione
+      </h3>
+    </div>
+    <div class="modal-body">
+      <p>{{ notificationMessage }}</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" (click)="closeNotification()">Chiudi</button>
+    </div>
+  </div>
 </div>

@@ -1,5 +1,4 @@
-/* gestione-prezzi.component.css */
-
+/* Stili esistenti (invariati) */
 :host {
   display: block;
   height: 100%;
@@ -49,8 +48,7 @@
 
 .section-header-actions {
   display: flex;
-  /* justify-content: space-between; Non più necessario se c'è solo il titolo */
-  justify-content: flex-start; /* Allinea il titolo a sinistra */
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 15px;
   padding-bottom: 10px;
@@ -67,22 +65,6 @@
   margin-right: 8px;
   color: #00aaff;
 }
-
-/* Rimosso stile per .btn.btn-primary.btn-add-item
-   .btn.btn-primary.btn-add-item {
-     padding: 8px 12px;
-     font-size: 0.85em;
-     background-color: #28a745;
-     border-color: #28a745;
-   }
-   .btn.btn-primary.btn-add-item:hover {
-     background-color: #1e7e34;
-     border-color: #1e7e34;
-   }
-   .btn.btn-primary.btn-add-item i {
-     margin-right: 5px;
-   }
-*/
 
 .table-responsive-container {
   width: 100%;
@@ -154,6 +136,25 @@
   opacity: 0.9;
 }
 
+.backoffice-page-footer.dark-theme {
+  background-color: #111;
+  color: #a0a0a0;
+  text-align: center;
+  padding: 12px 20px;
+  font-size: 0.8em;
+  margin-top: auto;
+  border-top: 1px solid #333;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .data-table.dark-table th,
+  .data-table.dark-table td {
+    padding: 8px 10px;
+    font-size: 0.85em;
+  }
+}
+
 @media (max-width: 576px) {
   .btn-table-action .btn-action-text {
     display: none;
@@ -169,22 +170,131 @@
   }
 }
 
-.backoffice-page-footer.dark-theme {
-  background-color: #111;
-  color: #a0a0a0;
-  text-align: center;
-  padding: 12px 20px;
-  font-size: 0.8em;
-  margin-top: auto;
-  border-top: 1px solid #333;
+/* ---------- NUOVI STILI PER IL MODALE ---------- */
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
 }
 
-@media (max-width: 768px) {
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
 
+.modal-content {
+  background-color: #2a2a2a;
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  z-index: 1051;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid #444;
+  color: #e0e0e0;
+}
 
-  .data-table.dark-table th,
-  .data-table.dark-table td {
-    padding: 8px 10px;
-    font-size: 0.85em;
-  }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #444;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.4em;
+  color: #00aaff;
+  font-weight: 600;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 2em;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.btn-close:hover {
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #c0c0c0;
+}
+
+.form-control-dark {
+  width: 100%;
+  padding: 10px;
+  background-color: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 1em;
+}
+
+.form-control-dark:focus {
+  outline: none;
+  border-color: #00aaff;
+  box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.25);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 15px;
+  margin-top: 20px;
+  border-top: 1px solid #444;
+}
+
+.modal-footer .btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-footer .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+.modal-footer .btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.modal-footer .btn-save {
+  background-color: #007bff;
+  color: white;
+}
+.modal-footer .btn-save:hover {
+  background-color: #0056b3;
 }

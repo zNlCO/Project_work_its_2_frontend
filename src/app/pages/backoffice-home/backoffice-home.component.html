@@ -2,7 +2,8 @@
 
   <main class="main-content-area-home">
     <section class="reportistica-showcase">
-      <div class="reportistica-header-main bbai-jamjuree-bold-italic"> <i class="fas fa-chart-line fa-2x"></i>
+      <div class="reportistica-header-main bbai-jamjuree-bold-italic">
+        <i class="fas fa-chart-line fa-2x"></i>
         <h2>Dashboard Reportistica</h2>
       </div>
       <p class="reportistica-description">
@@ -13,28 +14,28 @@
         <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
           <div class="stat-info">
-            <span class="stat-value">125</span>
+            <span class="stat-value">{{ prenotazioniMeseCorrente | number }}</span>
             <span class="stat-label">Prenotazioni Mese Corrente</span>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-euro-sign"></i></div>
           <div class="stat-info">
-            <span class="stat-value">€ 3,450</span>
+            <span class="stat-value">{{ ricavoMeseCorrente | currency:'EUR':'symbol':'1.2-2' }}</span>
             <span class="stat-label">Ricavo Mese Corrente</span>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-bicycle"></i></div>
           <div class="stat-info">
-            <span class="stat-value">78</span>
+            <span class="stat-value">{{ biciNoleggiate | number }}</span>
             <span class="stat-label">Bici Attualmente Noleggiate</span>
           </div>
         </div>
-         <div class="stat-card">
+        <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
           <div class="stat-info">
-            <span class="stat-value">3</span>
+            <span class="stat-value">{{ biciInManutenzione | number }}</span>
             <span class="stat-label">Bici in Manutenzione</span>
           </div>
         </div>
@@ -43,18 +44,20 @@
       <div class="charts-container large-charts-container">
         <div class="chart-widget">
           <h3>Prenotazioni Mensili (Ultimi 6 Mesi)</h3>
-          <div class="chart-placeholder large-chart" id="prenotazioniChart_large"> <p class="chart-alt-text">[Grafico a barre: Prenotazioni Mensili]</p>
+          <div class="chart-wrapper">
+            <canvas #prenotazioniChart id="prenotazioniChart_large"></canvas>
           </div>
         </div>
 
         <div class="chart-widget">
           <h3>Ricavi Mensili (Ultimi 6 Mesi)</h3>
-          <div class="chart-placeholder large-chart" id="ricaviChart_large"> <p class="chart-alt-text">[Grafico a linee: Ricavi Mensili]</p>
+          <div class="chart-wrapper">
+            <canvas #ricaviChart id="ricaviChart_large"></canvas>
           </div>
         </div>
       </div>
 
-      </section>
+    </section>
   </main>
 
   <footer class="backoffice-page-footer">

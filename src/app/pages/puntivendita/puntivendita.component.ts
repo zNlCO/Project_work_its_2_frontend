@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 // Interfacce per i dati
 interface BikeInventory {
@@ -21,7 +21,7 @@ interface SalesPoint {
   templateUrl: './puntivendita.component.html',
   styleUrl: './puntivendita.component.scss'
 })
-export class PuntivenditaComponent {
+export class PuntivenditaComponent implements OnInit {
   // Dati dei punti vendita
   salesPoints: SalesPoint[] = [
     {
@@ -80,6 +80,11 @@ export class PuntivenditaComponent {
   powerTypes: Array<'Muscolare' | 'Elettrica'> = ['Muscolare', 'Elettrica'];
   bikeSizes: Array<'S' | 'M' | 'L' | 'XL'> = ['S', 'M', 'L', 'XL'];
 
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
   // Metodi per la ricerca
   onSearch(): void {
     if (!this.searchTerm.trim()) {
@@ -88,8 +93,8 @@ export class PuntivenditaComponent {
     }
 
     const term = this.searchTerm.toLowerCase();
-    this.filteredSalesPoints = this.salesPoints.filter(sp => 
-      sp.name.toLowerCase().includes(term) || 
+    this.filteredSalesPoints = this.salesPoints.filter(sp =>
+      sp.name.toLowerCase().includes(term) ||
       sp.address.toLowerCase().includes(term)
     );
   }
@@ -140,7 +145,7 @@ export class PuntivenditaComponent {
         active: this.newSalesPoint.active || true,
         bikes: []
       };
-      
+
       this.salesPoints.push(newPoint);
       this.filteredSalesPoints = [...this.salesPoints];
       this.closeAllModals();
@@ -185,10 +190,10 @@ export class PuntivenditaComponent {
   }
 
   saveBike(): void {
-    if (this.selectedSalesPoint && this.editingBike.type && 
-        this.editingBike.powerType && this.editingBike.size && 
-        this.editingBike.quantity !== undefined && this.editingBike.quantity > 0) {
-      
+    if (this.selectedSalesPoint && this.editingBike.type &&
+      this.editingBike.powerType && this.editingBike.size &&
+      this.editingBike.quantity !== undefined && this.editingBike.quantity > 0) {
+
       const salesPointIndex = this.salesPoints.findIndex(sp => sp.id === this.selectedSalesPoint!.id);
       if (salesPointIndex !== -1) {
         const newBike: BikeInventory = {
@@ -205,7 +210,7 @@ export class PuntivenditaComponent {
           // Modifica bici esistente
           this.salesPoints[salesPointIndex].bikes[this.editingBikeIndex] = newBike;
         }
-        
+
         this.filteredSalesPoints = [...this.salesPoints];
       }
       this.showAddBikeModal = false;

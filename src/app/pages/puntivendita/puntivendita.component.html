@@ -1,229 +1,242 @@
-<div class="page-container dark-theme punti-vendita-page">
-  <header class="page-header">
-    <h1><i class="fas fa-store-alt"></i> Gestione Punti Vendita</h1>
+<div class="punti-vendita-page" data-bs-theme="dark">
+<div class="d-flex flex-column vh-100">
+
+  <header class="p-3 border-bottom shadow-sm">
+    <h1 class="h3 mb-0 text-primary-emphasis">
+      <i class="fas fa-store-alt me-2"></i>Gestione Punti Vendita
+    </h1>
   </header>
 
-  <section class="action-bar">
-    <div class="search-container">
-      <input 
-        type="text" 
-        placeholder="Cerca per nome o indirizzo..." 
-        class="search-input dark-input"
-        [(ngModel)]="searchTerm"
-        (input)="onSearch()">
-      <button class="btn btn-primary btn-search" (click)="onSearch()">
-        <i class="fas fa-search"></i>
+  <main class="flex-grow-1 p-3 p-md-4 overflow-auto">
+    <section class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+      <div class="input-group" style="max-width: 450px;">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Cerca per nome o indirizzo..." 
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()">
+        <button class="btn btn-primary" type="button" (click)="onSearch()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      <button class="btn btn-success" (click)="openAddModal()">
+        <i class="fas fa-plus me-2"></i>Aggiungi Punto Vendita
       </button>
-    </div>
-    <button class="btn btn-primary btn-add-location" (click)="openAddModal()">
-      <i class="fas fa-plus"></i> Aggiungi Punto Vendita
-    </button>
-  </section>
+    </section>
 
-  <section class="content-area">
-    <div class="sales-points-grid" *ngIf="filteredSalesPoints.length > 0; else noResults">
-      <div class="sales-point-card" *ngFor="let salesPoint of filteredSalesPoints">
-        <div class="card-header">
-          <h3>{{ salesPoint.name }}</h3>
-          <span class="location-status" [class.active]="salesPoint.active" [class.inactive]="!salesPoint.active">
-            {{ salesPoint.active ? 'Attivo' : 'Inattivo' }}
-          </span>
-        </div>
-        <div class="card-body">
-          <p class="location-address">
-            <i class="fas fa-map-marker-alt"></i> {{ salesPoint.address }}
-          </p>
-          <div class="bike-inventory-summary">
-            <h4><i class="fas fa-bicycle"></i> Inventario Bici ({{ getTotalBikes(salesPoint) }} totali):</h4>
-            <ul *ngIf="salesPoint.bikes.length > 0">
-              <li *ngFor="let bike of salesPoint.bikes">
-                {{ bike.type }} ({{ bike.powerType }}) - {{ bike.size }}: <span>{{ bike.quantity }}</span>
-              </li>
-            </ul>
-            <p class="no-inventory-text" *ngIf="salesPoint.bikes.length === 0">
-              Nessuna bici assegnata.
-            </p>
+    <section *ngIf="filteredSalesPoints.length > 0; else noResults">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+        <div class="col" *ngFor="let salesPoint of filteredSalesPoints">
+          <div class="card h-100 custom-card-hover">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h3 class="h5 mb-0">{{ salesPoint.name }}</h3>
+              <span class="badge" [ngClass]="salesPoint.active ? 'text-bg-success' : 'text-bg-secondary'">
+                {{ salesPoint.active ? 'Attivo' : 'Inattivo' }}
+              </span>
+            </div>
+            <div class="card-body">
+              <p class="card-text mb-3">
+                <i class="fas fa-map-marker-alt me-2 text-muted"></i>{{ salesPoint.address }}
+              </p>
+              
+              <h4 class="h6"><i class="fas fa-bicycle me-2"></i>Inventario ({{ getTotalBikes(salesPoint) }} totali)</h4>
+              <ul class="list-group list-group-flush" *ngIf="salesPoint.bikes.length > 0">
+                <li class="list-group-item px-0 d-flex justify-content-between align-items-center" *ngFor="let bike of salesPoint.bikes">
+                  {{ bike.type }} ({{ bike.powerType }}) - {{ bike.size }}
+                  <span class="badge bg-primary rounded-pill">{{ bike.quantity }}</span>
+                </li>
+              </ul>
+              <p class="text-muted fst-italic mt-2" *ngIf="salesPoint.bikes.length === 0">
+                Nessuna bici assegnata.
+              </p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 pt-0 d-flex justify-content-end gap-2">
+              <button class="btn btn-sm btn-outline-warning" title="Modifica" (click)="openEditModal(salesPoint)">
+                <i class="fas fa-edit"></i> <span class="d-none d-sm-inline">Modifica</span>
+              </button>
+              <button class="btn btn-sm btn-outline-info" title="Gestisci Inventario" (click)="openInventoryModal(salesPoint)">
+                <i class="fas fa-tasks"></i> <span class="d-none d-sm-inline">Inventario</span>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" title="Elimina" (click)="openDeleteModal(salesPoint)">
+                <i class="fas fa-trash"></i> <span class="d-none d-sm-inline">Elimina</span>
+              </button>
+            </div>
           </div>
         </div>
-        <div class="card-actions">
-          <button class="btn btn-icon btn-edit" title="Modifica Dati Punto Vendita" (click)="openEditModal(salesPoint)">
-            <i class="fas fa-edit"></i> <span class="btn-text">Modifica</span>
-          </button>
-          <button class="btn btn-icon btn-manage-inventory" title="Gestisci Inventario Bici" (click)="openInventoryModal(salesPoint)">
-            <i class="fas fa-tasks"></i> <span class="btn-text">Inventario Bici</span>
-          </button>
-          <button class="btn btn-icon btn-delete btn-danger" title="Elimina Punto Vendita" (click)="openDeleteModal(salesPoint)">
-            <i class="fas fa-trash"></i> <span class="btn-text">Elimina</span>
-          </button>
-        </div>
       </div>
-    </div>
+    </section>
 
     <ng-template #noResults>
-      <div class="empty-state">
-        <i class="fas fa-search"></i>
-        <h3>Nessun punto vendita trovato</h3>
+      <div class="d-flex flex-column h-75 justify-content-center align-items-center text-center text-muted">
+        <i class="fas fa-search display-4 mb-3"></i>
+        <h3 class="h4">Nessun punto vendita trovato</h3>
         <p *ngIf="searchTerm">Nessun risultato per "{{ searchTerm }}"</p>
         <p *ngIf="!searchTerm && salesPoints.length === 0">Non ci sono ancora punti vendita configurati.</p>
       </div>
     </ng-template>
-  </section>
+  </main>
 
-  <div class="modal-overlay" [class.show]="showAddModal" (click)="closeAllModals()">
-    <div class="modal-dialog" (click)="$event.stopPropagation()" *ngIf="showAddModal">
+  <footer class="text-center text-body-secondary py-3 border-top">
+    <small>&copy; 2025 Bike Rental System - Backoffice</small>
+  </footer>
+</div>
+</div>
+
+<!-- Modal Aggiungi/Modifica Punto Vendita -->
+<div class="modal" [class.show]="showAddModal || showEditModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
       <div class="modal-header">
-        <h3><i class="fas fa-plus"></i> Aggiungi Nuovo Punto Vendita</h3>
-        <button class="btn-close" (click)="closeAllModals()"><i class="fas fa-times"></i></button>
+        <h5 class="modal-title" *ngIf="showAddModal"><i class="fas fa-plus me-2"></i>Aggiungi Nuovo Punto Vendita</h5>
+        <h5 class="modal-title" *ngIf="showEditModal"><i class="fas fa-edit me-2"></i>Modifica Punto Vendita</h5>
+        <button type="button" class="btn-close" (click)="closeAllModals()"></button>
       </div>
       <div class="modal-body">
-        <form *ngIf="newSalesPoint">
-          <div class="form-group">
-            <label for="newName">Nome Punto Vendita *</label>
-            <input type="text" id="newName" class="form-control dark-input" [(ngModel)]="newSalesPoint.name" name="newName" placeholder="Es. Noleggio Centro Storico" required>
-          </div>
-          <div class="form-group">
-            <label for="newAddress">Indirizzo *</label>
-            <input type="text" id="newAddress" class="form-control dark-input" [(ngModel)]="newSalesPoint.address" name="newAddress" placeholder="Es. Via Roma, 1" required>
-          </div>
-          <div class="form-group">
-            <label class="checkbox-label">
-              <input type="checkbox" [(ngModel)]="newSalesPoint.active" name="newActive"> Punto vendita attivo
-            </label>
-          </div>
+        <form #salesPointForm="ngForm">
+          <ng-container *ngIf="showAddModal && newSalesPoint">
+            <div class="mb-3">
+              <label for="newName" class="form-label">Nome Punto Vendita *</label>
+              <input type="text" id="newName" class="form-control" [(ngModel)]="newSalesPoint.name" name="newName" required>
+            </div>
+            <div class="mb-3">
+              <label for="newAddress" class="form-label">Indirizzo *</label>
+              <input type="text" id="newAddress" class="form-control" [(ngModel)]="newSalesPoint.address" name="newAddress" required>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="newActive" [(ngModel)]="newSalesPoint.active" name="newActive">
+              <label class="form-check-label" for="newActive">Punto vendita attivo</label>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="showEditModal && editingSalesPoint">
+            <div class="mb-3">
+              <label for="editName" class="form-label">Nome Punto Vendita *</label>
+              <input type="text" id="editName" class="form-control" [(ngModel)]="editingSalesPoint.name" name="editName" required>
+            </div>
+            <div class="mb-3">
+              <label for="editAddress" class="form-label">Indirizzo *</label>
+              <input type="text" id="editAddress" class="form-control" [(ngModel)]="editingSalesPoint.address" name="editAddress" required>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="editActive" [(ngModel)]="editingSalesPoint.active" name="editActive">
+              <label class="form-check-label" for="editActive">Punto vendita attivo</label>
+            </div>
+          </ng-container>
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="closeAllModals()">Annulla</button>
-        <button class="btn btn-primary" (click)="addSalesPoint()" [disabled]="!newSalesPoint.name || !newSalesPoint.address">Aggiungi</button>
+        <button type="button" class="btn btn-secondary" (click)="closeAllModals()">Annulla</button>
+        <button type="button" class="btn btn-primary" (click)="showAddModal ? addSalesPoint() : updateSalesPoint()" [disabled]="salesPointForm.invalid">
+            {{ showAddModal ? 'Aggiungi' : 'Salva Modifiche' }}
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="modal-overlay" [class.show]="showEditModal" (click)="closeAllModals()">
-    <div class="modal-dialog" (click)="$event.stopPropagation()" *ngIf="showEditModal && editingSalesPoint">
+<!-- Modal Gestione Inventario -->
+<div class="modal" [class.show]="showInventoryModal">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" *ngIf="selectedSalesPoint">
       <div class="modal-header">
-        <h3><i class="fas fa-edit"></i> Modifica Punto Vendita</h3>
-        <button class="btn-close" (click)="closeAllModals()"><i class="fas fa-times"></i></button>
+        <h5 class="modal-title"><i class="fas fa-tasks me-2"></i>Gestisci Inventario - {{ selectedSalesPoint.name }}</h5>
+        <button type="button" class="btn-close" (click)="closeAllModals()"></button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="editName">Nome Punto Vendita *</label>
-            <input type="text" id="editName" class="form-control dark-input" [(ngModel)]="editingSalesPoint.name" name="editName" required>
-          </div>
-          <div class="form-group">
-            <label for="editAddress">Indirizzo *</label>
-            <input type="text" id="editAddress" class="form-control dark-input" [(ngModel)]="editingSalesPoint.address" name="editAddress" required>
-          </div>
-          <div class="form-group">
-            <label class="checkbox-label">
-              <input type="checkbox" [(ngModel)]="editingSalesPoint.active" name="editActive"> Punto vendita attivo
-            </label>
-          </div>
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-primary btn-sm" (click)="openAddBikeModal()"><i class="fas fa-plus me-2"></i>Aggiungi Bici</button>
+        </div>
+        <div class="table-responsive" *ngIf="selectedSalesPoint.bikes.length > 0">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr><th>Tipo</th><th>Alimentazione</th><th>Taglia</th><th>Quantità</th><th class="text-end">Azioni</th></tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let bike of selectedSalesPoint.bikes; let i = index">
+                        <td>{{ bike.type }}</td><td>{{ bike.powerType }}</td><td>{{ bike.size }}</td><td>{{ bike.quantity }}</td>
+                        <td class="text-end">
+                            <button class="btn btn-icon btn-outline-warning btn-sm me-2" (click)="openEditBikeModal(bike, i)" title="Modifica"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-icon btn-outline-danger btn-sm" (click)="deleteBike(i)" title="Elimina"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center py-5 text-muted" *ngIf="selectedSalesPoint.bikes.length === 0">
+            <i class="fas fa-bicycle display-5"></i>
+            <p class="mt-2">Nessuna bici in inventario per questo punto vendita.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAllModals()">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Aggiungi/Modifica Bici -->
+<div class="modal" [class.show]="showAddBikeModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" *ngIf="editingBike">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-bicycle me-2"></i>{{ editingBikeIndex === -1 ? 'Aggiungi' : 'Modifica' }} Bici</h5>
+        <button type="button" class="btn-close" (click)="closeBikeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form #bikeForm="ngForm">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="bikeType" class="form-label">Tipo Bici *</label>
+                    <select id="bikeType" class="form-select" [(ngModel)]="editingBike.type" name="bikeType" required>
+                        <option value="" disabled>Seleziona tipo...</option>
+                        <option *ngFor="let type of bikeTypes" [value]="type">{{ type }}</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="bikePower" class="form-label">Alimentazione *</label>
+                    <select id="bikePower" class="form-select" [(ngModel)]="editingBike.powerType" name="bikePower" required>
+                        <option *ngFor="let power of powerTypes" [value]="power">{{ power }}</option>
+                    </select>
+                </div>
+                 <div class="col-md-6">
+                    <label for="bikeSize" class="form-label">Taglia *</label>
+                    <select id="bikeSize" class="form-select" [(ngModel)]="editingBike.size" name="bikeSize" required>
+                        <option *ngFor="let size of bikeSizes" [value]="size">{{ size }}</option>
+                    </select>
+                </div>
+                 <div class="col-md-6">
+                    <label for="bikeQuantity" class="form-label">Quantità *</label>
+                    <input type="number" id="bikeQuantity" class="form-control" [(ngModel)]="editingBike.quantity" name="bikeQuantity" min="1" required>
+                </div>
+            </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="closeAllModals()">Annulla</button>
-        <button class="btn btn-primary" (click)="updateSalesPoint()" [disabled]="!editingSalesPoint.name || !editingSalesPoint.address">Salva Modifiche</button>
+        <button type="button" class="btn btn-secondary" (click)="closeBikeModal()">Annulla</button>
+        <button type="button" class="btn btn-primary" (click)="saveBike()" [disabled]="bikeForm.invalid">
+          {{ editingBikeIndex === -1 ? 'Aggiungi' : 'Salva' }}
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="modal-overlay" [class.show]="showInventoryModal" (click)="closeAllModals()">
-    <div class="modal-dialog modal-lg" (click)="$event.stopPropagation()" *ngIf="showInventoryModal && selectedSalesPoint">
-      <div class="modal-header">
-        <h3><i class="fas fa-tasks"></i> Gestisci Inventario - {{ selectedSalesPoint.name }}</h3>
-        <button class="btn-close" (click)="closeAllModals()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <div class="inventory-actions">
-          <button class="btn btn-primary btn-sm" (click)="openAddBikeModal()"><i class="fas fa-plus"></i> Aggiungi Bici</button>
-        </div>
-        <div class="inventory-table" *ngIf="selectedSalesPoint.bikes.length > 0">
-          <table class="table dark-table">
-            <thead>
-              <tr><th>Tipo</th><th>Alimentazione</th><th>Taglia</th><th>Quantità</th><th>Azioni</th></tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let bike of selectedSalesPoint.bikes; let i = index">
-                <td>{{ bike.type }}</td><td>{{ bike.powerType }}</td><td>{{ bike.size }}</td><td>{{ bike.quantity }}</td>
-                <td>
-                  <button class="btn btn-icon btn-edit btn-sm" (click)="openEditBikeModal(bike, i)" title="Modifica"><i class="fas fa-edit"></i></button>
-                  <button class="btn btn-icon btn-delete btn-danger btn-sm" (click)="deleteBike(i)" title="Elimina"><i class="fas fa-trash"></i></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="empty-inventory" *ngIf="selectedSalesPoint.bikes.length === 0">
-          <i class="fas fa-bicycle"></i><p>Nessuna bici in inventario</p>
-        </div>
-      </div>
-      <div class="modal-footer"><button class="btn btn-secondary" (click)="closeAllModals()">Chiudi</button></div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" [class.show]="showAddBikeModal" (click)="closeBikeModal()">
-    <div class="modal-dialog" (click)="$event.stopPropagation()" *ngIf="showAddBikeModal && editingBike">
-      <div class="modal-header">
-        <h3><i class="fas fa-bicycle"></i> {{ editingBikeIndex === -1 ? 'Aggiungi' : 'Modifica' }} Bici</h3>
-        <button class="btn-close" (click)="closeBikeModal()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="bikeType">Tipo Bici *</label>
-              <select id="bikeType" class="form-control dark-input" [(ngModel)]="editingBike.type" name="bikeType" required>
-                <option value="">Seleziona tipo</option><option *ngFor="let type of bikeTypes" [value]="type">{{ type }}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="bikePower">Alimentazione *</label>
-              <select id="bikePower" class="form-control dark-input" [(ngModel)]="editingBike.powerType" name="bikePower" required>
-                <option *ngFor="let power of powerTypes" [value]="power">{{ power }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="bikeSize">Taglia *</label>
-              <select id="bikeSize" class="form-control dark-input" [(ngModel)]="editingBike.size" name="bikeSize" required>
-                <option *ngFor="let size of bikeSizes" [value]="size">{{ size }}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="bikeQuantity">Quantità *</label>
-              <input type="number" id="bikeQuantity" class="form-control dark-input" [(ngModel)]="editingBike.quantity" name="bikeQuantity" min="1" required>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="closeBikeModal()">Annulla</button>
-        <button class="btn btn-primary" (click)="saveBike()" [disabled]="!editingBike.type || !editingBike.powerType || !editingBike.size || !editingBike.quantity">{{ editingBikeIndex === -1 ? 'Aggiungi' : 'Salva' }}</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" [class.show]="showDeleteModal" (click)="closeAllModals()">
-    <div class="modal-dialog modal-sm" (click)="$event.stopPropagation()" *ngIf="showDeleteModal && selectedSalesPoint">
-      <div class="modal-header">
-        <h3><i class="fas fa-exclamation-triangle"></i> Conferma Eliminazione</h3>
-        <button class="btn-close" (click)="closeAllModals()"><i class="fas fa-times"></i></button>
+<!-- Modal Conferma Eliminazione -->
+<div class="modal" [class.show]="showDeleteModal">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" *ngIf="selectedSalesPoint">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Conferma Eliminazione</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeAllModals()"></button>
       </div>
       <div class="modal-body">
         <p>Sei sicuro di voler eliminare il punto vendita <strong>"{{ selectedSalesPoint.name }}"</strong>?</p>
-        <p class="warning-text"><i class="fas fa-exclamation-triangle"></i> Questa azione non può essere annullata.</p>
+        <p class="text-danger-emphasis small"><i class="fas fa-exclamation-circle me-1"></i>Questa azione non può essere annullata.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="closeAllModals()">Annulla</button>
-        <button class="btn btn-danger" (click)="deleteSalesPoint()"><i class="fas fa-trash"></i> Elimina</button>
+        <button type="button" class="btn btn-secondary" (click)="closeAllModals()">Annulla</button>
+        <button type="button" class="btn btn-danger" (click)="deleteSalesPoint()"><i class="fas fa-trash me-2"></i>Elimina</button>
       </div>
     </div>
   </div>
-  
-  <footer class="backoffice-page-footer dark-theme">
-    <p>&copy; 2025 Bike Rental System - Backoffice</p>
-  </footer>
 </div>

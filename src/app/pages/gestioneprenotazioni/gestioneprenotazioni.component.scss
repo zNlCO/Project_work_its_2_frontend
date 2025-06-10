@@ -172,21 +172,57 @@
 .status-flag.status-completed { color: #28a745; background-color: rgba(40, 167, 69, 0.1); }
 .status-flag.status-with-issues { color: #dc3545; background-color: rgba(220, 53, 69, 0.1); }
 
-/*
-   RIMOSSI TUTTI GLI STILI PER LE AZIONI DATO CHE LA COLONNA NON C'E' PIU'
-  .actions-column { ... }
-  .actions-cell { ... }
-  .no-actions-text { ... }
-  .btn-table-action { ... }
-  .btn-table-action.btn-view { ... }
-  .btn-table-action.btn-process-pickup { ... }
-  .btn-table-action.btn-process-return { ... }
-  .btn-table-action.btn-view-issues { ... }
-*/
+
 
 .backoffice-page-footer.dark-theme {
   background-color: #111; color: #a0a0a0; text-align: center;
   padding: 12px 20px; font-size: 0.8em; margin-top: auto; border-top: 1px solid #333;
+}
+/* Stili aggiuntivi per loading e messaggi di errore */
+.loading-indicator {
+  text-align: center;
+  padding: 40px;
+  color: #00aaff;
+  font-size: 1.1em;
+}
+
+.loading-indicator i {
+  margin-right: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-message i {
+  margin-right: 8px;
+}
+
+.error-message .btn {
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 0.8em;
+}
+
+/* Messaggio tabella vuota */
+.data-table.dark-table tbody tr td[colspan] {
+  font-style: italic;
+}
+
+.data-table.dark-table tbody tr td[colspan] i {
+  margin-right: 8px;
 }
 
 @media (max-width: 992px) {

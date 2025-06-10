@@ -6,7 +6,8 @@
   <section class="content-area">
 
     <div class="price-section">
-      <div class="section-header-actions"> <h2><i class="fas fa-puzzle-piece"></i> Listino Prezzi Accessori</h2>
+      <div class="section-header-actions">
+        <h2><i class="fas fa-puzzle-piece"></i> Listino Prezzi Accessori</h2>
       </div>
       <div class="table-responsive-container">
         <table class="data-table dark-table">
@@ -19,53 +20,24 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Casco Protettivo</td>
-              <td>Casco omologato, varie misure</td>
-              <td>€ 3.00</td>
+            <tr *ngFor="let accessorio of accessori">
+              <td>{{ accessorio.nome }}</td>
+              <td>{{ accessorio.descrizione }}</td>
+              <td>{{ accessorio.prezzo | currency:'EUR':'symbol':'1.2-2' }}</td>
               <td class="actions-cell">
-                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Accessorio">
+                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Accessorio" (click)="openEditModal(accessorio, 'Accessorio')">
                   <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
                 </button>
               </td>
             </tr>
-            <tr>
-              <td>Lucchetto di Sicurezza</td>
-              <td>Lucchetto rinforzato con cavo</td>
-              <td>€ 2.00</td>
-              <td class="actions-cell">
-                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Accessorio">
-                  <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Kit Luci LED</td>
-              <td>Set luci anteriore e posteriore ad alta visibilità</td>
-              <td>€ 4.00</td>
-              <td class="actions-cell">
-                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Accessorio">
-                  <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Borraccia Termica</td>
-              <td>Borraccia da 500ml, mantiene temperatura</td>
-              <td>€ 5.00</td>
-              <td class="actions-cell">
-                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Accessorio">
-                  <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-                </button>
-              </td>
-            </tr>
-            </tbody>
+          </tbody>
         </table>
       </div>
     </div>
 
     <div class="price-section">
-      <div class="section-header-actions"> <h2><i class="fas fa-shield-alt"></i> Listino Coperture Assicurative</h2>
+      <div class="section-header-actions">
+        <h2><i class="fas fa-shield-alt"></i> Listino Coperture Assicurative</h2>
       </div>
       <div class="table-responsive-container">
         <table class="data-table dark-table">
@@ -78,37 +50,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Copertura Base Danni</td>
-              <td>Copre danni accidentali alla bici fino a €200.</td>
-              <td>€ 5.00</td>
+            <tr *ngFor="let assicurazione of assicurazioni">
+              <td>{{ assicurazione.nome }}</td>
+              <td>{{ assicurazione.dettagli }}</td>
+              <td>{{ assicurazione.prezzo | currency:'EUR':'symbol':'1.2-2' }}</td>
               <td class="actions-cell">
-                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Assicurazione">
+                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Assicurazione" (click)="openEditModal(assicurazione, 'Assicurazione')">
                   <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
                 </button>
               </td>
             </tr>
-            <tr>
-              <td>Copertura Kasko Completa</td>
-              <td>Danni illimitati, furto (con franchigia), assistenza stradale.</td>
-              <td>€ 15.00</td>
-              <td class="actions-cell">
-                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Assicurazione">
-                  <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Servizio Emergenza Plus</td>
-              <td>Recupero entro 50km e sostituzione bici.</td>
-              <td>€ 7.50</td>
-              <td class="actions-cell">
-                <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Assicurazione">
-                  <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-                </button>
-              </td>
-            </tr>
-            </tbody>
+          </tbody>
         </table>
       </div>
     </div>
@@ -117,4 +69,26 @@
   <footer class="backoffice-page-footer dark-theme">
     <p>&copy; 2025 Bike Rental System - Backoffice</p>
   </footer>
+</div>
+
+<div class="modal-container" *ngIf="isModalOpen">
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>{{ modalTitle }}</h3>
+      <button class="btn-close" (click)="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form (ngSubmit)="savePrice()">
+        <div class="form-group">
+          <label for="editedPrice">Nuovo Prezzo (€)</label>
+          <input id="editedPrice" name="editedPrice" type="number" class="form-control-dark" [(ngModel)]="editedPrice" required min="0" step="0.01">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Annulla</button>
+          <button type="submit" class="btn btn-primary btn-save">Salva Modifiche</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

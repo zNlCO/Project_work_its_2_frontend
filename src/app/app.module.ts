@@ -12,7 +12,6 @@ import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 import { BackofficeHomeComponent } from './pages/backoffice-home/backoffice-home.component';
 import { BikeListComponent } from './components/bike-list/bike-list.component';
 import { ReservationComponent } from './pages/reservation/reservation.component';
-import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
 import { GestionebicicletteComponent } from './pages/gestionebiciclette/gestionebiciclette.component';
 import { GestioneprezziComponent } from './pages/gestioneprezzi/gestioneprezzi.component';
 import { GestioneprenotazioniComponent } from './pages/gestioneprenotazioni/gestioneprenotazioni.component';
@@ -26,6 +25,7 @@ import { IfNotAuthenticatedDirective } from './directives/if-not-authenticated.d
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { MainComponent } from './pages/main/main.component';
 import { BackofficeComponent } from './pages/backoffice/backoffice.component';
+import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
 
 @NgModule({
     declarations: [
@@ -35,7 +35,6 @@ import { BackofficeComponent } from './pages/backoffice/backoffice.component';
         BackofficeHomeComponent,
         BikeListComponent,
         ReservationComponent,
-        PuntivenditaComponent,
         GestionebicicletteComponent,
         GestioneprezziComponent,
         GestioneprenotazioniComponent,
@@ -43,6 +42,7 @@ import { BackofficeComponent } from './pages/backoffice/backoffice.component';
         IfAuthenticatedDirective,
         PaginaManutenzioniComponent,
         GestioneOperatoriComponent,
+    PuntivenditaComponent,
         RegisterComponent,
         ActivateComponent,
         IfNotAuthenticatedDirective,

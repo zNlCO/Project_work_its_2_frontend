@@ -1,90 +1,168 @@
 <div class="page-container dark-theme gestione-biciclette-page">
-  <header class="page-header">
-    <h1><i class="fas fa-bicycle"></i> Gestione Catalogo Biciclette</h1>
+  <header class="page-header mb-4">
+    <h1 class="text-accent">
+      <i class="fas fa-bicycle me-2"></i> 
+      Gestione Catalogo Biciclette
+    </h1>
   </header>
 
-  <section class="action-bar">
-    <div class="search-container">
-      <input type="text" placeholder="Cerca per nome modello, categoria..." class="search-input dark-input">
-      <button class="btn btn-primary btn-search"><i class="fas fa-search"></i></button>
+  <section class="action-bar d-flex flex-wrap justify-content-between gap-3 mb-4">
+    <div class="search-container d-flex flex-grow-1" style="max-width: 500px;">
+      <input type="text" 
+             placeholder="Cerca per nome o categoria..." 
+             class="form-control search-input"
+             [(ngModel)]="searchTerm"
+             (input)="onSearch()">
+      <button class="btn btn-primary btn-search" (click)="onSearch()">
+        <i class="fas fa-search"></i>
+      </button>
     </div>
-    <button class="btn btn-primary btn-add-bike">
-      <i class="fas fa-plus"></i> Aggiungi Modello Bici 
+    <button class="btn btn-success" (click)="openAddModal()">
+      <i class="fas fa-plus me-1"></i> Aggiungi Bici
     </button>
   </section>
 
   <section class="content-area">
-    <div class="table-responsive-container">
-      <table class="data-table dark-table">
-        <thead>
+    <div class="table-responsive">
+      <table class="table table-dark table-hover" *ngIf="filteredBikeTypes.length > 0; else noResults">
+        <thead class="table-header">
           <tr>
             <th>Nome Modello</th>
             <th>Categoria</th>
             <th>Propulsione</th>
-            <th class="actions-column">Azioni</th>
+            <th>Taglia</th>
+            <th>Prezzo/h</th>
+            <th class="text-end">Azioni</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>City Voyager X</td>
-            <td>City bike</td>
-            <td>Muscolare</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Tipo Bici">
-                <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-              </button>
-              <button class="btn btn-table-action btn-delete" title="Elimina Tipo Bici">
-                <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Mountain Peak E-Pro</td>
-            <td>Mountain bike</td>
-            <td>Elettrica</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Tipo Bici">
-                <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-              </button>
-              <button class="btn btn-table-action btn-delete" title="Elimina Tipo Bici">
-                <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Gravel Pathfinder</td>
-            <td>Gravel</td>
-            <td>Muscolare</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Tipo Bici">
-                <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-              </button>
-              <button class="btn btn-table-action btn-delete" title="Elimina Tipo Bici">
-                <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Road Sprinter SL</td>
-            <td>Road bike</td>
-            <td>Muscolare</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Tipo Bici">
-                <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-              </button>
-              <button class="btn btn-table-action btn-delete" title="Elimina Tipo Bici">
-                <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
-              </button>
+          <tr *ngFor="let bike of filteredBikeTypes">
+            <td>{{ bike.name }}</td>
+            <td>{{ bike.category }}</td>
+            <td>{{ bike.propulsion }}</td>
+            <td><span class="badge bg-secondary">{{ bike.size }}</span></td>
+            <td><span class="badge bg-success">€{{ bike.hourlyPrice | number:'1.2-2' }}</span></td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-warning" title="Modifica" (click)="openEditModal(bike)">
+                  <i class="fas fa-edit"></i> 
+                  <span class="d-none d-sm-inline ms-1">Modifica</span>
+                </button>
+                <button class="btn btn-danger" title="Elimina" (click)="openDeleteModal(bike)">
+                  <i class="fas fa-trash"></i> 
+                  <span class="d-none d-sm-inline ms-1">Elimina</span>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
-    </div> </section>
+      
+      <ng-template #noResults>
+        <div class="empty-state text-center text-muted py-5">
+          <i class="fas fa-search fa-3x mb-3"></i>
+          <h3>Nessun tipo di bicicletta trovato</h3>
+          <p *ngIf="searchTerm">Nessun risultato per "{{ searchTerm }}"</p>
+        </div>
+      </ng-template>
+    </div>
+  </section>
 
-  <footer class="backoffice-page-footer dark-theme">
-    <p>&copy; 2025 Bike Rental System - Backoffice</p>
+  <footer class="page-footer text-center mt-auto py-3">
+    <small>&copy; 2025 Bike Rental System - Backoffice</small>
   </footer>
+
+  <!-- Modal Aggiungi/Modifica -->
+  <div class="modal fade" [class.show]="showAddEditModal" [style.display]="showAddEditModal ? 'block' : 'none'" 
+       tabindex="-1" (click)="closeModals()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content bg-dark text-light" *ngIf="showAddEditModal && currentBikeType">
+        <div class="modal-header">
+          <h5 class="modal-title text-accent">
+            <i class="fas me-2" [class.fa-plus]="!isEditMode" [class.fa-edit]="isEditMode"></i>
+            {{ isEditMode ? 'Modifica' : 'Aggiungi' }} Bici
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeModals()"></button>
+        </div>
+        
+        <form class="modal-body" (ngSubmit)="saveBikeType()">
+          <div class="mb-3">
+            <label for="bikeName" class="form-label">Nome Modello *</label>
+            <input type="text" id="bikeName" class="form-control bg-secondary text-light" 
+                   name="name" required [(ngModel)]="currentBikeType.name">
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="bikeCategory" class="form-label">Categoria *</label>
+              <select id="bikeCategory" class="form-select bg-secondary text-light" 
+                      name="category" required [(ngModel)]="currentBikeType.category">
+                <option *ngFor="let cat of availableCategories" [value]="cat">{{ cat }}</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="bikePropulsion" class="form-label">Propulsione *</label>
+              <select id="bikePropulsion" class="form-select bg-secondary text-light" 
+                      name="propulsion" required [(ngModel)]="currentBikeType.propulsion">
+                <option *ngFor="let prop of availablePropulsions" [value]="prop">{{ prop }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="bikeSize" class="form-label">Taglia *</label>
+              <select id="bikeSize" class="form-select bg-secondary text-light" 
+                      name="size" required [(ngModel)]="currentBikeType.size">
+                <option *ngFor="let size of availableSizes" [value]="size">{{ size }}</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="bikePrice" class="form-label">Prezzo Orario (€) *</label>
+              <input type="number" id="bikePrice" class="form-control bg-secondary text-light" 
+                     name="hourlyPrice" min="0" step="0.50" required 
+                     [(ngModel)]="currentBikeType.hourlyPrice" placeholder="es. 8.50">
+            </div>
+          </div>
+        </form>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">
+            Annulla
+          </button>
+          <button type="submit" class="btn btn-primary" (click)="saveBikeType()" 
+                  [disabled]="!currentBikeType.name || !currentBikeType.category || !currentBikeType.propulsion || !currentBikeType.size || !currentBikeType.hourlyPrice || currentBikeType.hourlyPrice <= 0">
+            {{ isEditMode ? 'Salva Modifiche' : 'Aggiungi Bici' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Elimina -->
+  <div class="modal fade" [class.show]="showDeleteModal" [style.display]="showDeleteModal ? 'block' : 'none'" 
+       tabindex="-1" (click)="closeModals()">
+    <div class="modal-dialog modal-sm" (click)="$event.stopPropagation()">
+      <div class="modal-content bg-dark text-light" *ngIf="showDeleteModal && currentBikeType">
+        <div class="modal-header">
+          <h5 class="modal-title">Conferma Eliminazione</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeModals()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <p>Sei sicuro di voler eliminare "<strong>{{ currentBikeType.name }} ({{ currentBikeType.size }})</strong>"?</p>
+          <p class="text-warning fw-bold">L'azione è irreversibile.</p>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModals()">
+            Annulla
+          </button>
+          <button type="button" class="btn btn-danger" (click)="deleteBikeType()">
+            Elimina
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

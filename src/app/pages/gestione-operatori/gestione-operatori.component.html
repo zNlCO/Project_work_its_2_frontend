@@ -5,10 +5,15 @@
 
   <section class="action-bar">
     <div class="search-container">
-      <input type="text" placeholder="Cerca per nome o email..." class="search-input dark-input">
+      <input 
+        type="text" 
+        placeholder="Cerca per nome o email..." 
+        class="search-input dark-input"
+        [(ngModel)]="searchTerm"
+        (input)="filtraOperatori()">
       <button class="btn btn-primary btn-search"><i class="fas fa-search"></i></button>
     </div>
-    <button class="btn btn-primary btn-add-operator">
+    <button class="btn btn-primary btn-add-operator" (click)="apriModaleAggiungi()">
       <i class="fas fa-user-plus"></i> Aggiungi Operatore
     </button>
   </section>
@@ -21,58 +26,29 @@
             <th>Nome Completo</th>
             <th>Email (Username)</th>
             <th>Ruolo</th>
-            <th>Stato</th>
             <th>Data Creazione</th>
             <th class="actions-column">Azioni</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Mario Rossi</td>
-            <td>mario.rossi&#64;bikerental.com</td>
-            <td><span class="role-badge role-admin">Admin</span></td>
-            <td><span class="status-badge status-attivo">Attivo</span></td>
-            <td>01/01/2025</td>
+          <tr *ngFor="let operatore of operatoriFiltrati; trackBy: trackById">
+            <td>{{ operatore.nomeCompleto }}</td>
+            <td>{{ operatore.email }}</td>
+            <td>
+              <span class="role-badge role-operator">{{ operatore.ruolo }}</span>
+            </td>
+            <td>{{ operatore.dataCreazione }}</td>
             <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Operatore">
+              <button class="btn btn-table-action btn-edit" title="Modifica Operatore" (click)="apriModaleModifica(operatore)">
                 <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
               </button>
-              <button class="btn btn-table-action btn-delete" title="Non puoi eliminare l'admin principale" disabled>
+              <button class="btn btn-table-action btn-delete" title="Elimina Operatore" (click)="apriModaleElimina(operatore)">
                 <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
               </button>
             </td>
           </tr>
-
-          <tr>
-            <td>Anna Verdi</td>
-            <td>anna.verdi&#64;bikerental.com</td>
-            <td><span class="role-badge role-operator">Operatore</span></td>
-            <td><span class="status-badge status-attivo">Attivo</span></td>
-            <td>15/03/2025</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Operatore">
-                <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-              </button>
-              <button class="btn btn-table-action btn-delete" title="Elimina Operatore">
-                <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Luca Bianchi</td>
-            <td>luca.bianchi&#64;bikerental.com</td>
-            <td><span class="role-badge role-operator">Operatore</span></td>
-            <td><span class="status-badge status-sospeso">Sospeso</span></td>
-            <td>20/05/2025</td>
-            <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Operatore">
-                <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
-              </button>
-              <button class="btn btn-table-action btn-delete" title="Elimina Operatore">
-                <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
-              </button>
-            </td>
+          <tr *ngIf="operatoriFiltrati.length === 0">
+              <td colspan="5" style="text-align: center; padding: 20px;">Nessun operatore trovato.</td>
           </tr>
         </tbody>
       </table>
@@ -82,4 +58,62 @@
   <footer class="backoffice-page-footer dark-theme">
     <p>&copy; 2025 Bike Rental System - Backoffice</p>
   </footer>
+</div>
+
+<div class="modal-overlay" *ngIf="isAddModalOpen || isEditModalOpen" (click)="chiudiModali()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 *ngIf="isAddModalOpen"><i class="fas fa-user-plus"></i> Aggiungi Nuovo Operatore</h2>
+      <h2 *ngIf="isEditModalOpen"><i class="fas fa-edit"></i> Modifica Operatore</h2>
+      <button class="btn-close-modal" (click)="chiudiModali()">&times;</button>
+    </div>
+    <form (ngSubmit)="isAddModalOpen ? aggiungiOperatore() : salvaModificheOperatore()">
+      <div class="modal-body">
+        <ng-container *ngIf="isAddModalOpen">
+          <div class="form-group">
+            <label for="add-nome">Nome Completo</label>
+            <input id="add-nome" type="text" [(ngModel)]="nuovoOperatore.nomeCompleto" name="add-nome" required>
+          </div>
+          <div class="form-group">
+            <label for="add-email">Email</label>
+            <input id="add-email" type="email" [(ngModel)]="nuovoOperatore.email" name="add-email" required>
+          </div>
+          </ng-container>
+
+        <ng-container *ngIf="isEditModalOpen && operatoreDaModificare">
+          <div class="form-group">
+            <label for="edit-nome">Nome Completo</label>
+            <input id="edit-nome" type="text" [(ngModel)]="operatoreDaModificare.nomeCompleto" name="edit-nome" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-email">Email</label>
+            <input id="edit-email" type="email" [(ngModel)]="operatoreDaModificare.email" name="edit-email" required>
+          </div>
+          </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="chiudiModali()">Annulla</button>
+        <button type="submit" class="btn btn-primary">{{ isAddModalOpen ? 'Aggiungi' : 'Salva Modifiche' }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="chiudiModali()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="fas fa-exclamation-triangle"></i> Conferma Eliminazione</h2>
+      <button class="btn-close-modal" (click)="chiudiModali()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p *ngIf="operatoreDaEliminare">
+        Sei sicuro di voler eliminare l'operatore <strong>{{ operatoreDaEliminare.nomeCompleto }}</strong>?
+        <br>L'azione è irreversibile.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="chiudiModali()">Annulla</button>
+      <button type="button" class="btn btn-delete" (click)="confermaEliminazione()">Elimina</button>
+    </div>
+  </div>
 </div>
