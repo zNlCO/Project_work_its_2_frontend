@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-activate',
@@ -9,22 +10,30 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ActivateComponent implements OnInit {
     status: 'loading' | 'success' | 'error' = 'loading';
+    token: string | null = null;
 
-    constructor(private http: HttpClient, private route: ActivatedRoute) { }
+    constructor(private auth: AuthService, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
-        // sleep for 3 seconds to simulate loading
-        setTimeout(() => {
-            this.verifyEmail();
-        }, 3000);
+        this.verifyEmail();
     }
+
+    retry(): void {
+        this.status = 'loading';
+        this.verifyEmail();
+    }
+
     verifyEmail(): void {
-        // Get the token from the query parameters
-        const token = this.route.snapshot.queryParamMap.get('token');
-        if (token) {
-            this.http.get('/api/auth/verify-email?token=' + token, { observe: 'response' }).subscribe({
+        this.token = this.route.snapshot.queryParamMap.get('token');
+        if (this.token) {
+            // Get the token from the query parameters
+            if (!this.token) {
+                this.status = 'error';
+                return;
+            }
+            this.auth.verifyEmail(this.token).subscribe({
                 next: (res) => {
-                    this.status = res.status === 204 ? 'success' : 'error';
+                    this.status = res.status === 200 ? 'success' : 'error';
                 },
                 error: () => {
                     this.status = 'error';

@@ -8,6 +8,8 @@ export interface User {
     id: string;
     name: string;
     email: string;
+    isOperator: boolean;
+    isVerified: boolean;
 }
 
 @Injectable({
@@ -49,8 +51,12 @@ export class AuthService {
         this.router.navigate(['/']);
     }
 
+    verifyEmail(token: string) {
+        return this.http.get('/api/auth/verify-email?token=' + token, { observe: 'response' });
+    }
+
     private fetchUser() {
-        this.http.get<User>('/api/users/me')
+        this.http.get<User>('/api/auth/me')
             .subscribe(user => this._currentUser$.next(user));
     }
 

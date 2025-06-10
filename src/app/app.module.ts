@@ -22,6 +22,7 @@ import { PaginaManutenzioniComponent } from './pages/pagina-manutenzioni/pagina-
 import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-operatori.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ActivateComponent } from './pages/activate/activate.component';
+import { IfNotAuthenticatedDirective } from './directives/if-not-authenticated.directive';
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import { ActivateComponent } from './pages/activate/activate.component';
         GestioneOperatoriComponent,
         RegisterComponent,
         ActivateComponent,
+        IfNotAuthenticatedDirective,
     ],
     imports: [
         BrowserModule,

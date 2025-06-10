@@ -11,6 +11,7 @@ import { catchError, throwError } from 'rxjs';
 })
 export class RegisterComponent {
 
+    registrationSuccess = false;
     isSubmitted = false;
     loginError = '';
 
@@ -52,7 +53,7 @@ export class RegisterComponent {
                     )
                     .subscribe(user => {
                         if (user) {
-                            this.router.navigate(['/activate']);
+                            this.registrationSuccess = true;
                         }
                     });
 
