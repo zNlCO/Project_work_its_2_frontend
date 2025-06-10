@@ -28,7 +28,7 @@ export class LoginComponent {
     ngOnInit(): void {
         this.intervalId = setInterval(() => {
             this.refreshPage();
-        }, 300000);
+        }, 60000);
     }
     ngOnDestroy(): void {
         clearInterval(this.intervalId);
@@ -38,6 +38,7 @@ export class LoginComponent {
         window.location.reload();
     }
     login() {
+        this.loginError = '';
         this.isSubmitted = true;
         if (this.loginForm.valid) {
             const { email, password } = this.loginForm.value;
@@ -49,7 +50,7 @@ export class LoginComponent {
                     })
                 )
                 .subscribe(() => {
-                    this.router.navigate(['/landingpage'])
+                    this.router.navigate(['/'])
                 });
         }
     }

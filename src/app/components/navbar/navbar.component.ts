@@ -3,7 +3,7 @@ import { AuthService, User } from '../../services/auth.service';
 @Component({
     selector: 'app-navbar',
     templateUrl: './navbar.component.html',
-    styleUrl: './navbar.component.scss'
+    styleUrls: ['./navbar.component.scss', '../../app.component.scss']
 })
 export class NavbarComponent {
 
@@ -15,16 +15,17 @@ export class NavbarComponent {
 
     constructor(private authSrv: AuthService) { }
 
+    @HostListener('window:scroll', [])
+    onWindowScroll() {
+        this.isScrolled = window.pageYOffset > 0;
+    }
+
     toggleDropdown() {
         this.isDropdownOpen = !this.isDropdownOpen;
     }
 
     closeDropdown() {
         this.isDropdownOpen = false;
-    }
-    @HostListener('window:scroll', [])
-    onWindowScroll() {
-        this.isScrolled = window.pageYOffset > 0;
     }
 
     logout() {

@@ -9,7 +9,7 @@
     <div *ngIf="currentStep === 1">
         <!-- Luogo di ritiro -->
         <div class="mb-3">
-            <label class="form-label bai-jamjuree-semibold">Luogo di ritiro</label>
+            <label class="form-label bai-jamjuree-semibold text-black">Luogo di ritiro</label>
             <select class="form-select" [(ngModel)]="pickupLocation" (ngModelChange)="autoFillDropoff()">
                 <option *ngFor="let point of locations" [value]="point">{{ point }}</option>
             </select>
@@ -17,7 +17,7 @@
 
         <!-- Luogo di consegna -->
         <div class="mb-3">
-            <label class="form-label bai-jamjuree-semibold">Luogo di consegna</label>
+            <label class="form-label bai-jamjuree-semibold text-black">Luogo di consegna</label>
             <select class="form-select" [(ngModel)]="dropoffLocation">
                 <option *ngFor="let point of locations" [value]="point">{{ point }}</option>
             </select>
@@ -25,12 +25,12 @@
 
         <!-- Data e ora di ritiro -->
         <div class="mb-3">
-            <label class="form-label bai-jamjuree-semibold">Data di ritiro</label>
+            <label class="form-label bai-jamjuree-semibold text-black">Data di ritiro</label>
             <input type="date" class="form-control" [(ngModel)]="pickupDate" (change)="checkDates()">
         </div>
 
         <div class="mb-3">
-            <label class="form-label bai-jamjuree-semibold">Ora di ritiro</label>
+            <label class="form-label bai-jamjuree-semibold text-black">Ora di ritiro</label>
             <select class="form-select" [(ngModel)]="pickupTime" (change)="checkDates()">
                 <option *ngFor="let hour of hours" [value]="hour">{{ hour }}</option>
             </select>
@@ -38,12 +38,12 @@
 
         <!-- Data e ora di consegna -->
         <div class="mb-3">
-            <label class="form-label bai-jamjuree-semibold">Data di consegna</label>
+            <label class="form-label bai-jamjuree-semibold text-black">Data di consegna</label>
             <input type="date" class="form-control" [(ngModel)]="dropoffDate" (change)="checkDates()">
         </div>
 
         <div class="mb-3">
-            <label class="form-label bai-jamjuree-semibold">Ora di consegna</label>
+            <label class="form-label bai-jamjuree-semibold text-black">Ora di consegna</label>
             <select class="form-select" [(ngModel)]="dropoffTime" (change)="checkDates()">
                 <option *ngFor="let hour of hours" [value]="hour">{{ hour }}</option>
             </select>

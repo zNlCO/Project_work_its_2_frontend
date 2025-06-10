@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
@@ -13,55 +13,58 @@ export class RegisterComponent {
 
     registrationSuccess = false;
     isSubmitted = false;
-    loginError = '';
+    registerError = '';
 
     signUpForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]],
         confirmpassword: ['', Validators.required],
-    });
+    }, { validators: this.matchPasswordValidator() }); // <--- aggiungi qui
+
 
     constructor(protected fb: FormBuilder,
         protected authSrv: AuthService,
         protected router: Router
     ) { }
 
+    matchPasswordValidator(): ValidatorFn {
+        return (group: AbstractControl): ValidationErrors | null => {
+            const password = group.get('password')?.value;
+            const confirmpassword = group.get('confirmpassword')?.value;
+            return this.checkMatchPassword(password, confirmpassword) ? null : { passwordMismatch: true };
+        };
+    }
+
     private checkMatchPassword(password: string | null = null, confPassword: string | null = null) {
-        if (password === confPassword) {
-            return true
-        }
-        else {
-            return false;
-        }
+        return password === confPassword;
     }
 
     registerSubmit() {
+        this.registerError = '';
         this.isSubmitted = true;
 
         if (this.signUpForm.valid) {
-
-            if (this.checkMatchPassword(this.signUpForm.get('password')?.value, this.signUpForm.get('confirmpassword')?.value)) {
-
-                const { name, email, password, } = this.signUpForm.value;
-                this.authSrv.register(name!, email!, password!)
-                    .pipe(
-                        catchError(err => {
-                            this.loginError = err.error.error || "Errore durante la registrazione";
-                            return throwError(() => err);
-                        })
-                    )
-                    .subscribe(user => {
-                        if (user) {
-                            this.registrationSuccess = true;
-                        }
-                    });
-
+            const { name, email, password } = this.signUpForm.value;
+            this.authSrv.register(name!, email!, password!)
+                .pipe(
+                    catchError(err => {
+                        this.registerError = err.error.error || "Errore durante la registrazione";
+                        return throwError(() => err);
+                    })
+                )
+                .subscribe(user => {
+                    if (user) {
+                        this.registrationSuccess = true;
+                    }
+                });
+        } else {
+            if (this.signUpForm.errors?.['passwordMismatch']) {
+                this.registerError = "Le password non coincidono";
+                // password and confirmpassword input to invalid
+                this.signUpForm.get('password')?.setErrors({ invalid: true });
+                this.signUpForm.get('confirmpassword')?.setErrors({ invalid: true });
             }
-        }
-        else {
-            console.log('Form is invalid');
-            this.signUpForm.get('confirmpassword')?.touched;
         }
     }
 

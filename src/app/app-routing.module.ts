@@ -18,7 +18,7 @@ import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.compone
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'landingpage',
+        redirectTo: 'home',
         pathMatch: 'full'
     },
     {
@@ -38,7 +38,7 @@ const routes: Routes = [
         component: MainComponent,
         children: [
             {
-                path: 'landingpage',
+                path: 'home',
                 component: LandingpageComponent
             },
             {

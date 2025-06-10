@@ -4,8 +4,8 @@
         <!-- Colonna login -->
         <div class="col-md-6 login-form-wrapper my-bg-black">
             <div class="login-box">
-                <h2 class="mb-4 text-center text-white bai-jamjuree-semibold">Accedi a <span
-                        class="bai-jamjuree-bold-italic my-secondary-color">RideClone</span></h2>
+                <h2 class="mb-4 text-center text-white bai-jamjuree-semibold">Accedi a <a [routerLink]="['/']"
+                        class="bai-jamjuree-bold-italic my-secondary-color">RideClone</a></h2>
                 <form [formGroup]="signUpForm" (ngSubmit)="registerSubmit()">
                     <div class="mb-3">
                         <label for="username" class="form-label text-white bai-jamjuree-medium">Nome Cognome</label>
@@ -38,15 +38,16 @@
                         && (signUpForm.get('confirmpassword')?.dirty
                         || signUpForm.get('confirmpassword')?.touched
                         || isSubmitted)">
-                        <div class="invalid-tooltip">
-                            {{ signUpForm.get('confirmpassword')?.invalid ? "Conferma password obbligatoria" :
-                            undefined }}
-                        </div>
                     </div>
 
                     <div *ngIf="registrationSuccess"
-                        class="alert alert-success mt-3 text-center fade show bai-jamjuree-semibold" role="alert">
+                        class="alert alert-success text-center fade show bai-jamjuree-semibold" role="alert">
                         <strong>Registrazione completata!</strong> Controlla la tua email per confermare l’account. 📩
+                    </div>
+
+                    <div class="alert alert-danger d-flex align-items-center gap-2 p-2" *ngIf="registerError">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span> {{ registerError }}</span>
                     </div>
 
                     <div class="d-grid">
