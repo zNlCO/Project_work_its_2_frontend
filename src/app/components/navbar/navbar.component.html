@@ -1,0 +1,49 @@
+<header id="main-header"
+    class="my-bg-black shadow-sm py-3 px-4 d-flex justify-content-between align-items-center transition-header fixed-top"
+    [ngClass]="{ 'transparent-header': !isScrolled, 'scrolled-header': isScrolled }">
+    <h1 class="h4 m-0 text-white bai-jamjuree-bold-italic">
+        RideaClone
+    </h1>
+
+    <nav id="authenticated-nav" class="hidden md:flex items-center">
+        <a href="#home"
+            class="text-decoration-none me-3 text-white bai-jamjuree-medium hover:text-gray-300 transition-colors duration-200">
+            Home
+        </a>
+        <a href="#bikes"
+            class="text-decoration-none me-3 text-white bai-jamjuree-medium hover:text-gray-300 transition-colors duration-200">
+            Biciclette
+        </a>
+        <a href="#contacts"
+            class="text-decoration-none text-white bai-jamjuree-medium hover:text-gray-300 transition-colors duration-200">
+            Contatti
+        </a>
+    </nav>
+
+    <nav id="unauthenticated-nav" class="flex items-center" *appIfNotAuthenticated>
+        <button class="btn my-red-btn-opposite bai-jamjuree-semibold me-2" [routerLink]="['/register']">
+            Sign In
+        </button>
+        <button class="btn my-red-btn bai-jamjuree-semibold" [routerLink]="['/login']">
+            Log In
+        </button>
+    </nav>
+
+
+    <nav class="dropdown" *appIfAuthenticated>
+        <a id="profile-dropdown-toggle" class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#"
+            id="navbarDropdownMenuAvatar" role="button" (click)="toggleDropdown(); $event.preventDefault()">
+            <img src="../../../assets/images/profile-red.png" class="rounded-circle" height="50" />
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end custom-dropdown-position" [class.show]="isDropdownOpen"
+            aria-labelledby="navbarDropdownMenuAvatar" *ngIf="isDropdownOpen">
+            <li>
+                <a [routerLink]="['/backoffice/home']" class="dropdown-item">Backoffice</a>
+            </li>
+            <li>
+                <button class="dropdown-item" (click)="logout()">Logout</button>
+            </li>
+        </ul>
+    </nav>
+
+</header>

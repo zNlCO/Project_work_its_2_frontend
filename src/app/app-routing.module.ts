@@ -12,6 +12,8 @@ import { PaginaManutenzioniComponent } from './pages/pagina-manutenzioni/pagina-
 import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-operatori.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ActivateComponent } from './pages/activate/activate.component';
+import { MainComponent } from './pages/main/main.component';
+import { BackofficeComponent } from './pages/backoffice/backoffice.component';
 
 const routes: Routes = [
     {
@@ -32,43 +34,56 @@ const routes: Routes = [
         component: ActivateComponent,
     },
     {
-        path: 'landingpage',
-        component: LandingpageComponent
+        path: '',
+        component: MainComponent,
+        children: [
+            {
+                path: 'landingpage',
+                component: LandingpageComponent
+            },
+            {
+                path: 'reservation',
+                component: ReservationComponent
+            },
+        ]
     },
     {
-        path: 'reservation',
-        component: ReservationComponent
-    },
-    {
-        path: 'backoffice-home',
-        component: BackofficeHomeComponent
-    },
-    {
-        path: 'puntivendita',
-        component: PuntivenditaComponent
-    },
-    {
-        path: 'gestionebiciclette',
-        component: GestionebicicletteComponent
+        path: 'backoffice',
+        component: BackofficeComponent,
+        children: [
+            {
+                path: 'home',
+                component: BackofficeHomeComponent
+            },
+            {
+                path: 'puntivendita',
+                component: PuntivenditaComponent
+            },
+            {
+                path: 'gestionebiciclette',
+                component: GestionebicicletteComponent
 
-    },
-    {
-        path: 'gestioneprezzi',
-        component: GestioneprezziComponent
+            },
+            {
+                path: 'gestioneprezzi',
+                component: GestioneprezziComponent
 
+            },
+            {
+                path: 'gestioneprenotazioni',
+                component: GestioneprenotazioniComponent
+            },
+            {
+                path: 'pagina-manutenzioni',
+                component: PaginaManutenzioniComponent
+            },
+            {
+                path: 'gestione-operatori',
+                component: GestioneOperatoriComponent
+            }
+        ]
     },
-    {
-        path: 'gestioneprenotazioni',
-        component: GestioneprenotazioniComponent
-    },
-    {
-        path: 'pagina-manutenzioni',
-        component: PaginaManutenzioniComponent
-    },
-    {
-        path: 'gestione-operatori',
-        component: GestioneOperatoriComponent
-    }
+
 ];
 
 @NgModule({

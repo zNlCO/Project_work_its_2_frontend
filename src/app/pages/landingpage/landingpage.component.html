@@ -1,25 +1,3 @@
-<header id="main-header"
-    class="my-bg-black shadow-sm py-3 px-4 d-flex justify-content-between align-items-center transition-header fixed-top"
-    [ngClass]="{ 'transparent-header': !isScrolled, 'scrolled-header': isScrolled }">
-    <h1 class="h4 m-0 text-white bai-jamjuree-bold-italic">
-        RideaClone
-    </h1>
-
-    <nav class="d-flex align-items-center">
-        <a [routerLink]="[]" fragment="home" class="text-decoration-none me-3 text-white bai-jamjuree-medium">
-            Home
-        </a>
-
-        <a [routerLink]="[]" fragment="bikes" class="text-decoration-none me-3 text-white bai-jamjuree-medium">
-            Biciclette
-        </a>
-
-        <a [routerLink]="[]" fragment="contacts" class="text-decoration-none text-white bai-jamjuree-medium">
-            Contatti
-        </a>
-    </nav>
-</header>
-
 <section id="home" class="hero my-black-bg">
     <img src="../../../assets/images/black-bike.jpg" alt="Bici 1">
     <div class="hero-text">

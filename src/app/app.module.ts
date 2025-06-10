@@ -23,6 +23,9 @@ import { GestioneOperatoriComponent } from './pages/gestione-operatori/gestione-
 import { RegisterComponent } from './pages/register/register.component';
 import { ActivateComponent } from './pages/activate/activate.component';
 import { IfNotAuthenticatedDirective } from './directives/if-not-authenticated.directive';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { MainComponent } from './pages/main/main.component';
+import { BackofficeComponent } from './pages/backoffice/backoffice.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +46,9 @@ import { IfNotAuthenticatedDirective } from './directives/if-not-authenticated.d
         RegisterComponent,
         ActivateComponent,
         IfNotAuthenticatedDirective,
+        NavbarComponent,
+        MainComponent,
+        BackofficeComponent,
     ],
     imports: [
         BrowserModule,

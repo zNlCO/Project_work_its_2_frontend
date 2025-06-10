@@ -49,6 +49,7 @@ export class AuthService {
         this.jwtSrv.removeToken();
         this._currentUser$.next(null);
         this.router.navigate(['/']);
+        console.log("dhjfhushdfuhfduishfisud")
     }
 
     verifyEmail(token: string) {
