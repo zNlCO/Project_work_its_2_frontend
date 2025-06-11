@@ -45,7 +45,7 @@ export class LoginComponent {
             this.authSrv.login(email!, password!)
                 .pipe(
                     catchError(err => {
-                        this.loginError = err.error.error || "Email o password errati";
+                        this.loginError = err.error.message || "Email o password errati";
                         return throwError(() => err);
                     })
                 )

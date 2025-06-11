@@ -11,6 +11,8 @@ export class LandingpageComponent implements OnInit {
 
     constructor(protected storeSrv: StoreService) { }
     ngOnInit(): void {
-        this.storeSrv.getStores().subscribe(stores => this.stores = stores);
+        this.storeSrv.getStores().subscribe(stores => {
+            this.stores = stores;
+        });
     }
 }

@@ -19,7 +19,7 @@ export class BikeModelService {
     constructor(private http: HttpClient) { }
 
     getBikeModels(): Observable<BikeModel[]> {
-        return this.http.get<{ message: string; data: BikeModel[] }>('/api/bikes-model/')
+        return this.http.get<{ message: string; data: BikeModel[] }>('/api/bike-model/')
             .pipe(
                 // Extract only the Data property
                 map(response => response.data)
