@@ -1,6 +1,6 @@
 <div class="page-container dark-theme gestione-operatori-page">
   <header class="page-header">
-    <h1><i class="fas fa-users-cog"></i> Gestione Utenti Operatori</h1>
+    <h1><i class="fas fa-users-cog"></i> Gestione Utenti e Operatori</h1>
   </header>
 
   <section class="action-bar">
@@ -10,7 +10,7 @@
         placeholder="Cerca per nome o email..." 
         class="search-input dark-input"
         [(ngModel)]="searchTerm"
-        (input)="filtraOperatori()">
+        (input)="filtraUtenti()">
       <button class="btn btn-primary btn-search"><i class="fas fa-search"></i></button>
     </div>
     <button class="btn btn-primary btn-add-operator" (click)="apriModaleAggiungi()">
@@ -31,24 +31,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let operatore of operatoriFiltrati; trackBy: trackById">
-            <td>{{ operatore.nomeCompleto }}</td>
-            <td>{{ operatore.email }}</td>
+          <tr *ngFor="let utente of utentiFiltrati; trackBy: trackById">
+            <td>{{ utente.nomeCompleto }}</td>
+            <td>{{ utente.email }}</td>
             <td>
-              <span class="role-badge role-operator">{{ operatore.ruolo }}</span>
+              <span class="role-badge" [ngClass]="{'role-operator': utente.ruolo === 'Operatore', 'role-user': utente.ruolo === 'Utente'}">
+                {{ utente.ruolo }}
+              </span>
             </td>
-            <td>{{ operatore.dataCreazione }}</td>
+            <td>{{ utente.dataCreazione }}</td>
             <td class="actions-cell">
-              <button class="btn btn-table-action btn-edit" title="Modifica Operatore" (click)="apriModaleModifica(operatore)">
+              <button class="btn btn-table-action btn-edit" title="Modifica Utente" (click)="apriModaleModifica(utente)">
                 <i class="fas fa-edit"></i> <span class="btn-action-text">Modifica</span>
               </button>
-              <button class="btn btn-table-action btn-delete" title="Elimina Operatore" (click)="apriModaleElimina(operatore)">
+              <button class="btn btn-table-action btn-delete" title="Elimina Utente" (click)="apriModaleElimina(utente)">
                 <i class="fas fa-trash"></i> <span class="btn-action-text">Elimina</span>
               </button>
             </td>
           </tr>
-          <tr *ngIf="operatoriFiltrati.length === 0">
-              <td colspan="5" style="text-align: center; padding: 20px;">Nessun operatore trovato.</td>
+          <tr *ngIf="utentiFiltrati.length === 0">
+              <td colspan="5" style="text-align: center; padding: 20px;">Nessun utente trovato.</td>
           </tr>
         </tbody>
       </table>
@@ -60,36 +62,50 @@
   </footer>
 </div>
 
+<!-- Modale Aggiungi/Modifica -->
 <div class="modal-overlay" *ngIf="isAddModalOpen || isEditModalOpen" (click)="chiudiModali()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2 *ngIf="isAddModalOpen"><i class="fas fa-user-plus"></i> Aggiungi Nuovo Operatore</h2>
-      <h2 *ngIf="isEditModalOpen"><i class="fas fa-edit"></i> Modifica Operatore</h2>
+      <h2 *ngIf="isEditModalOpen"><i class="fas fa-edit"></i> Modifica Utente</h2>
       <button class="btn-close-modal" (click)="chiudiModali()">&times;</button>
     </div>
-    <form (ngSubmit)="isAddModalOpen ? aggiungiOperatore() : salvaModificheOperatore()">
+    <form (ngSubmit)="isAddModalOpen ? aggiungiOperatore() : salvaModificheUtente()">
       <div class="modal-body">
+        <!-- Campi per Aggiungere Operatore -->
         <ng-container *ngIf="isAddModalOpen">
           <div class="form-group">
             <label for="add-nome">Nome Completo</label>
-            <input id="add-nome" type="text" [(ngModel)]="nuovoOperatore.nomeCompleto" name="add-nome" required>
+            <input id="add-nome" type="text" [(ngModel)]="nuovoUtente.nomeCompleto" name="add-nome" required>
           </div>
           <div class="form-group">
             <label for="add-email">Email</label>
-            <input id="add-email" type="email" [(ngModel)]="nuovoOperatore.email" name="add-email" required>
+            <input id="add-email" type="email" [(ngModel)]="nuovoUtente.email" name="add-email" required>
           </div>
-          </ng-container>
+           <div class="form-group">
+            <label for="add-password">Password</label>
+            <input id="add-password" type="password" [(ngModel)]="nuovoUtente.password" name="add-password" required>
+          </div>
+        </ng-container>
 
-        <ng-container *ngIf="isEditModalOpen && operatoreDaModificare">
+        <!-- Campi per Modificare Utente -->
+        <ng-container *ngIf="isEditModalOpen && utenteDaModificare">
           <div class="form-group">
             <label for="edit-nome">Nome Completo</label>
-            <input id="edit-nome" type="text" [(ngModel)]="operatoreDaModificare.nomeCompleto" name="edit-nome" required>
+            <input id="edit-nome" type="text" [(ngModel)]="utenteDaModificare.nomeCompleto" name="edit-nome" required>
           </div>
           <div class="form-group">
             <label for="edit-email">Email</label>
-            <input id="edit-email" type="email" [(ngModel)]="operatoreDaModificare.email" name="edit-email" required>
+            <input id="edit-email" type="email" [(ngModel)]="utenteDaModificare.email" name="edit-email" required>
           </div>
-          </ng-container>
+          <div class="form-group">
+            <label for="edit-ruolo">Ruolo</label>
+            <select id="edit-ruolo" [(ngModel)]="utenteDaModificare.ruolo" name="edit-ruolo">
+              <option value="Operatore">Operatore</option>
+              <option value="Utente">Utente</option>
+            </select>
+          </div>
+        </ng-container>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="chiudiModali()">Annulla</button>
@@ -99,6 +115,7 @@
   </div>
 </div>
 
+<!-- Modale Conferma Eliminazione -->
 <div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="chiudiModali()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
@@ -106,8 +123,8 @@
       <button class="btn-close-modal" (click)="chiudiModali()">&times;</button>
     </div>
     <div class="modal-body">
-      <p *ngIf="operatoreDaEliminare">
-        Sei sicuro di voler eliminare l'operatore <strong>{{ operatoreDaEliminare.nomeCompleto }}</strong>?
+      <p *ngIf="utenteDaEliminare">
+        Sei sicuro di voler eliminare l'utente <strong>{{ utenteDaEliminare.nomeCompleto }}</strong>?
         <br>L'azione è irreversibile.
       </p>
     </div>

@@ -4,6 +4,7 @@ $success-color: #28a745;
 $warning-color: #ffc107;
 $danger-color: #dc3545;
 $info-color: #17a2b8;
+$user-color: #6c757d; // Colore per il ruolo Utente
 $bg-primary: #1e1e1e;
 $bg-secondary: #2c2c2c;
 $text-primary: #e0e0e0;
@@ -57,7 +58,16 @@ $border-radius: 4px;
   th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid $border-color; vertical-align: middle; }
   thead th { background-color: darken($bg-primary, 3%); color: $primary-color; font-weight: 600; }
   tbody tr:hover { background-color: lighten($bg-primary, 5%); }
-  .role-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.8em; background-color: $info-color; color: $text-on-light; }
+  
+  .role-badge { 
+    padding: 4px 10px; 
+    border-radius: 12px; 
+    font-size: 0.8em; 
+    color: $text-on-light;
+    &.role-operator { background-color: $info-color; }
+    &.role-user { background-color: $user-color; }
+  }
+  
   .actions-cell { display: flex; justify-content: flex-end; gap: 8px; }
   .btn-edit { background-color: $warning-color; color: $text-on-dark; &:hover { background-color: darken($warning-color, 10%); } }
   .btn-delete { background-color: $danger-color; color: $text-on-light; &:hover { background-color: darken($danger-color, 10%); } }
@@ -74,7 +84,10 @@ $border-radius: 4px;
 .form-group {
   margin-bottom: 15px;
   label { display: block; margin-bottom: 8px; font-weight: 500; }
-  input[type="text"], input[type="email"], select {
+  input[type="text"], 
+  input[type="email"], 
+  input[type="password"],
+  select {
     width: 100%;
     padding: 10px;
     background-color: $bg-primary;

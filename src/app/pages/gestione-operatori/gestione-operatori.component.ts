@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
-// L'interfaccia ora non ha più la proprietà "stato"
-export interface Operatore {
+// Interfaccia unificata per Utente e Operatore
+export interface Utente {
   id: number;
   nomeCompleto: string;
   email: string;
-  ruolo: 'Operatore';
+  ruolo: 'Operatore' | 'Utente'; // Ruolo può essere uno dei due valori
   dataCreazione: string;
+  password?: string; // La password è opzionale e usata solo per la creazione
 }
 
 @Component({
@@ -16,21 +17,22 @@ export interface Operatore {
 })
 export class GestioneOperatoriComponent implements OnInit {
 
-  operatori: Operatore[] = [];
-  operatoriFiltrati: Operatore[] = [];
+  utenti: Utente[] = [];
+  utentiFiltrati: Utente[] = [];
   searchTerm: string = '';
 
   isAddModalOpen: boolean = false;
   isEditModalOpen: boolean = false;
   isDeleteModalOpen: boolean = false;
 
-  operatoreDaModificare?: Operatore;
-  operatoreDaEliminare?: Operatore;
+  utenteDaModificare?: Utente;
+  utenteDaEliminare?: Utente;
   
-  // Rimosso "stato" dall'oggetto per il nuovo operatore
-  nuovoOperatore: Partial<Operatore> = {
+  // Oggetto per il nuovo utente, include la password
+  nuovoUtente: Partial<Utente> = {
     nomeCompleto: '',
     email: '',
+    password: '',
     ruolo: 'Operatore'
   };
 
@@ -39,40 +41,44 @@ export class GestioneOperatoriComponent implements OnInit {
   }
 
   caricaDatiIniziali(): void {
-    // Dati di esempio senza il campo "stato"
-    this.operatori = [
+    // Dati di esempio con il campo ruolo flessibile
+    this.utenti = [
       { id: 1, nomeCompleto: 'Mario Rossi', email: 'mario.rossi@bikerental.com', ruolo: 'Operatore', dataCreazione: '01/01/2025' },
       { id: 2, nomeCompleto: 'Anna Verdi', email: 'anna.verdi@bikerental.com', ruolo: 'Operatore', dataCreazione: '15/03/2025' },
       { id: 3, nomeCompleto: 'Luca Bianchi', email: 'luca.bianchi@bikerental.com', ruolo: 'Operatore', dataCreazione: '20/05/2025' },
     ];
-    this.operatoriFiltrati = [...this.operatori];
+    // Inizialmente mostra solo gli operatori
+    this.filtraUtenti();
   }
 
-  filtraOperatori(): void {
+  filtraUtenti(): void {
+    // Mostra solo gli operatori nella tabella principale
+    const operatori = this.utenti.filter(u => u.ruolo === 'Operatore');
     const termine = this.searchTerm.toLowerCase();
+    
     if (!termine) {
-      this.operatoriFiltrati = [...this.operatori];
+      this.utentiFiltrati = [...operatori];
       return;
     }
-    this.operatoriFiltrati = this.operatori.filter(op =>
+
+    this.utentiFiltrati = operatori.filter(op =>
       op.nomeCompleto.toLowerCase().includes(termine) ||
       op.email.toLowerCase().includes(termine)
     );
   }
 
   apriModaleAggiungi(): void {
-    // Reset del form senza "stato"
-    this.nuovoOperatore = { nomeCompleto: '', email: '', ruolo: 'Operatore' };
+    this.nuovoUtente = { nomeCompleto: '', email: '', password: '', ruolo: 'Operatore' };
     this.isAddModalOpen = true;
   }
 
-  apriModaleModifica(operatore: Operatore): void {
-    this.operatoreDaModificare = { ...operatore };
+  apriModaleModifica(utente: Utente): void {
+    this.utenteDaModificare = { ...utente };
     this.isEditModalOpen = true;
   }
 
-  apriModaleElimina(operatore: Operatore): void {
-    this.operatoreDaEliminare = operatore;
+  apriModaleElimina(utente: Utente): void {
+    this.utenteDaEliminare = utente;
     this.isDeleteModalOpen = true;
   }
 
@@ -80,48 +86,54 @@ export class GestioneOperatoriComponent implements OnInit {
     this.isAddModalOpen = false;
     this.isEditModalOpen = false;
     this.isDeleteModalOpen = false;
-    this.operatoreDaModificare = undefined;
-    this.operatoreDaEliminare = undefined;
+    this.utenteDaModificare = undefined;
+    this.utenteDaEliminare = undefined;
   }
 
   aggiungiOperatore(): void {
-    if (!this.nuovoOperatore.nomeCompleto || !this.nuovoOperatore.email) {
-      alert('Nome completo e Email sono obbligatori.');
+    if (!this.nuovoUtente.nomeCompleto || !this.nuovoUtente.email || !this.nuovoUtente.password) {
+      // Sostituire alert con un sistema di notifiche più elegante in un'app reale
+      alert('Tutti i campi sono obbligatori.');
       return;
     }
     
-    // Creazione del nuovo oggetto senza "stato"
-    const nuovo: Operatore = {
+    const nuovo: Utente = {
       id: new Date().getTime(),
-      nomeCompleto: this.nuovoOperatore.nomeCompleto,
-      email: this.nuovoOperatore.email,
-      ruolo: 'Operatore',
+      nomeCompleto: this.nuovoUtente.nomeCompleto,
+      email: this.nuovoUtente.email,
+      ruolo: 'Operatore', // I nuovi utenti sono sempre Operatori
       dataCreazione: new Date().toLocaleDateString('it-IT')
+      // La password non viene salvata nell'oggetto in memoria per sicurezza
     };
 
-    this.operatori.push(nuovo);
-    this.filtraOperatori();
+    this.utenti.push(nuovo);
+    this.filtraUtenti();
     this.chiudiModali();
   }
 
-  salvaModificheOperatore(): void {
-    if (!this.operatoreDaModificare) return;
-    const index = this.operatori.findIndex(op => op.id === this.operatoreDaModificare!.id);
+  salvaModificheUtente(): void {
+    if (!this.utenteDaModificare) return;
+
+    const index = this.utenti.findIndex(op => op.id === this.utenteDaModificare!.id);
+
     if (index !== -1) {
-      this.operatori[index] = this.operatoreDaModificare;
+       // Se il ruolo viene cambiato a 'Utente', l'oggetto viene aggiornato
+       // ma non sarà più visibile nella lista principale grazie a filtraUtenti().
+      this.utenti[index] = this.utenteDaModificare;
     }
-    this.filtraOperatori();
+    
+    this.filtraUtenti(); // Riapplica i filtri per aggiornare la vista
     this.chiudiModali();
   }
 
   confermaEliminazione(): void {
-    if (!this.operatoreDaEliminare) return;
-    this.operatori = this.operatori.filter(op => op.id !== this.operatoreDaEliminare!.id);
-    this.filtraOperatori();
+    if (!this.utenteDaEliminare) return;
+    this.utenti = this.utenti.filter(op => op.id !== this.utenteDaEliminare!.id);
+    this.filtraUtenti();
     this.chiudiModali();
   }
   
-  trackById(index: number, operatore: Operatore): number {
-    return operatore.id;
+  trackById(index: number, utente: Utente): number {
+    return utente.id;
   }
 }
