@@ -1,49 +1,45 @@
 import { Component, OnInit } from '@angular/core';
 
-// --- INTERFACCE PER LA STRUTTURA DEI DATI ---
-export interface BikeInventory {
+// INTERFACCE DATI
+export interface SingleBike {
   id: number;
   modelName: string;
   propulsion: 'Muscolare' | 'Elettrica';
-  totalQuantity: number;
-  currentlyRented: number;
-  inMaintenance: number;
-  originalInMaintenance: number; // Per tracciare le modifiche
+  status: 'Disponibile' | 'Noleggiata' | 'In Manutenzione';
+  locationId: string;
+  maintenanceEnd?: string; // Data di fine manutenzione (opzionale)
 }
 
 export interface Location {
   id: string;
   name: string;
-  inventory: BikeInventory[];
 }
 
-// --- MOCK DATA (Simula un database/API) ---
-const mockInventoryData: Location[] = [
-  {
-    id: 'stazione',
-    name: 'Noleggio Centrale Stazione',
-    inventory: [
-      { id: 1, modelName: 'City Voyager X', propulsion: 'Muscolare', totalQuantity: 15, currentlyRented: 4, inMaintenance: 1, originalInMaintenance: 1 },
-      { id: 2, modelName: 'City Voyager X', propulsion: 'Elettrica', totalQuantity: 8, currentlyRented: 5, inMaintenance: 0, originalInMaintenance: 0 },
-      { id: 3, modelName: 'Mountain Peak E-Pro', propulsion: 'Elettrica', totalQuantity: 10, currentlyRented: 2, inMaintenance: 2, originalInMaintenance: 2 },
-    ],
-  },
-  {
-    id: 'rialto',
-    name: 'Bike Point Rialto',
-    inventory: [
-      { id: 4, modelName: 'Rialto Sprinter', propulsion: 'Muscolare', totalQuantity: 12, currentlyRented: 8, inMaintenance: 0, originalInMaintenance: 0 },
-      { id: 5, modelName: 'Lagoon Cruiser E-Bike', propulsion: 'Elettrica', totalQuantity: 15, currentlyRented: 10, inMaintenance: 1, originalInMaintenance: 1 },
-    ],
-  },
-  {
-    id: 'lido',
-    name: 'Deposito Lido',
-    inventory: [
-       { id: 6, modelName: 'Lido Beach Cruiser', propulsion: 'Muscolare', totalQuantity: 20, currentlyRented: 5, inMaintenance: 3, originalInMaintenance: 3 },
-       { id: 7, modelName: 'Mountain Peak Pro', propulsion: 'Muscolare', totalQuantity: 7, currentlyRented: 2, inMaintenance: 0, originalInMaintenance: 0 },
-    ],
-  },
+// DATI MOCK
+const mockBikesData: SingleBike[] = [
+  // Stazione
+  { id: 101, modelName: 'City Voyager X', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'stazione' },
+  { id: 102, modelName: 'City Voyager X', propulsion: 'Muscolare', status: 'Noleggiata', locationId: 'stazione' },
+  { id: 103, modelName: 'City Voyager X', propulsion: 'Elettrica', status: 'Disponibile', locationId: 'stazione' },
+  { id: 104, modelName: 'Mountain Peak E-Pro', propulsion: 'Elettrica', status: 'In Manutenzione', locationId: 'stazione', maintenanceEnd: '2025-06-20' },
+  { id: 105, modelName: 'City Voyager X', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'stazione' },
+
+  // Rialto
+  { id: 201, modelName: 'Rialto Sprinter', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'rialto' },
+  { id: 202, modelName: 'Rialto Sprinter', propulsion: 'Muscolare', status: 'Noleggiata', locationId: 'rialto' },
+  { id: 203, modelName: 'Lagoon Cruiser E-Bike', propulsion: 'Elettrica', status: 'Disponibile', locationId: 'rialto' },
+  { id: 204, modelName: 'Lagoon Cruiser E-Bike', propulsion: 'Elettrica', status: 'Disponibile', locationId: 'rialto' },
+
+  // Lido
+  { id: 301, modelName: 'Lido Beach Cruiser', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'lido' },
+  { id: 302, modelName: 'Lido Beach Cruiser', propulsion: 'Muscolare', status: 'In Manutenzione', locationId: 'lido', maintenanceEnd: '2025-06-15' },
+  { id: 303, modelName: 'Mountain Peak Pro', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'lido' },
+];
+
+const mockLocations: Location[] = [
+  { id: 'stazione', name: 'Noleggio Centrale Stazione' },
+  { id: 'rialto', name: 'Bike Point Rialto' },
+  { id: 'lido', name: 'Deposito Lido' },
 ];
 
 
@@ -55,90 +51,107 @@ const mockInventoryData: Location[] = [
 export class PaginaManutenzioniComponent implements OnInit {
 
   // --- STATO DEL COMPONENTE ---
-  locations: Location[] = mockInventoryData;
+  locations: Location[] = mockLocations;
+  allBikes: SingleBike[] = mockBikesData;
+  bikesForCurrentLocation: SingleBike[] = [];
+  
   selectedLocationId: string = 'stazione';
-  currentInventory: BikeInventory[] = [];
   selectedLocationName: string = '';
+  currentYear = new Date().getFullYear();
 
-  // --- STATO DEI MODALI ---
-  showConfirmationModal = false;
-  showNotificationModal = false;
-  notificationMessage = '';
-  notificationSuccess = false;
-  bikeToSave: BikeInventory | null = null;
-
+  // --- STATO DEL MODALE UNICO ---
+  isMaintenanceModalOpen = false;
+  selectedBike: SingleBike | null = null;
+  maintenanceType: 'schedule' | 'immediate' | null = null;
+  
+  // Dati per i date-picker
+  startDate: string = '';
+  endDate: string = '';
+  today: string = new Date().toISOString().split('T')[0];
 
   ngOnInit(): void {
-    this.loadInventoryForSelectedLocation();
+    this.onLocationChange();
   }
 
-  // --- GESTIONE CAMBIO PUNTO VENDITA ---
   onLocationChange(): void {
-    this.loadInventoryForSelectedLocation();
-  }
-
-  private loadInventoryForSelectedLocation(): void {
     const selectedLocation = this.locations.find(loc => loc.id === this.selectedLocationId);
     if (selectedLocation) {
       this.selectedLocationName = selectedLocation.name;
-      // Creiamo una copia profonda per evitare modifiche dirette ai dati mock
-      this.currentInventory = JSON.parse(JSON.stringify(selectedLocation.inventory));
+      this.bikesForCurrentLocation = this.allBikes.filter(bike => bike.locationId === this.selectedLocationId);
     }
   }
 
-  // --- CALCOLO DINAMICO DISPONIBILITÀ ---
-  getAvailability(bike: BikeInventory): number {
-    return bike.totalQuantity - bike.currentlyRented - bike.inMaintenance;
+  // --- GESTIONE MODALE ---
+  openMaintenanceModal(bike: SingleBike): void {
+    this.selectedBike = bike;
+    this.isMaintenanceModalOpen = true;
+    // Resetta lo stato interno del modale
+    this.maintenanceType = null;
+    this.startDate = '';
+    this.endDate = '';
   }
 
-  getMaxMaintenanceValue(bike: BikeInventory): number {
-    return bike.totalQuantity - bike.currentlyRented;
-  }
-
-  // --- GESTIONE MODALE DI CONFERMA ---
-  openSaveConfirmation(bike: BikeInventory): void {
-    this.bikeToSave = bike;
-    this.showConfirmationModal = true;
-  }
-
-  cancelSave(): void {
-    this.showConfirmationModal = false;
-    this.bikeToSave = null;
-  }
-
-  // --- LOGICA DI SALVATAGGIO (SIMULATA) ---
-  confirmSave(): void {
-    if (!this.bikeToSave) return;
-
-    // Simula una chiamata API con un ritardo
-    console.log('Salvataggio dati per:', this.bikeToSave);
+  closeMaintenanceModal(): void {
+    this.isMaintenanceModalOpen = false;
+    // Un piccolo ritardo per permettere all'animazione di chiusura di completarsi
     setTimeout(() => {
-      // Aggiorna il valore "originale" per riflettere il salvataggio
-      this.bikeToSave!.originalInMaintenance = this.bikeToSave!.inMaintenance;
-      
-      // Aggiorna i dati master (in un'app reale, questi verrebbero ricaricati dal server)
-      const location = this.locations.find(l => l.id === this.selectedLocationId);
-      if(location) {
-        const bikeInMaster = location.inventory.find(b => b.id === this.bikeToSave!.id);
-        if (bikeInMaster) {
-          Object.assign(bikeInMaster, this.bikeToSave);
-        }
-      }
-
-      this.showConfirmationModal = false;
-      this.showNotification('Modifiche salvate con successo!', true);
-      this.bikeToSave = null;
-    }, 1000); // Ritardo di 1 secondo
+      this.selectedBike = null;
+    }, 300);
   }
 
-  // --- GESTIONE MODALE DI NOTIFICA ---
-  private showNotification(message: string, isSuccess: boolean): void {
-    this.notificationMessage = message;
-    this.notificationSuccess = isSuccess;
-    this.showNotificationModal = true;
+  selectMaintenanceType(type: 'schedule' | 'immediate'): void {
+    this.maintenanceType = type;
   }
 
-  closeNotification(): void {
-    this.showNotificationModal = false;
+  confirmMaintenance(): void {
+    if (!this.selectedBike || !this.canConfirmMaintenance()) return;
+
+    // Logica di aggiornamento della bici
+    this.selectedBike.status = 'In Manutenzione';
+    this.selectedBike.maintenanceEnd = this.endDate;
+
+    console.log(`Manutenzione confermata per la bici #${this.selectedBike.id}`);
+    console.log('Inizio:', this.maintenanceType === 'immediate' ? this.today : this.startDate);
+    console.log('Fine:', this.endDate);
+
+    this.closeMaintenanceModal();
+  }
+
+  // --- METODI UTILITY PER LA UI ---
+
+  getCardClass(bike: SingleBike): string {
+    return `status-${bike.status.toLowerCase().replace(' ', '-')}`;
+  }
+
+  getStatusInfo(bike: SingleBike): { icon: string, text: string, details: string } {
+    switch (bike.status) {
+      case 'Disponibile':
+        return { icon: 'fa-check-circle', text: 'Disponibile', details: 'Pronta per il noleggio' };
+      case 'Noleggiata':
+        return { icon: 'fa-user-clock', text: 'Noleggiata', details: 'Attualmente in uso' };
+      case 'In Manutenzione':
+        const endDate = bike.maintenanceEnd ? new Date(bike.maintenanceEnd).toLocaleDateString('it-IT') : 'N/D';
+        return { icon: 'fa-tools', text: 'In Manutenzione', details: `Fino al ${endDate}` };
+      default:
+        return { icon: 'fa-question-circle', text: 'Sconosciuto', details: '' };
+    }
+  }
+
+  getMinEndDate(): string {
+    if (this.maintenanceType === 'schedule' && this.startDate) {
+      return this.startDate;
+    }
+    return this.today;
+  }
+
+  canConfirmMaintenance(): boolean {
+    if (!this.maintenanceType) return false;
+    if (this.maintenanceType === 'schedule') {
+      return !!this.startDate && !!this.endDate && this.startDate <= this.endDate;
+    }
+    if (this.maintenanceType === 'immediate') {
+      return !!this.endDate && this.today <= this.endDate;
+    }
+    return false;
   }
 }

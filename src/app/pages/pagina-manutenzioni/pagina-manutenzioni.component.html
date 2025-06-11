@@ -1,11 +1,11 @@
 <div class="page-container dark-theme gestione-manutenzione-page">
   <header class="page-header">
-    <h1><i class="fas fa-tools"></i> Gestione Manutenzione e Disponibilità</h1>
+    <h1><i class="fas fa-bicycle"></i> Manutenzioni Bici</h1>
   </header>
 
   <section class="action-bar">
     <div class="filter-group">
-      <label for="locationFilter">Seleziona un Punto Vendita per gestire l'inventario:</label>
+      <label for="locationFilter">Visualizza inventario per:</label>
       <select id="locationFilter" class="custom-select dark-select" [(ngModel)]="selectedLocationId" (ngModelChange)="onLocationChange()">
         <option *ngFor="let location of locations" [value]="location.id">
           {{ location.name }}
@@ -16,94 +16,104 @@
 
   <section class="content-area">
     <div class="inventory-header">
-      <h2>Inventario per: <span class="location-name">{{ selectedLocationName }}</span></h2>
-      <p>Modifica il numero di bici "In Manutenzione" per aggiornare la disponibilità per i noleggi.</p>
+      <h2><i class="fas fa-map-marker-alt"></i> {{ selectedLocationName }}</h2>
+      <p>Seleziona una bici disponibile per programmare una manutenzione.</p>
     </div>
 
-    <div class="table-responsive-container">
-      <table class="data-table dark-table maintenance-table">
-        <thead>
-          <tr>
-            <th>Nome Modello</th>
-            <th>Propulsione</th>
-            <th>Quantità Totale</th>
-            <th>Attualmente Noleggiate</th>
-            <th class="maintenance-column">In Manutenzione</th>
-            <th class="availability-column">Disponibili per Noleggio</th>
-            <th class="actions-column">Azione</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let bike of currentInventory">
-            <td>{{ bike.modelName }}</td>
-            <td>{{ bike.propulsion }}</td>
-            <td class="text-center">{{ bike.totalQuantity }}</td>
-            <td class="text-center">{{ bike.currentlyRented }}</td>
-            <td class="maintenance-cell">
-              <input 
-                type="number" 
-                min="0" 
-                [max]="getMaxMaintenanceValue(bike)" 
-                class="maintenance-input dark-input"
-                [(ngModel)]="bike.inMaintenance">
-            </td>
-            <td 
-              class="availability-value text-center"
-              [class.text-danger]="getAvailability(bike) < 0">
-              {{ getAvailability(bike) }}
-            </td>
-            <td class="actions-cell">
-              <button 
-                class="btn btn-table-action btn-save" 
-                title="Salva Modifiche"
-                (click)="openSaveConfirmation(bike)"
-                [disabled]="bike.inMaintenance === bike.originalInMaintenance">
-                <i class="fas fa-save"></i> <span class="btn-action-text">Salva</span>
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="currentInventory.length === 0">
-            <td colspan="7" class="text-center">Nessun dato di inventario disponibile per questo punto vendita.</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="bikes-list">
+      <div class="bike-list-item" *ngFor="let bike of bikesForCurrentLocation" [ngClass]="getCardClass(bike)">
+        
+        <div class="item-status-icon">
+            <i class="fas" [ngClass]="getStatusInfo(bike).icon"></i>
+        </div>
+
+        <div class="item-info">
+          <div class="item-title">
+            {{ bike.modelName }}
+            <span class="bike-id">#{{ bike.id }}</span>
+          </div>
+          <div class="item-details">
+             <span class="propulsion-badge" [class.elettrica]="bike.propulsion === 'Elettrica'">
+              <i class="fas" [class.fa-bolt]="bike.propulsion === 'Elettrica'" [class.fa-cog]="bike.propulsion === 'Muscolare'"></i>
+              {{ bike.propulsion }}
+            </span>
+            <span class="status-separator">|</span>
+            <span class="status-text">{{ getStatusInfo(bike).details }}</span>
+          </div>
+        </div>
+
+        <div class="item-action">
+           <button class="btn btn-action" (click)="openMaintenanceModal(bike)" [disabled]="bike.status !== 'Disponibile'">
+            <i class="fas fa-wrench"></i>
+            <span>Manutenzione</span>
+          </button>
+        </div>
+
+      </div>
+
+      <div *ngIf="bikesForCurrentLocation.length === 0" class="no-bikes-message">
+        Nessuna bici trovata per questo punto vendita.
+      </div>
     </div>
   </section>
 
   <footer class="backoffice-page-footer dark-theme">
-    <p>&copy; 2025 Bike Rental System - Backoffice</p>
+    <p>&copy; {{ currentYear }} Bike Rental System - Backoffice</p>
   </footer>
 </div>
 
 
-<div class="modal-overlay" *ngIf="showConfirmationModal">
-  <div class="modal-content dark-theme">
-    <div class="modal-header">
-      <h3>Conferma Salvataggio</h3>
-    </div>
-    <div class="modal-body">
-      <p>Sei sicuro di voler salvare le modifiche per il modello <strong>{{ bikeToSave?.modelName }} ({{ bikeToSave?.propulsion }})</strong>?</p>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" (click)="cancelSave()">Annulla</button>
-      <button class="btn btn-primary" (click)="confirmSave()">Conferma e Salva</button>
-    </div>
-  </div>
-</div>
+<div class="modal-overlay" [class.show]="isMaintenanceModalOpen">
+  <div class="modal-content-wrapper">
+    <div class="modal-content dark-theme" *ngIf="selectedBike">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-tools"></i>
+          <span>Programma Manutenzione</span>
+        </div>
+        <div class="modal-subtitle">
+          Bici: <strong>{{ selectedBike.modelName }} (#{{ selectedBike.id }})</strong>
+        </div>
+      </div>
 
-<div class="modal-overlay" *ngIf="showNotificationModal">
-  <div class="modal-content dark-theme">
-    <div class="modal-header">
-      <h3 [class.text-success]="notificationSuccess" [class.text-danger]="!notificationSuccess">
-        <i class="fas" [class.fa-check-circle]="notificationSuccess" [class.fa-times-circle]="!notificationSuccess"></i>
-        Esito Operazione
-      </h3>
-    </div>
-    <div class="modal-body">
-      <p>{{ notificationMessage }}</p>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" (click)="closeNotification()">Chiudi</button>
+      <div class="modal-body">
+        <div class="maintenance-type-selector">
+          <div class="option-card" (click)="selectMaintenanceType('schedule')" [class.selected]="maintenanceType === 'schedule'">
+            <i class="fas fa-calendar-alt"></i>
+            <div class="option-text">
+              <strong>Pianifica</strong>
+              <span>Scegli inizio e fine</span>
+            </div>
+          </div>
+          <div class="option-card" (click)="selectMaintenanceType('immediate')" [class.selected]="maintenanceType === 'immediate'">
+            <i class="fas fa-play-circle"></i>
+            <div class="option-text">
+              <strong>Inizia Ora</strong>
+              <span>Scegli solo la fine</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="date-picker-area" *ngIf="maintenanceType">
+          <div class="input-group" *ngIf="maintenanceType === 'schedule'">
+            <label for="startDate">Data di Inizio</label>
+            <input id="startDate" type="date" class="date-input" [(ngModel)]="startDate" [min]="today">
+          </div>
+          <div class="input-group">
+            <label for="endDate">Data di Fine</label>
+            <input id="endDate" type="date" class="date-input" [(ngModel)]="endDate" [min]="getMinEndDate()">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-cancel" (click)="closeMaintenanceModal()">
+          <i class="fas fa-times"></i> Annulla
+        </button>
+        <button class="btn btn-confirm" (click)="confirmMaintenance()" [disabled]="!canConfirmMaintenance()">
+          <i class="fas fa-check"></i> Conferma
+        </button>
+      </div>
     </div>
   </div>
 </div>
