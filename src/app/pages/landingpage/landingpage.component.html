@@ -10,41 +10,8 @@
 <section class="container my-5">
     <h3 class="text-center mb-5 bai-jamjuree-bold-italic text-dark display-6">Dove siamo presenti</h3>
     <div class="row justify-content-center g-3">
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Roma</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Milano</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Venezia</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Firenze</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Napoli</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Bologna</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Torino</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Genova</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Palermo</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Cagliari</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Verona</div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 text-center">
-            <div class="location-pill">Lecce</div>
+        <div *ngFor="let store of stores" class="col-6 col-md-4 col-lg-2 text-center">
+            <div class="location-pill">store.location</div>
         </div>
     </div>
 </section>

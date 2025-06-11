@@ -1,0 +1,24 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+
+export interface Store {
+    id?: string;
+    location: string;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class StoreService {
+
+    constructor(private http: HttpClient) { }
+
+    getStores(): Observable<Store[]> {
+        return this.http.get<{ message: string; data: Store[] }>('/api/store')
+            .pipe(
+                // Extract only the Data property
+                map(response => response.data)
+            );
+    }
+}
