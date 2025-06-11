@@ -54,7 +54,7 @@ export class AuthService {
     }
 
     verifyEmail(token: string) {
-        return this.http.get(this.conStr + '/api/auth/verify-email/' + token, { observe: 'response' });
+        return this.http.put(this.conStr + '/api/auth/verify-email/' + token, { observe: 'response' });
     }
 
     private fetchUser() {
