@@ -2,6 +2,22 @@
     <header class="app-backoffice-title-header">
         <h1><i class="fas fa-tachometer-alt"></i> Pannello di Controllo RideClone</h1>
         <p>Benvenuto nel sistema di gestione noleggio biciclette.</p>
+        <div class="user-profile-menu">
+  <button class="profile-trigger" (click)="toggleDropdown($event)" title="Profilo">
+    <i class="fas fa-user-circle"></i>
+  </button>
+
+  <div class="dropdown-menu-user" *ngIf="isDropdownOpen">
+    <a routerLink="/home" class="dropdown-item-user" (click)="closeDropdown()">
+      <i class="fas fa-home fa-fw"></i>
+      <span>Home</span>
+    </a>
+    <button class="dropdown-item-user" (click)="logout()">
+      <i class="fas fa-sign-out-alt fa-fw"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</div>
     </header>
 
   <nav class="management-sections-bar">
