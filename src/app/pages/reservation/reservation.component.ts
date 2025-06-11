@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Bike, BikeService } from '../../services/bike.service';
+import { Store, StoreService } from '../../services/store.service';
 
 @Component({
     selector: 'app-reservation',
     templateUrl: './reservation.component.html',
     styleUrls: ['./reservation.component.scss', '../../app.component.scss'],
 })
-export class ReservationComponent {
+export class ReservationComponent implements OnInit {
     currentStep = 1;
 
     // Step 1
-    locations = ['Milano Centrale', 'Roma Termini', 'Napoli Centrale'];
+    stores: Store[] = [];
     pickupLocation = '';
     dropoffLocation = '';
     pickupDate: string = '';
@@ -27,8 +29,16 @@ export class ReservationComponent {
     accessories = ['Casco', 'Luci LED'];
     totalPrice = 56.00;
 
-    constructor() {
+    bikeDisponibili: Bike[] = [];
+
+    constructor(protected bikeSrv: BikeService, protected storeSrv: StoreService) {
         this.generateHours();
+    }
+
+    ngOnInit(): void {
+        this.storeSrv.getStores().subscribe(stores => {
+            this.stores = stores;
+        });
     }
 
     generateHours() {
@@ -58,6 +68,14 @@ export class ReservationComponent {
     goToStep(step: number) {
         if (this.invalidDateRange) return; // blocca il passaggio
         this.currentStep = step;
+
+        if (this.currentStep == 2) {
+            var start: Date = new Date(`${this.pickupDate}T${this.pickupTime}`);
+            var end: Date = new Date(`${this.dropoffDate}T${this.dropoffTime}`);
+            this.bikeSrv.getBikesDisponibili(start, end, this.pickupLocation).subscribe(bikes => {
+                this.bikeDisponibili = bikes;
+            });
+        }
     }
 
     confirmGoBack() {

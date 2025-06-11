@@ -10,8 +10,10 @@
         <!-- Luogo di ritiro -->
         <div class="mb-3">
             <label class="form-label bai-jamjuree-semibold text-black">Luogo di ritiro</label>
-            <select class="form-select" [(ngModel)]="pickupLocation" (ngModelChange)="autoFillDropoff()">
-                <option *ngFor="let point of locations" [value]="point">{{ point }}</option>
+            <select class="form-select" [(ngModel)]="pickupLocation" name="pickupLocation"
+                (ngModelChange)="autoFillDropoff()" required>
+                <option value="" disabled selected>Seleziona luogo di ritiro</option>
+                <option *ngFor="let store of stores" [value]="store._id">{{ store.location }}</option>
             </select>
         </div>
 
@@ -19,7 +21,7 @@
         <div class="mb-3">
             <label class="form-label bai-jamjuree-semibold text-black">Luogo di consegna</label>
             <select class="form-select" [(ngModel)]="dropoffLocation">
-                <option *ngFor="let point of locations" [value]="point">{{ point }}</option>
+                <option *ngFor="let store of stores" [value]="store._id">{{ store.location }}</option>
             </select>
         </div>
 
@@ -76,10 +78,12 @@
                 </div>
 
                 <!-- Dettagli bici -->
+                <!--
                 <div class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0">
                     <img [src]="bikeImageUrl" alt="Immagine bici" class="img-fluid rounded"
                         style="max-height: 200px;" />
                 </div>
+
 
                 <div class="col-md-8">
                     <h5 class="bai-jamjuree-semibold mb-2">{{ bikeModel }}</h5>
@@ -90,6 +94,21 @@
 
                     <div class="text-end">
                         <h5 class="bai-jamjuree-semibold text-danger">Totale: € {{ totalPrice.toFixed(2) }}</h5>
+                    </div>
+                </div>
+                -->
+
+                <!-- Bici disponibili, selezionabili e prezzo -->
+
+                <div class="row">
+                    <div *ngFor="let bike of bikeDisponibili"
+                        class="col-md-4 d-flex flex-column align-items-center justify-content-center mb-3 mb-md-0">
+                        <div class="mb-2 text-break small">
+                            <strong>Modello:</strong> {{ bike.idModello!.type || 'N/A' }}<br>
+                            <strong>Img:</strong> {{ bike.idModello!.imgUrl || 'N/A' }}
+                        </div>
+                        <img [src]="bike.idModello!.imgUrl " alt="Immagine bici" class="img-fluid rounded"
+                            style="max-height: 200px;" />
                     </div>
                 </div>
             </div>

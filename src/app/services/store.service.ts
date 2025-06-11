@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
 export interface Store {
-    id?: string;
+    _id?: string;
     location: string;
 }
 
