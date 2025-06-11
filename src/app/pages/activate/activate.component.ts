@@ -31,14 +31,14 @@ export class ActivateComponent implements OnInit {
                 this.status = 'error';
                 return;
             }
-            this.auth.verifyEmail(this.token).subscribe(
-                (res: any) => {
+            this.auth.verifyEmail(this.token).subscribe({
+                next: (res) => {
                     this.status = res.status === 200 ? 'success' : 'error';
                 },
-                () => {
+                error: () => {
                     this.status = 'error';
                 }
-            );
+            });
         } else {
             this.status = 'error';
         }
