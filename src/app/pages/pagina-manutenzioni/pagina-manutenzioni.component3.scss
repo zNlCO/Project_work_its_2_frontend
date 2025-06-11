@@ -1,0 +1,28 @@
+
+.modal-overlay {
+  position: fixed; inset: 0;
+  background-color: rgba(var(--bg-1-color), 0.7);
+  backdrop-filter: blur(5px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
+  
+  // --- VERSIONE CORRETTA ---
+  opacity: 0;
+  visibility: hidden; 
+  transition: opacity 0.3s ease, visibility 0s 0.3s; // Transizione corretta
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+    .modal-content-wrapper {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
+}
+.modal-content-wrapper {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+}
