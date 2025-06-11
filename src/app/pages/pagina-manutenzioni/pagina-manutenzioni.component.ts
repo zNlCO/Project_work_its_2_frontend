@@ -46,7 +46,7 @@ const mockLocations: Location[] = [
 @Component({
   selector: 'app-pagina-manutenzioni',
   templateUrl: './pagina-manutenzioni.component.html',
-  styleUrls: ['./pagina-manutenzioni.component.scss']
+  styleUrls: ['./pagina-manutenzioni.component.scss', './pagina-manutenzioni.component2.scss']
 })
 export class PaginaManutenzioniComponent implements OnInit {
 
