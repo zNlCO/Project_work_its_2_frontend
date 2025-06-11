@@ -12,10 +12,12 @@ export interface Store {
 })
 export class StoreService {
 
+    private conStr = 'https://cloneride-spa.onrender.com'
+
     constructor(private http: HttpClient) { }
 
     getStores(): Observable<Store[]> {
-        return this.http.get<{ message: string; data: Store[] }>('/api/store')
+        return this.http.get<{ message: string; data: Store[] }>(this.conStr + '/api/store')
             .pipe(
                 // Extract only the Data property
                 map(response => response.data)

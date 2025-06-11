@@ -16,10 +16,12 @@ export interface BikeModel {
 })
 export class BikeModelService {
 
+    conStr = 'https://cloneride-spa.onrender.com';
+
     constructor(private http: HttpClient) { }
 
     getBikeModels(): Observable<BikeModel[]> {
-        return this.http.get<{ message: string; data: BikeModel[] }>('/api/bike-model/')
+        return this.http.get<{ message: string; data: BikeModel[] }>(this.conStr + '/api/bike-model/')
             .pipe(
                 // Extract only the Data property
                 map(response => response.data)
