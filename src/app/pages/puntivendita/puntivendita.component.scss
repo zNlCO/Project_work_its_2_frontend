@@ -1,107 +1,109 @@
+
+$bg-primary: #1e1e1e;
+$bg-secondary: #2c2c2c;
+$bg-header: #111111;
+$border-color: #444;
+$text-primary: #e0e0e0;
+$text-secondary: #a0a0a0;
+$primary-color: #00aaff; // Colore primario per bottoni e link
+
+// 2. Applichiamo il tema al componente principale
 .punti-vendita-page {
+  // Sovrascriviamo le variabili CSS di Bootstrap per applicare il nostro tema
+  --bs-body-bg: #{$bg-primary};
+  --bs-body-color: #{$text-primary};
+  --bs-border-color: #{$border-color};
+  --bs-emphasis-color: #{$text-primary};
+  --bs-secondary-color: #{$text-secondary};
+  --bs-secondary-bg: #{$bg-secondary};
+  --bs-tertiary-bg: #{$bg-secondary};
+
+  // Variabili per le Card
+  --bs-card-bg: #{$bg-secondary};
+  --bs-card-border-color: #{$border-color};
+  --bs-card-color: #{$text-primary};
+  --bs-card-cap-bg: #{darken($bg-secondary, 3%)};
+
+  // Variabili per i List Group (dentro le card)
+  --bs-list-group-bg: transparent;
+  --bs-list-group-color: #{$text-primary};
+  --bs-list-group-border-color: #{rgba($border-color, 0.75)};
+  --bs-list-group-hover-bg: #{rgba($primary-color, 0.1)};
+  
+  // Variabili per i Modal
+  --bs-modal-bg: #{$bg-secondary};
+  --bs-modal-header-border-color: #{$border-color};
+  --bs-modal-footer-border-color: #{$border-color};
+
+  // Stili del layout
   min-height: 100vh;
+  background-color: var(--bs-body-bg); // Applica lo sfondo principale
+
   header {
-    background: rgba(var(--bs-body-bg-rgb), 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(var(--bs-secondary-bg-rgb), 0.8);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--bs-border-color);
     position: sticky;
     top: 0;
     z-index: 1020;
-    h1 i { color: var(--bs-primary); }
   }
-  main { min-height: calc(100vh - 120px); }
-  footer { background: var(--bs-secondary-bg); margin-top: auto; }
+
+  main {
+    min-height: calc(100vh - 120px);
+  }
+
+  footer {
+    background-color: $bg-header;
+    border-top: 1px solid var(--bs-border-color);
+  }
 }
 
+// 3. Stili per i componenti specifici, ora coerenti con il tema
 .custom-card-hover {
-  transition: all 0.3s ease;
-  will-change: transform;
+  transition: all 0.25s ease;
+  border: 1px solid var(--bs-card-border-color);
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
-    border-color: var(--bs-primary);
+    transform: translateY(-6px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+    border-color: $primary-color;
   }
 }
 
 .list-group-item {
-  background-color: transparent !important;
-  border-color: var(--bs-border-color-translucent);
-  transition: all 0.2s ease;
+  // !important non più necessario perché usiamo le variabili
+  background-color: var(--bs-list-group-bg); 
   &:hover {
-    background-color: var(--bs-primary-bg-subtle) !important;
-    transform: translateX(5px);
+    color: $primary-color;
+    transform: translateX(4px);
   }
 }
 
-.btn {
-  transition: all 0.2s ease;
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-  }
-  &:active { transform: translateY(0); }
-}
-
-.input-group {
-  .form-control {
-    &:focus {
-      border-color: var(--bs-primary);
-      box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
-    }
-  }
-  .btn:hover {
-    background-color: var(--bs-primary);
-    border-color: var(--bs-primary);
-    color: white;
-  }
-}
-
+// Stile per i modal
 .modal {
   &.show {
     display: block !important;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    z-index: 1055;
-    .modal-dialog { animation: modalSlideIn 0.3s ease-out; }
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
   }
-}
-
-@keyframes modalSlideIn {
-  from { transform: scale(0.9) translateY(-50px); opacity: 0; }
-  to { transform: scale(1) translateY(0); opacity: 1; }
+  .modal-dialog {
+    animation: modalSlideIn 0.3s ease-out forwards;
+  }
 }
 
 .modal-content {
   border: none;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
-  border-radius: 0.75rem;
-  .modal-header .modal-title i { color: var(--bs-primary); }
+  
+  .modal-header .modal-title i {
+    color: $primary-color;
+  }
   .modal-header.bg-danger {
-    .modal-title, .modal-title i { color: white !important; }
-  }
-  .form-control:focus, .form-select:focus {
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
-  }
-  .form-check-input:checked {
-    background-color: var(--bs-primary);
-    border-color: var(--bs-primary);
+    i, .modal-title { color: #fff !important; }
   }
 }
 
-.table.table-hover tbody tr:hover {
-  td, th { background-color: var(--bs-primary-bg-subtle) !important; }
-}
-
-.empty-state, .no-results {
-  i { color: var(--bs-secondary); }
-  h3, h4 { color: var(--bs-emphasis-color); }
-  p { color: var(--bs-secondary-color); }
-}
-
-@media (max-width: 768px) {
-  .custom-card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  }
-  .btn:hover { transform: none; }
+// Animazioni (invariate)
+@keyframes modalSlideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
