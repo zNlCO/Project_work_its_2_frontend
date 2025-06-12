@@ -93,11 +93,12 @@
 }
 
 .my-red-btn-opposite {
-    background-color: lightgray;
+    background-color: white;
     color: #FB2C50;
     border-radius: 5px;
     padding: 0.5rem 2rem;
     transition: background-color 0.3s ease;
+    border: 1px solid #FB2C50;
 }
 
 .my-red-btn-opposite:hover {

@@ -14,3 +14,33 @@
 .active-step {
     background-color: #FB2C50 !important;
 }
+
+.bike-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    height: 220px;
+    /* Forza altezza uguale */
+    background-color: #f9f9f9;
+}
+
+.bike-card-custom {
+    background: #fff;
+    border-radius: 1.25rem;
+    border: 1.5px solid #ececec;
+    transition: box-shadow 0.2s, transform 0.2s;
+    box-shadow: 0 2px 12px rgba(220, 53, 69, 0.04);
+    min-height: 320px;
+    cursor: pointer;
+}
+
+.bike-card-custom:hover {
+    box-shadow: 0 8px 32px rgba(220, 53, 69, 0.12);
+    transform: translateY(-4px) scale(1.03);
+    border-color: #b71c1c;
+}
+
+.bike-img {
+    background: #f8f9fa;
+    border-radius: 1rem;
+    border: 1px solid #eee;
+}

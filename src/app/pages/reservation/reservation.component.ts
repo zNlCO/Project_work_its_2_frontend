@@ -12,8 +12,8 @@ export class ReservationComponent implements OnInit {
 
     // Step 1
     stores: Store[] = [];
-    pickupLocation = '';
-    dropoffLocation = '';
+    pickupLocation?: Store;
+    dropoffLocation?: Store;
     pickupDate: string = '';
     dropoffDate: string = '';
     pickupTime: string = '09:00';
@@ -22,13 +22,9 @@ export class ReservationComponent implements OnInit {
     invalidDateRange = false;
 
     // Step 2
-    bikeImageUrl = '../../assets/images/bike1.jpg';
-    bikeModel = 'Trek Marlin 5';
-    bikeSize = 'M';
-    insuranceSelected = true;
-    accessories = ['Casco', 'Luci LED'];
-    totalPrice = 56.00;
-
+    selectedBike?: Bike;
+    selectedAccessory?: string;
+    selectedInsurance?: string;
     bikeDisponibili: Bike[] = [];
 
     constructor(protected bikeSrv: BikeService, protected storeSrv: StoreService) {
@@ -65,6 +61,10 @@ export class ReservationComponent implements OnInit {
         this.invalidDateRange = end <= start;
     }
 
+    selectBike(bike: Bike) {
+        this.selectedBike = bike;
+    }
+
     goToStep(step: number) {
         if (this.invalidDateRange) return; // blocca il passaggio
         this.currentStep = step;
@@ -72,13 +72,14 @@ export class ReservationComponent implements OnInit {
         if (this.currentStep == 2) {
             var start: Date = new Date(`${this.pickupDate}T${this.pickupTime}`);
             var end: Date = new Date(`${this.dropoffDate}T${this.dropoffTime}`);
-            this.bikeSrv.getBikesDisponibili(start, end, this.pickupLocation).subscribe(bikes => {
+            this.bikeSrv.getBikesDisponibili(start, end, this.pickupLocation?._id!).subscribe(bikes => {
                 this.bikeDisponibili = bikes;
             });
         }
     }
 
     confirmGoBack() {
+        if (this.currentStep == 1) return;
         const conferma = window.confirm('Attenzione: se torni indietro perderai i dati di questa sezione. Continuare?');
         if (conferma) {
             this.goToStep(1);
