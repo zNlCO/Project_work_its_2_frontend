@@ -117,58 +117,59 @@
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <div class="card shadow-sm border-0 rounded-4 bg-white p-4 d-flex flex-row align-items-center my-4">
-                <!-- Immagine bici -->
-                <div class="me-4 flex-shrink-0" style="width: 180px;">
-                    <img [src]="selectedBike?.idModello?.imgUrl" alt="Immagine bici" class="img-fluid rounded"
-                        style="max-height: 160px; object-fit: cover; background: #f8f9fa;" />
-                </div>
-                <!-- Dati bici -->
-                <div class="flex-grow-1">
-                    <h4 class="bai-jamjuree-bold-italic text-danger mb-2">{{ selectedBike?.idModello?.type }}</h4>
-                    <div class="mb-2 text-secondary">{{ selectedBike?.idModello?.descrizione }}</div>
-                    <div class="mb-2">
-                        <span class="badge bg-dark-subtle text-dark-emphasis me-2">
-                            <i class="fas fa-euro-sign"></i> {{ selectedBike?.idModello?.prezzo | number:'1.2-2' }}
-                            /giorno
-                        </span>
-                        <span class="badge bg-secondary-subtle text-secondary-emphasis me-2">
-                            <i class="fas fa-ruler-combined"></i> Taglia: {{ selectedBike?.idModello?.size }}
-                        </span>
-                        <span class="badge bg-success-subtle text-success-emphasis"
-                            *ngIf="selectedBike?.idModello?.elettrica">
-                            <i class="fas fa-bolt"></i> Elettrica
-                            <i class="fas fa-check-circle ms-1"></i>
-                        </span>
-                        <span class="badge bg-secondary-subtle text-secondary-emphasis"
-                            *ngIf="!selectedBike?.idModello?.elettrica">
-                            <i class="fas fa-bicycle"></i> Muscolare
-                        </span>
+
+                <div class="card shadow-sm border-0 rounded-4 bg-white p-4 d-flex flex-row align-items-center my-4">
+                    <!-- Immagine bici -->
+                    <div class="me-4 flex-shrink-0" style="width: 180px;">
+                        <img [src]="selectedBike?.idModello?.imgUrl" alt="Immagine bici" class="img-fluid rounded"
+                            style="max-height: 160px; object-fit: cover; background: #f8f9fa;" />
                     </div>
-                    <!-- Accessori -->
-                    <div class="mb-2 mt-3">
-                        <label class="form-label fw-semibold">Accessorio:</label>
-                        <select class="form-select w-auto d-inline-block ms-2" [(ngModel)]="selectedAccessory"
-                            name="accessory" required>
-                            <option value="" disabled selected>Scegli accessorio</option>
-                            <option>Luci LED</option>
-                            <option>Porta smartphone universale</option>
-                            <option>Lucchetto antifurto</option>
-                            <option>Caschetto standard</option>
-                        </select>
-                    </div>
-                    <!-- Assicurazione -->
-                    <div class="mb-2">
-                        <label class="form-label fw-semibold">Assicurazione:</label>
-                        <select class="form-select w-auto d-inline-block ms-2" [(ngModel)]="selectedInsurance"
-                            name="insurance" required>
-                            <option value="" disabled selected>Scegli assicurazione</option>
-                            <option>Assicurazione base (danni fino a 200 €)</option>
-                            <option>Servizio emergenza (recupero entro 50 km)</option>
-                            <option>Kasko completa (danni illimitati + emergenza)</option>
-                        </select>
+                    <!-- Dati bici -->
+                    <div class="flex-grow-1">
+                        <h4 class="bai-jamjuree-bold-italic text-danger mb-2">{{ selectedBike?.idModello?.type }}</h4>
+                        <div class="mb-2 text-secondary">{{ selectedBike?.idModello?.descrizione }}</div>
+                        <div class="mb-2">
+                            <span class="badge bg-dark-subtle text-dark-emphasis me-2">
+                                <i class="fas fa-euro-sign"></i> {{ selectedBike?.idModello?.prezzo | number:'1.2-2' }}
+                                /giorno
+                            </span>
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis me-2">
+                                <i class="fas fa-ruler-combined"></i> Taglia: {{ selectedBike?.idModello?.size }}
+                            </span>
+                            <span class="badge bg-success-subtle text-success-emphasis"
+                                *ngIf="selectedBike?.idModello?.elettrica">
+                                <i class="fas fa-bolt"></i> Elettrica
+                                <i class="fas fa-check-circle ms-1"></i>
+                            </span>
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                *ngIf="!selectedBike?.idModello?.elettrica">
+                                <i class="fas fa-bicycle"></i> Muscolare
+                            </span>
+                        </div>
+                        <!-- Accessori -->
+                        <div class="mb-2 mt-3">
+                            <label class="form-label fw-semibold">Accessorio:</label>
+                            <select class="form-select w-auto d-inline-block ms-2" [(ngModel)]="selectedAccessory"
+                                name="accessory" required>
+                                <option value="" disabled selected>Scegli accessorio</option>
+                                <option>Luci LED</option>
+                                <option>Porta smartphone universale</option>
+                                <option>Lucchetto antifurto</option>
+                                <option>Caschetto standard</option>
+                            </select>
+                        </div>
+                        <!-- Assicurazione -->
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold">Assicurazione:</label>
+                            <select class="form-select w-auto d-inline-block ms-2" [(ngModel)]="selectedInsurance"
+                                name="insurance" required>
+                                <option value="" disabled selected>Scegli assicurazione</option>
+                                <option>Assicurazione base (danni fino a 200 €)</option>
+                                <option>Servizio emergenza (recupero entro 50 km)</option>
+                                <option>Kasko completa (danni illimitati + emergenza)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -183,13 +184,27 @@
                                 class="img-fluid rounded bike-img mb-3"
                                 style="max-height: 160px; object-fit: cover; background: #f8f9fa;" />
                             <div class="mb-2 text-break">
-                                <h5 class="bai-jamjuree-bold-italic text-danger mb-1">{{ bike.idModello.type ||
-                                    'N/A' }}</h5>
-                                <div class="small text-secondary mb-1">{{ bike.idModello.descrizione || 'N/A' }}
-                                </div>
+                                <h5 class="bai-jamjuree-bold-italic text-danger mb-1">{{ bike.idModello.type || 'N/A' }}
+                                </h5>
+                                <div class="small text-secondary mb-1">{{ bike.idModello.descrizione || 'N/A' }}</div>
                                 <div class="fw-bold text-success fs-5 mt-2">
                                     € {{ bike.idModello.prezzo | number:'1.2-2' }}
                                     <span class="fs-6 text-secondary">/ora</span>
+                                </div>
+                                <!-- Badge taglia e tipo -->
+                                <div class="mt-2">
+                                    <span class="badge bg-secondary-subtle text-secondary-emphasis me-2">
+                                        <i class="fas fa-ruler-combined"></i> Taglia: {{ bike.idModello.size }}
+                                    </span>
+                                    <span class="badge bg-success-subtle text-success-emphasis"
+                                        *ngIf="bike.idModello.elettrica">
+                                        <i class="fas fa-bolt"></i> Elettrica
+                                        <i class="fas fa-check-circle ms-1"></i>
+                                    </span>
+                                    <span class="badge bg-secondary-subtle text-secondary-emphasis"
+                                        *ngIf="!bike.idModello.elettrica">
+                                        <i class="fas fa-bicycle"></i> Muscolare
+                                    </span>
                                 </div>
                             </div>
                             <button class="btn my-red-btn bai-jamjuree-semibold mt-3 w-100"
