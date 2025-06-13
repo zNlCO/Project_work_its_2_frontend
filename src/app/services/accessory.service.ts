@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 export interface Accessory {
     id?: string;
@@ -10,6 +12,11 @@ export interface Accessory {
     providedIn: 'root'
 })
 export class AccessoryService {
+    conStr = 'https://cloneride-spa.onrender.com';
 
-    constructor() { }
+    constructor(private http: HttpClient) { }
+
+    getAccessories(): Observable<Accessory[]> {
+        return this.http.get<Accessory[]>(this.conStr + '/api/accessories');
+    }
 }

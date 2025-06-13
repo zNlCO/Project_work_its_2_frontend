@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Bike, BikeService } from '../../services/bike.service';
 import { Store, StoreService } from '../../services/store.service';
+import { Accessory, AccessoryService } from '../../services/accessory.service';
+import { Insurance, InsuranceService } from '../../services/insurance.service';
 
 @Component({
     selector: 'app-reservation',
@@ -22,12 +24,16 @@ export class ReservationComponent implements OnInit {
     invalidDateRange = false;
 
     // Step 2
-    selectedBike?: Bike;
-    selectedAccessory?: string;
-    selectedInsurance?: string;
+    selectedBikes: {
+        bike: Bike;
+        accessory?: string;
+        insurance?: string;
+    }[] = [];
+    accessories: Accessory[] = [];
+    insurances: Insurance[] = [];
     bikeDisponibili: Bike[] = [];
 
-    constructor(protected bikeSrv: BikeService, protected storeSrv: StoreService) {
+    constructor(protected bikeSrv: BikeService, protected storeSrv: StoreService, protected accessorySrv: AccessoryService, protected insuranceSrv: InsuranceService) {
         this.generateHours();
     }
 
@@ -35,6 +41,9 @@ export class ReservationComponent implements OnInit {
         this.storeSrv.getStores().subscribe(stores => {
             this.stores = stores;
         });
+        this.accessorySrv.getAccessories().subscribe(accesories => {
+            this.accessories = accesories
+        })
     }
 
     generateHours() {
@@ -61,8 +70,8 @@ export class ReservationComponent implements OnInit {
         this.invalidDateRange = end <= start;
     }
 
-    selectBike(bike: Bike) {
-        this.selectedBike = bike;
+    addBike(bike: Bike) {
+    this.selectedBikes.push({ bike });
     }
 
     goToStep(step: number) {
