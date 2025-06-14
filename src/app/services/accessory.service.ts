@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 export interface Accessory {
-    id?: string;
+    _id?: string;
     descrizione: string;
     prezzo: number;
 }
@@ -17,6 +17,10 @@ export class AccessoryService {
     constructor(private http: HttpClient) { }
 
     getAccessories(): Observable<Accessory[]> {
-        return this.http.get<Accessory[]>(this.conStr + '/api/accessories');
+        return this.http.get<{message: string; data: Accessory[]}>(this.conStr + '/api/accessories')
+            .pipe(
+                // Extract only the Data property
+                map(response => response.data)
+            );
     }
 }

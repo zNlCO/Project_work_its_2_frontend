@@ -185,10 +185,20 @@
           </div>
         </div>
 
+        <!-- Bici selezionate -->
         <div
           *ngFor="let selectedBike of selectedBikes; let i = index"
-          class="card shadow-sm border-0 rounded-4 bg-white p-4 d-flex flex-row align-items-center my-4"
+          class="card shadow-sm border-0 rounded-4 bg-white p-4 d-flex flex-row align-items-center my-4 position-relative"
         >
+          <!-- Bottone rimuovi -->
+          <button
+            type="button"
+            class="btn-close position-absolute top-0 end-0 m-3"
+            aria-label="Rimuovi bici"
+            (click)="removeBike(i)"
+            title="Rimuovi questa bici"
+            style="z-index: 2"
+          ></button>
           <!-- Immagine bici -->
           <div class="me-4 flex-shrink-0" style="width: 180px">
             <img
@@ -210,7 +220,7 @@
               <span class="badge bg-dark-subtle text-dark-emphasis me-2">
                 <i class="fas fa-euro-sign"></i>
                 {{ selectedBike?.bike?.idModello?.prezzo | number : "1.2-2" }}
-                /giorno
+                /ora
               </span>
               <span
                 class="badge bg-secondary-subtle text-secondary-emphasis me-2"
@@ -233,40 +243,92 @@
               </span>
             </div>
             <!-- Accessori -->
-            <div class="mb-2 mt-3">
-              <label class="form-label fw-semibold">Accessorio:</label>
+            <div class="mb-2 mt-3 d-flex align-items-center" style="gap: 1rem">
+              <label
+                class="form-label fw-semibold mb-0"
+                style="min-width: 130px"
+              >
+                <i class="fas fa-tools me-1 text-primary"></i> Accessorio:
+              </label>
               <select
-                class="form-select w-auto d-inline-block ms-2"
+                class="form-select px-3 py-2"
+                style="
+                  border-radius: 0.7rem;
+                  min-width: 260px;
+                  max-width: 320px;
+                "
                 [(ngModel)]="selectedBike.accessory"
                 [name]="'accessory' + i"
                 required
               >
-                <option value="" disabled selected>Scegli accessorio</option>
+                <option value="" disabled>Scegli accessorio</option>
                 <option
                   *ngFor="let accessory of accessories"
-                  [value]="accessory.id"
+                  [value]="accessory._id"
                 >
                   {{ accessory.descrizione }}
+                  <span *ngIf="accessory.prezzo">
+                    - €{{ accessory.prezzo | number : "1.2-2" }}
+                  </span>
                 </option>
               </select>
+              <span *ngIf="selectedBike.accessory">
+                <span class="badge bg-info-subtle text-info-emphasis ms-2">
+                  €{{
+                    getAccessoryPrice(selectedBike.accessory) | number : "1.2-2"
+                  }}
+                </span>
+              </span>
             </div>
+
             <!-- Assicurazione -->
-            <div class="mb-2">
-              <label class="form-label fw-semibold">Assicurazione:</label>
+            <div class="mb-2 d-flex align-items-center" style="gap: 1rem">
+              <label
+                class="form-label fw-semibold mb-0"
+                style="min-width: 130px"
+              >
+                <i class="fas fa-shield-alt me-1 text-success"></i>
+                Assicurazione:
+              </label>
               <select
-                class="form-select w-auto d-inline-block ms-2"
+                class="form-select px-3 py-2"
+                style="
+                  border-radius: 0.7rem;
+                  min-width: 260px;
+                  max-width: 320px;
+                "
                 [(ngModel)]="selectedBike.insurance"
-                name="insurance"
+                [name]="'insurance' + i"
                 required
               >
-                <option value="" disabled selected>Scegli assicurazione</option>
+                <option value="" disabled>Scegli assicurazione</option>
                 <option
                   *ngFor="let insurance of insurances"
-                  [value]="insurance.id"
+                  [value]="insurance._id"
                 >
                   {{ insurance.descrizione }}
+                  <span *ngIf="insurance.prezzo">
+                    - €{{ insurance.prezzo | number : "1.2-2" }}
+                  </span>
                 </option>
               </select>
+              <span *ngIf="selectedBike.insurance">
+                <span
+                  class="badge bg-success-subtle text-success-emphasis ms-2"
+                >
+                  €{{
+                    getInsurancePrice(selectedBike.insurance) | number : "1.2-2"
+                  }}
+                </span>
+              </span>
+            </div>
+
+            <!-- Prezzo totale per questa bici -->
+            <div class="mt-3 text-end">
+              <span class="fw-bold text-black-50 me-2">Totale:</span>
+              <span class="badge bg-danger-subtle text-danger-emphasis fs-5">
+                €{{ getBikeTotalPrice(selectedBike) | number : "1.2-2" }}
+              </span>
             </div>
           </div>
         </div>
@@ -343,7 +405,9 @@
       >
         Indietro
       </button>
-      <button class="btn my-red-btn bai-jamjuree-semibold">Prenota</button>
+      <button class="btn my-red-btn bai-jamjuree-semibold" (click)="prenota()">
+        Prenota
+      </button>
     </div>
   </div>
 </div>

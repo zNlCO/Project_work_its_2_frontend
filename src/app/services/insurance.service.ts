@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 export interface Insurance {
-    id?: string;
+    _id?: string;
     descrizione: string;
     prezzo: number;
 }
@@ -17,6 +17,8 @@ export class InsuranceService {
     constructor(private http: HttpClient) { }
 
     getInsurances(): Observable<Insurance[]> {
-        return this.http.get<Insurance[]>(this.conStr + '/api/insurances');
+        return this.http.get<{message: string; data: Insurance[]}>(this.conStr + '/api/insurances').pipe(
+            map(response => response.data)
+        );
     }
 }
