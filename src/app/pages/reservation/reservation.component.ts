@@ -26,7 +26,7 @@ export class ReservationComponent implements OnInit {
     // Step 2
     selectedBikes: {
         bike: Bike;
-        accessory?: string;
+        accessories?: [];
         insurance?: string;
     }[] = [];
     accessories: Accessory[] = [];
@@ -101,9 +101,11 @@ export class ReservationComponent implements OnInit {
         this.selectedBikes.splice(index, 1);
     }
 
-    getAccessoryPrice(accessoryId: string) {
-        const accessory = this.accessories.find(accessory => accessory._id === accessoryId);
-        return accessory ? accessory.prezzo : 0;
+    getAccessoriesTotalPrice(accessoryIds: string[]): number {
+    if (!accessoryIds || !Array.isArray(accessoryIds)) return 0;
+    return accessoryIds
+        .map(id => this.accessories.find(a => a._id === id)?.prezzo || 0)
+        .reduce((sum, price) => sum + price, 0);
     }
 
     getInsurancePrice(insuranceId: string) {
@@ -111,20 +113,20 @@ export class ReservationComponent implements OnInit {
         return insurance ? insurance.prezzo : 0;
     }
 
-getBikeTotalPrice(selectedBike: any): number {
+    getBikeTotalPrice(selectedBike: any): number {
     const bikePricePerHour = selectedBike?.bike?.idModello?.prezzo || 0;
-    const accessoryPrice = this.getAccessoryPrice(selectedBike.accessory) || 0;
+    const accessoriesPrice = this.getAccessoriesTotalPrice(selectedBike.accessories);
     const insurancePrice = this.getInsurancePrice(selectedBike.insurance) || 0;
 
     // Calcolo ore totali di prenotazione
     const start = new Date(`${this.pickupDate}T${this.pickupTime}`);
     const end = new Date(`${this.dropoffDate}T${this.dropoffTime}`);
     const diffMs = end.getTime() - start.getTime();
-    const hours = Math.max(Math.ceil(diffMs / (1000 * 60 * 60)), 1); // almeno 1 ora
+    const hours = Math.max(Math.ceil(diffMs / (1000 * 60 * 60)), 1);
 
     const bikeTotal = bikePricePerHour * hours;
-    return bikeTotal + accessoryPrice + insurancePrice;
-}
+    return bikeTotal + accessoriesPrice + insurancePrice;
+    }
 
     confirmGoBack() {
         if (this.currentStep == 1) return;

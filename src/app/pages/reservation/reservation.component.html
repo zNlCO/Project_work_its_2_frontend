@@ -241,173 +241,179 @@
               >
                 <i class="fas fa-bicycle"></i> Muscolare
               </span>
-            </div>
-            <!-- Accessori -->
-            <div class="mb-2 mt-3 d-flex align-items-center" style="gap: 1rem">
-              <label
-                class="form-label fw-semibold mb-0"
-                style="min-width: 130px"
-              >
-                <i class="fas fa-tools me-1 text-primary"></i> Accessorio:
-              </label>
-              <select
-                class="form-select px-3 py-2"
-                style="
-                  border-radius: 0.7rem;
-                  min-width: 260px;
-                  max-width: 320px;
-                "
-                [(ngModel)]="selectedBike.accessory"
-                [name]="'accessory' + i"
-                required
-              >
-                <option value="" disabled>Scegli accessorio</option>
-                <option
-                  *ngFor="let accessory of accessories"
-                  [value]="accessory._id"
+              <!-- Accessori -->
+              <div class="mb-2 mt-3">
+                <label
+                  class="form-label fw-semibold mb-1"
+                  style="min-width: 130px"
                 >
-                  {{ accessory.descrizione }}
-                  <span *ngIf="accessory.prezzo">
-                    - €{{ accessory.prezzo | number : "1.2-2" }}
-                  </span>
-                </option>
-              </select>
-              <span *ngIf="selectedBike.accessory">
-                <span class="badge bg-info-subtle text-info-emphasis ms-2">
-                  €{{
-                    getAccessoryPrice(selectedBike.accessory) | number : "1.2-2"
-                  }}
-                </span>
-              </span>
-            </div>
-
-            <!-- Assicurazione -->
-            <div class="mb-2 d-flex align-items-center" style="gap: 1rem">
-              <label
-                class="form-label fw-semibold mb-0"
-                style="min-width: 130px"
-              >
-                <i class="fas fa-shield-alt me-1 text-success"></i>
-                Assicurazione:
-              </label>
-              <select
-                class="form-select px-3 py-2"
-                style="
-                  border-radius: 0.7rem;
-                  min-width: 260px;
-                  max-width: 320px;
-                "
-                [(ngModel)]="selectedBike.insurance"
-                [name]="'insurance' + i"
-                required
-              >
-                <option value="" disabled>Scegli assicurazione</option>
-                <option
-                  *ngFor="let insurance of insurances"
-                  [value]="insurance._id"
-                >
-                  {{ insurance.descrizione }}
-                  <span *ngIf="insurance.prezzo">
-                    - €{{ insurance.prezzo | number : "1.2-2" }}
-                  </span>
-                </option>
-              </select>
-              <span *ngIf="selectedBike.insurance">
-                <span
-                  class="badge bg-success-subtle text-success-emphasis ms-2"
-                >
-                  €{{
-                    getInsurancePrice(selectedBike.insurance) | number : "1.2-2"
-                  }}
-                </span>
-              </span>
-            </div>
-
-            <!-- Prezzo totale per questa bici -->
-            <div class="mt-3 text-end">
-              <span class="fw-bold text-black-50 me-2">Totale:</span>
-              <span class="badge bg-danger-subtle text-danger-emphasis fs-5">
-                €{{ getBikeTotalPrice(selectedBike) | number : "1.2-2" }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SEZIONE AGGIUNTA BICI A PRENOTAZIONE: lista bici disponibili -->
-      <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-          <div class="col" *ngFor="let bike of bikeDisponibili">
-            <div
-              class="bike-card-custom p-3 text-center h-100 d-flex flex-column justify-content-between shadow-sm"
-            >
-              <img
-                [src]="bike.idModello.imgUrl"
-                alt="Immagine bici"
-                class="img-fluid rounded bike-img mb-3"
-                style="
-                  max-height: 160px;
-                  object-fit: cover;
-                  background: #f8f9fa;
-                "
-              />
-              <div class="mb-2 text-break">
-                <h5 class="bai-jamjuree-bold-italic text-danger mb-1">
-                  {{ bike.idModello.type || "N/A" }}
-                </h5>
-                <div class="small text-secondary mb-1">
-                  {{ bike.idModello.descrizione || "N/A" }}
+                  <i class="fas fa-tools me-1 text-primary"></i> Accessori:
+                </label>
+                <div class="input-group" style="max-width: 340px">
+                  <select
+                    class="form-select"
+                    style="border-radius: 0.7rem"
+                    [(ngModel)]="selectedBike.accessories"
+                    [name]="'accessories' + i"
+                    multiple
+                    required
+                  >
+                    <option
+                      *ngFor="let accessory of accessories"
+                      [ngValue]="accessory._id"
+                    >
+                      {{ accessory.descrizione }}
+                      <span *ngIf="accessory.prezzo">
+                        - €{{ accessory.prezzo | number : "1.2-2" }}
+                      </span>
+                    </option>
+                  </select>
                 </div>
-                <div class="fw-bold text-success fs-5 mt-2">
-                  € {{ bike.idModello.prezzo | number : "1.2-2" }}
-                  <span class="fs-6 text-secondary">/ora</span>
-                </div>
-                <!-- Badge taglia e tipo -->
-                <div class="mt-2">
-                  <span
-                    class="badge bg-secondary-subtle text-secondary-emphasis me-2"
-                  >
-                    <i class="fas fa-ruler-combined"></i> Taglia:
-                    {{ bike.idModello.size }}
+                <div *ngIf="selectedBike.accessories?.length" class="mt-2">
+                  <span class="badge bg-info-subtle text-info-emphasis">
+                    Totale accessori: €{{
+                      getAccessoriesTotalPrice(selectedBike.accessories ?? [])
+                        | number : "1.2-2"
+                    }}
                   </span>
-                  <span
-                    class="badge bg-success-subtle text-success-emphasis"
-                    *ngIf="bike.idModello.elettrica"
-                  >
-                    <i class="fas fa-bolt"></i> Elettrica
-                    <i class="fas fa-check-circle ms-1"></i>
-                  </span>
-                  <span
-                    class="badge bg-secondary-subtle text-secondary-emphasis"
-                    *ngIf="!bike.idModello.elettrica"
-                  >
-                    <i class="fas fa-bicycle"></i> Muscolare
+                  <span class="ms-2 small text-secondary">
+                    ({{ selectedBike.accessories?.length }} selezionati)
                   </span>
                 </div>
               </div>
-              <button
-                class="btn my-red-btn bai-jamjuree-semibold mt-3 w-100"
-                (click)="addBike(bike)"
+
+              <!-- Assicurazione -->
+              <div class="mb-2 d-flex align-items-center" style="gap: 1rem">
+                <label
+                  class="form-label fw-semibold mb-0"
+                  style="min-width: 130px"
+                >
+                  <i class="fas fa-shield-alt me-1 text-success"></i>
+                  Assicurazione:
+                </label>
+                <select
+                  class="form-select px-3 py-2"
+                  style="
+                    border-radius: 0.7rem;
+                    min-width: 260px;
+                    max-width: 320px;
+                  "
+                  [(ngModel)]="selectedBike.insurance"
+                  [name]="'insurance' + i"
+                  required
+                >
+                  <option value="" disabled>Scegli assicurazione</option>
+                  <option
+                    *ngFor="let insurance of insurances"
+                    [value]="insurance._id"
+                  >
+                    {{ insurance.descrizione }}
+                    <span *ngIf="insurance.prezzo">
+                      - €{{ insurance.prezzo | number : "1.2-2" }}
+                    </span>
+                  </option>
+                </select>
+                <span *ngIf="selectedBike.insurance">
+                  <span
+                    class="badge bg-success-subtle text-success-emphasis ms-2"
+                  >
+                    €{{
+                      getInsurancePrice(selectedBike.insurance)
+                        | number : "1.2-2"
+                    }}
+                  </span>
+                </span>
+              </div>
+
+              <!-- Prezzo totale per questa bici -->
+              <div class="mt-3 text-end">
+                <span class="fw-bold text-black-50 me-2">Totale:</span>
+                <span class="badge bg-danger-subtle text-danger-emphasis fs-5">
+                  €{{ getBikeTotalPrice(selectedBike) | number : "1.2-2" }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEZIONE AGGIUNTA BICI A PRENOTAZIONE: lista bici disponibili -->
+        <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+            <div class="col" *ngFor="let bike of bikeDisponibili">
+              <div
+                class="bike-card-custom p-3 text-center h-100 d-flex flex-column justify-content-between shadow-sm"
               >
-                Scegli
-              </button>
+                <img
+                  [src]="bike.idModello.imgUrl"
+                  alt="Immagine bici"
+                  class="img-fluid rounded bike-img mb-3"
+                  style="
+                    max-height: 160px;
+                    object-fit: cover;
+                    background: #f8f9fa;
+                  "
+                />
+                <div class="mb-2 text-break">
+                  <h5 class="bai-jamjuree-bold-italic text-danger mb-1">
+                    {{ bike.idModello.type || "N/A" }}
+                  </h5>
+                  <div class="small text-secondary mb-1">
+                    {{ bike.idModello.descrizione || "N/A" }}
+                  </div>
+                  <div class="fw-bold text-success fs-5 mt-2">
+                    € {{ bike.idModello.prezzo | number : "1.2-2" }}
+                    <span class="fs-6 text-secondary">/ora</span>
+                  </div>
+                  <!-- Badge taglia e tipo -->
+                  <div class="mt-2">
+                    <span
+                      class="badge bg-secondary-subtle text-secondary-emphasis me-2"
+                    >
+                      <i class="fas fa-ruler-combined"></i> Taglia:
+                      {{ bike.idModello.size }}
+                    </span>
+                    <span
+                      class="badge bg-success-subtle text-success-emphasis"
+                      *ngIf="bike.idModello.elettrica"
+                    >
+                      <i class="fas fa-bolt"></i> Elettrica
+                      <i class="fas fa-check-circle ms-1"></i>
+                    </span>
+                    <span
+                      class="badge bg-secondary-subtle text-secondary-emphasis"
+                      *ngIf="!bike.idModello.elettrica"
+                    >
+                      <i class="fas fa-bicycle"></i> Muscolare
+                    </span>
+                  </div>
+                </div>
+                <button
+                  class="btn my-red-btn bai-jamjuree-semibold mt-3 w-100"
+                  (click)="addBike(bike)"
+                >
+                  Scegli
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Pulsanti -->
-    <div class="d-flex justify-content-between">
-      <button
-        class="btn my-red-btn-opposite bai-jamjuree-semibold"
-        (click)="confirmGoBack()"
-      >
-        Indietro
-      </button>
-      <button class="btn my-red-btn bai-jamjuree-semibold" (click)="prenota()">
-        Prenota
-      </button>
+      <!-- Pulsanti -->
+      <div class="d-flex justify-content-between">
+        <button
+          class="btn my-red-btn-opposite bai-jamjuree-semibold"
+          (click)="confirmGoBack()"
+        >
+          Indietro
+        </button>
+        <button
+          class="btn my-red-btn bai-jamjuree-semibold"
+          (click)="prenota()"
+        >
+          Prenota
+        </button>
+      </div>
     </div>
   </div>
 </div>
