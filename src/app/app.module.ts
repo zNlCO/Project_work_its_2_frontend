@@ -26,6 +26,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { MainComponent } from './pages/main/main.component';
 import { BackofficeComponent } from './pages/backoffice/backoffice.component';
 import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
+import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
 
 @NgModule({
     declarations: [
@@ -49,6 +50,7 @@ import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.compone
         NavbarComponent,
         MainComponent,
         BackofficeComponent,
+        MyReservationsComponent,
     ],
     imports: [
         BrowserModule,

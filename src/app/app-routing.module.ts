@@ -14,6 +14,7 @@ import { ActivateComponent } from './pages/activate/activate.component';
 import { MainComponent } from './pages/main/main.component';
 import { BackofficeComponent } from './pages/backoffice/backoffice.component';
 import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
+import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
 
 const routes: Routes = [
     {
@@ -45,6 +46,10 @@ const routes: Routes = [
                 path: 'reservation',
                 component: ReservationComponent
             },
+            {
+                path: 'my-reservations',
+                component: MyReservationsComponent
+            }
         ]
     },
     {

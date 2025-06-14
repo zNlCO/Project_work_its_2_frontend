@@ -1,0 +1,81 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Le tue prenotazioni</h2>
+  <div *ngIf="myReservations.length === 0" class="alert alert-info">
+    Nessuna prenotazione trovata.
+  </div>
+  <div *ngFor="let prenotazione of myReservations" class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title mb-3">
+        <i class="fas fa-bicycle text-danger me-2"></i>
+        Prenotazione di {{ prenotazione.idUser }}
+      </h5>
+      <ul class="list-unstyled mb-3">
+        <li>
+          <strong>Ritiro:</strong>
+          {{ prenotazione.pickupLocation.location }}<br />
+          <strong>Consegna:</strong>
+          {{ prenotazione.dropLocation.location }}
+        </li>
+        <li>
+          <strong>Dal:</strong>
+          {{ prenotazione.start | date : "mediumDate" }}<br />
+          <strong>Al:</strong>
+          {{ prenotazione.stop | date : "mediumDate" }}
+        </li>
+        <li>
+          <strong>Stato:</strong>
+          <span
+            class="badge bg-success"
+            *ngIf="prenotazione.status === 'confermata'"
+            >Confermata</span
+          >
+          <span class="badge bg-danger" *ngIf="prenotazione.cancelled"
+            >Annullata</span
+          >
+        </li>
+      </ul>
+      <div *ngFor="let b of prenotazione.bikes" class="mb-2">
+        <div class="d-flex align-items-center">
+          <img
+            [src]="b.bike.idModello.imgUrl"
+            alt="Bici"
+            width="80"
+            class="rounded me-3"
+            style="object-fit: cover"
+          />
+          <div>
+            <div>
+              <strong>{{ b.bike.idModello.type }}</strong>
+              <span class="badge bg-secondary ms-2"
+                >Taglia: {{ b.bike.idModello.size }}</span
+              >
+              <span
+                class="badge bg-success ms-2"
+                *ngIf="b.bike.idModello.elettrica"
+                >Elettrica</span
+              >
+              <span
+                class="badge bg-secondary ms-2"
+                *ngIf="!b.bike.idModello.elettrica"
+                >Muscolare</span
+              >
+            </div>
+            <div class="text-muted small">
+              {{ b.bike.idModello.descrizione }}
+            </div>
+            <div>
+              <span *ngIf="b.accessori?.length">
+                <i class="fas fa-tools me-1"></i> Accessori:
+                {{ b.accessori.join(", ") }}
+              </span>
+              <span *ngIf="b.assicurazione" class="ms-3">
+                <i class="fas fa-shield-alt me-1"></i> Assicurazione:
+                {{ b.assicurazione }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

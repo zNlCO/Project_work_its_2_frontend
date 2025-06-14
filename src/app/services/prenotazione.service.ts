@@ -1,19 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Store } from './store.service';
+import { Bike } from './bike.service';
 
 export interface Prenotazione {
     id: string;
     idUser: string;
     bikes: [{
-        id: string;
-        quantity: number;
+        bike: Bike;
         accessori: [String];
         assicurazione: String
     }];
     start: Date;
     stop: Date;
-    pickupLocation: string;
-    dropLocation: string;
+    pickupLocation: Store;
+    dropLocation: Store;
     manutenzione: boolean;
     cancelled: boolean;
     status: String;
