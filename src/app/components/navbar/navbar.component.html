@@ -75,7 +75,10 @@
       *ngIf="isDropdownOpen"
     >
       <li>
-        <a [routerLink]="['/backoffice/home']" class="dropdown-item"
+        <a
+          *appIfAuthenticatedOperator
+          [routerLink]="['/backoffice/home']"
+          class="dropdown-item"
           >Backoffice</a
         >
       </li>

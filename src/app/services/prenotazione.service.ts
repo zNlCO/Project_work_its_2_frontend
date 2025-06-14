@@ -25,5 +25,7 @@ export interface Prenotazione {
 })
 export class PrenotazioneService {
 
+    conStr = 'https://cloneride-spa.onrender.com'
+
     constructor(private http: HttpClient) { }
 }

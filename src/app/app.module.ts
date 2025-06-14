@@ -27,6 +27,7 @@ import { MainComponent } from './pages/main/main.component';
 import { BackofficeComponent } from './pages/backoffice/backoffice.component';
 import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
 import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
+import { IfAuthenticatedOperatorDirective } from './directives/if-authenticated-operator.directive';
 
 @NgModule({
     declarations: [
@@ -51,6 +52,7 @@ import { MyReservationsComponent } from './pages/my-reservations/my-reservations
         MainComponent,
         BackofficeComponent,
         MyReservationsComponent,
+        IfAuthenticatedOperatorDirective,
     ],
     imports: [
         BrowserModule,
