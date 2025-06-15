@@ -108,8 +108,8 @@ export interface PrenotazioneInput {
 })
 export class PrenotazioneService {
 
-    //conStr = 'https://cloneride-spa.onrender.com'
-    conStr = 'http://localhost:3001'
+    conStr = 'https://cloneride-spa.onrender.com'
+    //conStr = 'http://localhost:3001'
 
     constructor(private http: HttpClient) { }
 
