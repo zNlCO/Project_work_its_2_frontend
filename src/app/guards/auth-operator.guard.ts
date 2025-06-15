@@ -1,24 +1,19 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
+import { map, take, tap } from 'rxjs';
 
 export const authOperatorGuard: CanActivateFn = (route, state) => {
   const authSrv = inject(AuthService);
   const router = inject(Router);
 
-  const isAuthenticated = authSrv.isLoggedIn();
-
-  if (isAuthenticated && authSrv.currentUser$) {
-    authSrv.currentUser$.subscribe((user) => {
-      console.log(user);
-      if (user?.isOperator) {
-        return true;
+  return authSrv.currentUser$.pipe(
+    take(1), // Prendi solo il primo valore
+    tap((user) => {
+      if (!user?.isOperator) {
+        router.navigate(['/']);
       }
-      return false;
-    });
-    return false;
-  } else {
-    router.navigate(['/']);
-    return false;
-  }
+    }),
+    map((user) => !!user?.isOperator)
+  );
 };
