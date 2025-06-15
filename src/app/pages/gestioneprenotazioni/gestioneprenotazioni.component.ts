@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PrenotazioneService, PrenotazioneGualti } from '../../services/prenotazione.service'; // aggiorna con il path corretto
+import { Store,StoreService } from '../../services/store.service';
 
 interface FiltriPrenotazioni {
   utente?: string;
@@ -17,19 +18,14 @@ export class GestioneprenotazioniComponent implements OnInit {
   
   prenotazioni: PrenotazioneGualti[] = [];
   prenotazioniFiltrate: PrenotazioneGualti[] = [];
+  stores: Store[] = []
   
   filtri: FiltriPrenotazioni = {};
   
   loading = false;
   error: string | null = null;
   
-  puntiRitiro = [
-    { value: 'all', label: 'Tutti i Punti' },
-    { value: 'Sto cazzo', label: 'Sto cazzo' },  // usa i nomi reali
-    // aggiungi altri punti ritiro se necessario
-  ];
-
-  constructor(private prenotazioneService: PrenotazioneService) {}
+  constructor(private prenotazioneService: PrenotazioneService, private storeService: StoreService) {}
 
   ngOnInit(): void {
     this.caricaPrenotazioniDaAPI();
@@ -51,6 +47,17 @@ export class GestioneprenotazioniComponent implements OnInit {
         console.error('Errore API:', err);
       }
     });
+
+    this.storeService.getStores().subscribe({
+      next: (data) => {
+        this.stores = data;
+      },
+      error: (err) => {
+        this.error = 'Errore nel caricamento degli stores';
+        this.loading = false;
+        console.error('Errore API:', err);
+      }
+    })
   }
 
   applicaFiltri(): void {
@@ -65,7 +72,7 @@ export class GestioneprenotazioniComponent implements OnInit {
     }
 
     if (this.filtri.puntoRitiro && this.filtri.puntoRitiro !== 'all') {
-      const nomePuntoSelezionato = this.puntiRitiro.find(pr => pr.value === this.filtri.puntoRitiro)?.label;
+      const nomePuntoSelezionato = this.stores.find(pr => pr.location === this.filtri.puntoRitiro)?.location;
       if (nomePuntoSelezionato) {
         risultatoFiltrato = risultatoFiltrato.filter(p => p.pickupLocation.location === nomePuntoSelezionato);
       }

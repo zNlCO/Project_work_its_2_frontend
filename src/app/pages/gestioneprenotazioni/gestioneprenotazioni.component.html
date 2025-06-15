@@ -18,8 +18,8 @@
       <select id="locationFilter" 
               class="custom-select dark-select"
               (change)="onFiltroPuntoRitiroChange($event)">
-        <option *ngFor="let punto of puntiRitiro" [value]="punto.value">
-          {{punto.label}}
+        <option *ngFor="let punto of stores" [value]="punto.location">
+          {{punto.location}}
         </option>
       </select>
     </div>
