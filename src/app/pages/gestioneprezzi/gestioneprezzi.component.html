@@ -4,6 +4,10 @@
   </header>
 
   <section class="content-area">
+    <!-- Messaggio di errore -->
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
 
     <div class="price-section">
       <div class="section-header-actions">
@@ -14,14 +18,12 @@
           <thead>
             <tr>
               <th>Nome Accessorio</th>
-              <th>Descrizione</th>
               <th>Prezzo Attuale</th>
               <th class="actions-column">Azione</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let accessorio of accessori">
-              <td>{{ accessorio.nome }}</td>
               <td>{{ accessorio.descrizione }}</td>
               <td>{{ accessorio.prezzo | currency:'EUR':'symbol':'1.2-2' }}</td>
               <td class="actions-cell">
@@ -44,15 +46,13 @@
           <thead>
             <tr>
               <th>Nome Copertura</th>
-              <th>Dettagli Principali</th>
               <th>Prezzo Attuale</th>
               <th class="actions-column">Azione</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let assicurazione of assicurazioni">
-              <td>{{ assicurazione.nome }}</td>
-              <td>{{ assicurazione.dettagli }}</td>
+              <td>{{ assicurazione.descrizione }}</td>
               <td>{{ assicurazione.prezzo | currency:'EUR':'symbol':'1.2-2' }}</td>
               <td class="actions-cell">
                 <button class="btn btn-table-action btn-edit" title="Modifica Prezzo Assicurazione" (click)="openEditModal(assicurazione, 'Assicurazione')">
