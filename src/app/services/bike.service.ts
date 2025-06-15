@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { BikeModel } from './bike-model.service';
 import { Store } from './store.service';
+import { BikeGualti } from './prenotazione.service';
 
 export interface Bike {
   _id?: string;
@@ -38,6 +39,27 @@ export class BikeService {
     };
     return this.http
       .post<{ message: string; data: Bike[] }>(
+        this.conStr + '/api/bikes/disponibili',
+        body
+      )
+      .pipe(
+        // Extract only the Data property
+        map((response) => response.data)
+      );
+  }
+
+  getBikesDisponibiliGualti(
+    start: Date,
+    end: Date,
+    pickup_location: string
+  ): Observable<BikeGualti[]> {
+    const body = {
+      start,
+      end,
+      pickup_location,
+    };
+    return this.http
+      .post<{ message: string; data: BikeGualti[] }>(
         this.conStr + '/api/bikes/disponibili',
         body
       )

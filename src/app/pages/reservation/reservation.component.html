@@ -202,7 +202,7 @@
           <!-- Immagine bici -->
           <div class="me-4 flex-shrink-0" style="width: 180px">
             <img
-              [src]="selectedBike?.bike?.idModello?.imgUrl"
+              [src]="selectedBike?.id?.idModello?.imgUrl"
               alt="Immagine bici"
               class="img-fluid rounded"
               style="max-height: 160px; object-fit: cover; background: #f8f9fa"
@@ -211,33 +211,33 @@
           <!-- Dati bici -->
           <div class="flex-grow-1">
             <h4 class="bai-jamjuree-bold-italic text-danger mb-2">
-              {{ selectedBike?.bike?.idModello?.type }}
+              {{ selectedBike?.id?.idModello?.type }}
             </h4>
             <div class="mb-2 text-secondary">
-              {{ selectedBike?.bike?.idModello?.descrizione }}
+              {{ selectedBike?.id?.idModello?.descrizione }}
             </div>
             <div class="mb-2">
               <span class="badge bg-dark-subtle text-dark-emphasis me-2">
                 <i class="fas fa-euro-sign"></i>
-                {{ selectedBike?.bike?.idModello?.prezzo | number : "1.2-2" }}
+                {{ selectedBike?.id?.idModello?.prezzo | number : "1.2-2" }}
                 /ora
               </span>
               <span
                 class="badge bg-secondary-subtle text-secondary-emphasis me-2"
               >
                 <i class="fas fa-ruler-combined"></i> Taglia:
-                {{ selectedBike?.bike?.idModello?.size }}
+                {{ selectedBike?.id?.idModello?.size }}
               </span>
               <span
                 class="badge bg-success-subtle text-success-emphasis"
-                *ngIf="selectedBike?.bike?.idModello?.elettrica"
+                *ngIf="selectedBike?.id?.idModello?.elettrica"
               >
                 <i class="fas fa-bolt"></i> Elettrica
                 <i class="fas fa-check-circle ms-1"></i>
               </span>
               <span
                 class="badge bg-secondary-subtle text-secondary-emphasis"
-                *ngIf="!selectedBike?.bike?.idModello?.elettrica"
+                *ngIf="!selectedBike?.id?.idModello?.elettrica"
               >
                 <i class="fas fa-bicycle"></i> Muscolare
               </span>
@@ -253,31 +253,31 @@
                   <select
                     class="form-select"
                     style="border-radius: 0.7rem"
-                    [(ngModel)]="selectedBike.accessories"
+                    [(ngModel)]="selectedBike.accessori"
                     [name]="'accessories' + i"
                     multiple
                     required
                   >
                     <option
-                      *ngFor="let accessory of accessories"
-                      [ngValue]="accessory._id"
+                      *ngFor="let accessorio of accessori"
+                      [ngValue]="accessorio"
                     >
-                      {{ accessory.descrizione }}
-                      <span *ngIf="accessory.prezzo">
-                        - €{{ accessory.prezzo | number : "1.2-2" }}
+                      {{ accessorio.descrizione }}
+                      <span *ngIf="accessorio.prezzo">
+                        - €{{ accessorio.prezzo | number : "1.2-2" }}
                       </span>
                     </option>
                   </select>
                 </div>
-                <div *ngIf="selectedBike.accessories?.length" class="mt-2">
+                <div *ngIf="selectedBike.accessori?.length" class="mt-2">
                   <span class="badge bg-info-subtle text-info-emphasis">
                     Totale accessori: €{{
-                      getAccessoriesTotalPrice(selectedBike.accessories ?? [])
+                      getAccessoriesTotalPrice(selectedBike.accessori ?? [])
                         | number : "1.2-2"
                     }}
                   </span>
                   <span class="ms-2 small text-secondary">
-                    ({{ selectedBike.accessories?.length }} selezionati)
+                    ({{ selectedBike.accessori?.length }} selezionati)
                   </span>
                 </div>
               </div>
@@ -298,27 +298,27 @@
                     min-width: 260px;
                     max-width: 320px;
                   "
-                  [(ngModel)]="selectedBike.insurance"
+                  [(ngModel)]="selectedBike.assicurazione"
                   [name]="'insurance' + i"
                   required
                 >
                   <option value="" disabled>Scegli assicurazione</option>
                   <option
-                    *ngFor="let insurance of insurances"
-                    [value]="insurance._id"
+                    *ngFor="let assicurazione of assicurazioni"
+                    [ngValue]="assicurazione"
                   >
-                    {{ insurance.descrizione }}
-                    <span *ngIf="insurance.prezzo">
-                      - €{{ insurance.prezzo | number : "1.2-2" }}
+                    {{ assicurazione.descrizione }}
+                    <span *ngIf="assicurazione.prezzo">
+                      - €{{ assicurazione.prezzo | number : "1.2-2" }}
                     </span>
                   </option>
                 </select>
-                <span *ngIf="selectedBike.insurance">
+                <span *ngIf="selectedBike.assicurazione">
                   <span
                     class="badge bg-success-subtle text-success-emphasis ms-2"
                   >
                     €{{
-                      getInsurancePrice(selectedBike.insurance)
+                      getInsurancePrice(selectedBike.assicurazione)
                         | number : "1.2-2"
                     }}
                   </span>
@@ -338,6 +338,25 @@
 
         <!-- SEZIONE AGGIUNTA BICI A PRENOTAZIONE: lista bici disponibili -->
         <div class="container">
+          <!-- Messaggio quando non ci sono bici disponibili -->
+          <div *ngIf="noBikesAvailable" class="text-center py-5">
+            <div class="mb-4">
+              <i class="fas fa-bicycle text-muted" style="font-size: 4rem"></i>
+            </div>
+            <h4 class="text-muted mb-3">Nessuna bici disponibile</h4>
+            <p class="text-secondary mb-4">
+              Non ci sono biciclette disponibili per le date e il luogo
+              selezionati.<br />
+              Prova a modificare le date o il luogo di ritiro.
+            </p>
+            <button
+              class="btn my-red-btn-opposite bai-jamjuree-semibold"
+              (click)="confirmGoBack()"
+            >
+              <i class="fas fa-arrow-left me-1"></i> Modifica ricerca
+            </button>
+          </div>
+
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
             <div class="col" *ngFor="let bike of bikeDisponibili">
               <div
@@ -463,6 +482,52 @@
       >
         <i class="fas fa-user-plus me-1"></i> Registrati
       </a>
+    </div>
+  </div>
+</div>
+
+<!-- Popup Successo -->
+<div
+  *ngIf="showSuccessPopup"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="background: rgba(0, 0, 0, 0.5); z-index: 2000"
+>
+  <div
+    class="bg-white rounded-4 shadow-lg p-4 position-relative"
+    style="min-width: 320px; max-width: 90vw"
+  >
+    <!-- X visibile in alto a destra -->
+    <button
+      type="button"
+      class="btn position-absolute top-0 end-0 m-2 p-0"
+      style="
+        font-size: 2rem;
+        line-height: 1;
+        color: #dc3545;
+        background: none;
+        border: none;
+      "
+      aria-label="Chiudi"
+      [routerLink]="['/']"
+    >
+      &times;
+    </button>
+    <div class="mb-3 text-center">
+      <div class="mb-3">
+        <i class="fas fa-check-circle text-success" style="font-size: 4rem"></i>
+      </div>
+      <h5 class="text-success mb-3">
+        <i class="fas fa-calendar-check me-2"></i>Prenotazione Completata!
+      </h5>
+      <p class="mb-0 text-black">
+        La tua prenotazione è stata <b>confermata</b> con successo.<br />
+        Riceverai una email di conferma a breve.
+      </p>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button class="btn my-red-btn bai-jamjuree-semibold" [routerLink]="['/']">
+        <i class="fas fa-home me-1"></i> Torna alla Home
+      </button>
     </div>
   </div>
 </div>
