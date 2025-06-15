@@ -149,7 +149,7 @@ export class PrenotazioneService {
         }
 
         getAnalytics(): Observable<Analytics> {
-          return this.http.get<Analytics>(this.conStr + 'api/bookings/analytics');
+          return this.http.get<Analytics>(this.conStr + '/api/bookings/analytics');
         }
 
 

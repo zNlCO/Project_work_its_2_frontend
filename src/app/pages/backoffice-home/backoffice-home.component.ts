@@ -1,5 +1,6 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
+import { PrenotazioneService } from '../../services/prenotazione.service';
 
 // Registra tutti i componenti di Chart.js (controller, scale, ecc.)
 Chart.register(...registerables);
@@ -9,19 +10,41 @@ Chart.register(...registerables);
   templateUrl: './backoffice-home.component.html',
   styleUrls: ['./backoffice-home.component.scss', '../../app.component.scss']
 })
-export class BackofficeHomeComponent implements AfterViewInit {
+export class BackofficeHomeComponent implements AfterViewInit, OnInit {
 
-  // Dati per le card delle statistiche chiave (ora sono dinamici)
-  prenotazioniMeseCorrente: number = 125;
-  ricavoMeseCorrente: number = 3450;
-  biciNoleggiate: number = 78;
-  biciInManutenzione: number = 3;
+  // Dati per le card delle statistiche chiave (solo mese corrente)
+  prenotazioniMeseCorrente: number = 0;
+  ricavoMeseCorrente: number = 0;
+  biciNoleggiate: number = 0;
+  biciInManutenzione: number = 0;
 
   // Riferimenti ai tag <canvas> nel template HTML
   @ViewChild('prenotazioniChart') private prenotazioniChartRef!: ElementRef;
   @ViewChild('ricaviChart') private ricaviChartRef!: ElementRef;
 
-  constructor() { }
+  constructor(private prenotazioneService: PrenotazioneService) { }
+
+  ngOnInit(): void {
+    this.loadAnalytics();
+  }
+
+  private loadAnalytics(): void {
+    this.prenotazioneService.getAnalytics().subscribe({
+      next: (analytics) => {
+        // Aggiorna solo i dati del mese corrente per le card
+        this.prenotazioniMeseCorrente = analytics.prenotazioniMeseCorrente;
+        this.ricavoMeseCorrente = analytics.ricaviMeseCorrente;
+        this.biciNoleggiate = analytics.biciInNoleggio;
+        this.biciInManutenzione = analytics.biciInManutenzione;
+
+        // Aggiorna i grafici con i dati degli ultimi 6 mesi
+        this.updateCharts(analytics);
+      },
+      error: (error) => {
+        console.error('Error loading analytics:', error);
+      }
+    });
+  }
 
   // Usiamo ngAfterViewInit per essere sicuri che i <canvas> siano già nel DOM
   ngAfterViewInit(): void {
@@ -36,12 +59,30 @@ export class BackofficeHomeComponent implements AfterViewInit {
     const months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
     const labels: string[] = [];
     const today = new Date();
+    const currentMonth = today.getMonth();
 
-    for (let i = 5; i >= 0; i--) {
-      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-      labels.push(months[d.getMonth()]);
+    // Partiamo dal mese corrente e andiamo indietro di 5 mesi
+    for (let i = 0; i < 6; i++) {
+      const monthIndex = (currentMonth - i + 12) % 12; // +12 per gestire i mesi negativi
+      labels.unshift(months[monthIndex]); // unshift per avere l'ordine cronologico corretto
     }
     return labels;
+  }
+
+  private updateCharts(analytics: any): void {
+    // Aggiorna il grafico delle prenotazioni
+    const prenotazioniChart = Chart.getChart(this.prenotazioniChartRef.nativeElement);
+    if (prenotazioniChart) {
+      prenotazioniChart.data.datasets[0].data = analytics.prenotazioniUltimi6Mesi;
+      prenotazioniChart.update();
+    }
+
+    // Aggiorna il grafico dei ricavi
+    const ricaviChart = Chart.getChart(this.ricaviChartRef.nativeElement);
+    if (ricaviChart) {
+      ricaviChart.data.datasets[0].data = analytics.ricaviUltimi6Mesi;
+      ricaviChart.update();
+    }
   }
 
   /**
@@ -53,7 +94,7 @@ export class BackofficeHomeComponent implements AfterViewInit {
       labels: labels,
       datasets: [{
         label: 'Numero di Prenotazioni',
-        data: [65, 59, 80, 81, 95, 125], // Dati di esempio
+        data: [0, 0, 0, 0, 0, 0], // Placeholder data, will be updated when analytics are loaded
         backgroundColor: 'rgba(0, 170, 255, 0.6)',
         borderColor: 'rgba(0, 170, 255, 1)',
         borderWidth: 1,
@@ -70,7 +111,7 @@ export class BackofficeHomeComponent implements AfterViewInit {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: false // Nascondiamo la legenda per un look più pulito
+            display: false
           },
           tooltip: {
             backgroundColor: '#2a2a2a',
@@ -102,7 +143,7 @@ export class BackofficeHomeComponent implements AfterViewInit {
       labels: labels,
       datasets: [{
         label: 'Ricavi Mensili (€)',
-        data: [1800, 1950, 2500, 2200, 2800, 3450], // Dati di esempio
+        data: [0, 0, 0, 0, 0, 0], // Placeholder data, will be updated when analytics are loaded
         fill: true,
         backgroundColor: 'rgba(40, 167, 69, 0.2)',
         borderColor: '#28a745',
@@ -110,7 +151,7 @@ export class BackofficeHomeComponent implements AfterViewInit {
         pointBorderColor: '#28a745',
         pointHoverBackgroundColor: '#28a745',
         pointHoverBorderColor: '#ffffff',
-        tension: 0.4 // Per linee più morbide
+        tension: 0.4
       }]
     };
 
@@ -120,22 +161,22 @@ export class BackofficeHomeComponent implements AfterViewInit {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-         plugins: {
+        plugins: {
           legend: {
             display: false
           },
-           tooltip: {
+          tooltip: {
             backgroundColor: '#2a2a2a',
             titleColor: '#e0e0e0',
             bodyColor: '#e0e0e0',
           }
         },
         scales: {
-           y: {
+          y: {
             beginAtZero: true,
             ticks: { 
-                color: '#a0a0a0',
-                callback: (value) => `€ ${value}` // Aggiunge il simbolo dell'euro
+              color: '#a0a0a0',
+              callback: (value) => `€ ${value}`
             },
             grid: { color: 'rgba(255, 255, 255, 0.1)' }
           },
