@@ -1,43 +1,39 @@
-<div class="container mt-5">
+<div class="container mt-5 height-80">
   <h2 class="mb-4">Le tue prenotazioni</h2>
+
   <div *ngIf="myReservations.length === 0" class="alert alert-info">
     Nessuna prenotazione trovata.
   </div>
+
   <div *ngFor="let prenotazione of myReservations" class="card mb-4 shadow-sm">
     <div class="card-body">
       <h5 class="card-title mb-3">
         <i class="fas fa-bicycle text-danger me-2"></i>
-        Prenotazione di {{ prenotazione.idUser }}
+        Prenotazione di {{ prenotazione.idUser.name }}
       </h5>
+
       <ul class="list-unstyled mb-3">
         <li>
-          <strong>Ritiro:</strong>
-          {{ prenotazione.pickupLocation.location }}<br />
-          <strong>Consegna:</strong>
-          {{ prenotazione.dropLocation.location }}
+          <strong>Ritiro:</strong> {{ prenotazione.pickupLocation.location }}<br />
+          <strong>Consegna:</strong> {{ prenotazione.dropLocation.location }}
         </li>
         <li>
-          <strong>Dal:</strong>
-          {{ prenotazione.start | date : "mediumDate" }}<br />
-          <strong>Al:</strong>
-          {{ prenotazione.stop | date : "mediumDate" }}
+          <strong>Dal:</strong> {{ prenotazione.start | date : "medium" }}<br />
+          <strong>Al:</strong> {{ prenotazione.stop | date : "medium" }}
         </li>
         <li>
           <strong>Stato:</strong>
-          <span
-            class="badge bg-success"
-            *ngIf="prenotazione.status === 'confermata'"
-            >Confermata</span
-          >
-          <span class="badge bg-danger" *ngIf="prenotazione.cancelled"
-            >Annullata</span
-          >
+          <span class="badge bg-success" *ngIf="prenotazione.status === 'Prenotato'">Prenotato</span>
+          <span class="badge bg-warning text-dark" *ngIf="prenotazione.status === 'In corso'">In corso</span>
+          <span class="badge bg-secondary" *ngIf="prenotazione.status === 'Completato'">Completato</span>
+          <span class="badge bg-danger" *ngIf="prenotazione.status === 'Cancellato'">Cancellato</span>
         </li>
       </ul>
-      <div *ngFor="let b of prenotazione.bikes" class="mb-2">
+
+      <div *ngFor="let b of prenotazione.bikes" class="mb-3">
         <div class="d-flex align-items-center">
           <img
-            [src]="b.bike.idModello.imgUrl"
+            [src]="b.id.idModello.imgUrl"
             alt="Bici"
             width="80"
             class="rounded me-3"
@@ -45,33 +41,27 @@
           />
           <div>
             <div>
-              <strong>{{ b.bike.idModello.type }}</strong>
-              <span class="badge bg-secondary ms-2"
-                >Taglia: {{ b.bike.idModello.size }}</span
-              >
-              <span
-                class="badge bg-success ms-2"
-                *ngIf="b.bike.idModello.elettrica"
-                >Elettrica</span
-              >
-              <span
-                class="badge bg-secondary ms-2"
-                *ngIf="!b.bike.idModello.elettrica"
-                >Muscolare</span
-              >
+              <strong>{{ b.id.idModello.type }}</strong>
+              <span class="badge bg-secondary ms-2">Taglia: {{ b.id.idModello.size }}</span>
+              <span class="badge bg-success ms-2" *ngIf="b.id.idModello.elettrica">Elettrica</span>
+              <span class="badge bg-secondary ms-2" *ngIf="!b.id.idModello.elettrica">Muscolare</span>
             </div>
             <div class="text-muted small">
-              {{ b.bike.idModello.descrizione }}
+              {{ b.id.idModello.descrizione }}
             </div>
-            <div>
+            <div class="mt-1">
               <span *ngIf="b.accessori?.length">
                 <i class="fas fa-tools me-1"></i> Accessori:
-                {{ b.accessori.join(", ") }}
+                <ng-container *ngFor="let acc of b.accessori; let isLast = last">
+                  {{ acc.descrizione }}<span *ngIf="!isLast">, </span>
+                </ng-container>
               </span>
+
               <span *ngIf="b.assicurazione" class="ms-3">
                 <i class="fas fa-shield-alt me-1"></i> Assicurazione:
-                {{ b.assicurazione }}
+                {{ b.assicurazione.descrizione }}
               </span>
+
             </div>
           </div>
         </div>

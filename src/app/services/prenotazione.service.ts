@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Store } from './store.service';
 import { Bike } from './bike.service';
 import { map, Observable } from 'rxjs';
+import { BikeModel } from './bike-model.service';
 
 export interface Prenotazione {
     id: string;
@@ -20,6 +21,72 @@ export interface Prenotazione {
     cancelled: boolean;
     status: string;
 }
+
+
+export interface PrenotazioneGualti {
+  _id: string;
+  idUser: UserGualti;
+  bikes: PrenotazioneBikeGualti[];
+  start: string; // oppure Date, se già convertito
+  stop: string;
+  pickupLocation: Store;
+  dropLocation: Store;
+  manutenzione: boolean;
+  cancelled: boolean;
+  status: "Cancellato" | "In corso" | "Completato" | "Prenotato";
+  createdAt: string;
+  problems: string[];
+}
+export interface UserGualti {
+  id: string;
+  name: string;
+  email: string;
+  isOperator: boolean;
+  isVerified: boolean;
+}
+export interface PrenotazioneBikeGualti {
+  _id: string;
+  id: BikeGualti; // riferimento alla bici completa
+  quantity: number;
+  accessori: AccessoryGualti[];
+  assicurazione: InsuranceGualti | null;
+}
+export interface BikeGualti {
+  _id: string;
+  idPuntoVendita: Store;
+  idModello: BikeModelGualti;
+  quantity: number;
+}
+
+export interface BikeModelGualti {
+  _id: string;
+  descrizione: string;
+  type: string;
+  size: string;
+  elettrica: boolean;
+  prezzo: number;
+  imgUrl: string;
+}
+
+export interface AccessoryGualti {
+  _id: string;
+  descrizione: string;
+  prezzo: number;
+}
+
+export interface InsuranceGualti {
+  _id: string;
+  descrizione: string;
+  prezzo: number;
+}
+export interface StoreGualti {
+  _id: string;
+  location: string;
+}
+
+
+
+
 
 // prenotazione input
 export interface PrenotazioneInput {
@@ -51,5 +118,13 @@ export class PrenotazioneService {
                     // Extract only the Data property
                     map(response => response.data)
                 );
+        }
+
+        getUserPrenotazioni(): Observable<PrenotazioneGualti[]> {
+            return this.http.get<{message: string, data: PrenotazioneGualti[] }>(this.conStr + '/api/bookings/mie')
+            .pipe(
+                    // Extract only the Data property
+                    map(response => response.data)
+                );;
         }
 }
