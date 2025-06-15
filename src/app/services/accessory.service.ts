@@ -23,4 +23,12 @@ export class AccessoryService {
                 map(response => response.data)
             );
     }
+
+    updateAccessory(accessoryInput: Accessory): Observable<Accessory> {
+        return this.http.put<{ message: string; data: Accessory }>(this.conStr + '/api/accessories/update/' + accessoryInput._id, {prezzo: accessoryInput.prezzo})
+            .pipe(
+                // Extract only the Data property
+                map(response => response.data)
+            );
+    }
 }

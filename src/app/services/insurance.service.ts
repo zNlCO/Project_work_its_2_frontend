@@ -21,4 +21,10 @@ export class InsuranceService {
             map(response => response.data)
         );
     }
+
+    updateInsurance(insuranceInput: Insurance): Observable<Insurance> {
+        return this.http.put<{ message: string; data: Insurance }>(this.conStr + '/api/insurances/update/' + insuranceInput._id, {prezzo: insuranceInput.prezzo}).pipe(
+            map(response => response.data)
+        );
+    }
 }
