@@ -1,27 +1,29 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Gestione Modelli Bici</h2>
+<div class="container-fluid py-4 bg-dark text-light min-vh-100">
+  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+    <h1 class="h2 mb-0 text-primary">
+      <i class="fas fa-bicycle me-2"></i> Gestione Modelli Bici
+    </h1>
     <button class="btn btn-primary" (click)="openAdd()">
-      <i class="fas fa-plus me-1"></i> Aggiungi modello
+      <i class="fas fa-plus me-2"></i> Aggiungi modello
     </button>
   </div>
 
-  <div class="row row-cols-1 row-cols-md-3 g-4">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     <div class="col" *ngFor="let model of bikeModels">
-      <div class="card h-100 shadow-sm">
+      <div class="card h-100 bg-dark border-secondary">
         <img
           [src]="model.imgUrl"
           class="card-img-top"
           [alt]="model.descrizione"
-          style="object-fit: cover; height: 180px"
+          style="height: 200px; object-fit: cover"
         />
         <div class="card-body">
-          <h5 class="card-title">
+          <h5 class="card-title d-flex justify-content-between align-items-center">
             {{ model.type }}
-            <span class="badge bg-secondary ms-2">{{ model.size }}</span>
+            <span class="badge bg-secondary">{{ model.size }}</span>
           </h5>
-          <div class="mb-2 text-muted">{{ model.descrizione }}</div>
-          <div>
+          <p class="card-text text-light">{{ model.descrizione }}</p>
+          <div class="mb-2">
             <span
               class="badge"
               [ngClass]="model.elettrica ? 'bg-success' : 'bg-secondary'"
@@ -29,23 +31,23 @@
               {{ model.elettrica ? "Elettrica" : "Muscolare" }}
             </span>
           </div>
-          <div class="mt-2 fw-bold text-danger">
+          <div class="fw-bold text-danger">
             €{{ model.prezzo | number : "1.2-2" }}
             <span class="text-secondary">/ora</span>
           </div>
         </div>
-        <div class="card-footer d-flex justify-content-end gap-2">
+        <div class="card-footer bg-dark border-secondary d-flex justify-content-end gap-2">
           <button
-            class="btn btn-outline-primary btn-sm"
+            class="btn btn-warning btn-sm"
             (click)="openEdit(model)"
           >
-            <i class="fas fa-edit"></i>
+            <i class="fas fa-edit me-1"></i> Modifica
           </button>
           <button
-            class="btn btn-outline-danger btn-sm"
+            class="btn btn-danger btn-sm"
             (click)="delete(model._id)"
           >
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-trash me-1"></i> Elimina
           </button>
         </div>
       </div>
@@ -56,127 +58,129 @@
 <!-- Modal -->
 <div
   *ngIf="showModal"
-  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-  style="background: rgba(0, 0, 0, 0.5); z-index: 2000"
+  class="modal fade show d-block"
+  tabindex="-1"
+  style="background-color: rgba(0, 0, 0, 0.7)"
 >
-  <div
-    class="bg-white rounded-4 shadow-lg p-4 position-relative"
-    style="min-width: 340px; max-width: 95vw"
-  >
-    <button
-      type="button"
-      class="btn position-absolute top-0 end-0 m-2 p-0"
-      style="
-        font-size: 2rem;
-        line-height: 1;
-        color: #dc3545;
-        background: none;
-        border: none;
-      "
-      aria-label="Chiudi"
-      (click)="showModal = false"
-    >
-      &times;
-    </button>
-    <h5 class="mb-3">
-      {{ isEditMode ? "Modifica" : "Aggiungi" }} Modello Bici
-    </h5>
-    <form (ngSubmit)="save()">
-      <div class="mb-3">
-        <label class="form-label">Descrizione *</label>
-        <input
-          type="text"
-          class="form-control"
-          [(ngModel)]="currentModel.descrizione"
-          name="descrizione"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Tipo *</label>
-        <select
-          class="form-select"
-          [(ngModel)]="currentModel.type"
-          name="type"
-          required
-        >
-          <option value="" disabled selected>Seleziona tipo</option>
-          <option *ngFor="let t of bikeTypes" [value]="t">{{ t }}</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Taglia *</label>
-        <select
-          class="form-select"
-          [(ngModel)]="currentModel.size"
-          name="size"
-          required
-        >
-          <option *ngFor="let s of availableSizes" [value]="s">{{ s }}</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Elettrica *</label>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            [(ngModel)]="currentModel.elettrica"
-            [value]="true"
-            name="elettrica"
-            required
-          />
-          <label class="form-check-label">Sì</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            [(ngModel)]="currentModel.elettrica"
-            [value]="false"
-            name="elettrica"
-          />
-          <label class="form-check-label">No</label>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Prezzo Orario (€) *</label>
-        <input
-          type="number"
-          class="form-control"
-          [(ngModel)]="currentModel.prezzo"
-          name="prezzo"
-          min="0"
-          step="0.01"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">URL Immagine *</label>
-        <input
-          type="url"
-          class="form-control"
-          [(ngModel)]="currentModel.imgUrl"
-          name="imgUrl"
-          required
-        />
-      </div>
-      <div class="d-flex justify-content-end">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title">
+          <i class="fas fa-bicycle me-2"></i>
+          {{ isEditMode ? "Modifica" : "Aggiungi" }} Modello Bici
+        </h5>
         <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="
-            !currentModel.descrizione ||
-            !currentModel.type ||
-            !currentModel.size ||
-            currentModel.elettrica === undefined ||
-            !currentModel.prezzo ||
-            !currentModel.imgUrl
-          "
-        >
-          {{ isEditMode ? "Salva Modifiche" : "Aggiungi" }}
-        </button>
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="showModal = false"
+        ></button>
       </div>
-    </form>
+      <div class="modal-body">
+        <form (ngSubmit)="save()">
+          <div class="mb-3">
+            <label class="form-label">Descrizione *</label>
+            <input
+              type="text"
+              class="form-control bg-dark text-light border-secondary"
+              [(ngModel)]="currentModel.descrizione"
+              name="descrizione"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tipo *</label>
+            <select
+              class="form-select bg-dark text-light border-secondary"
+              [(ngModel)]="currentModel.type"
+              name="type"
+              required
+            >
+              <option value="" disabled selected>Seleziona tipo</option>
+              <option *ngFor="let t of bikeTypes" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Taglia *</label>
+            <select
+              class="form-select bg-dark text-light border-secondary"
+              [(ngModel)]="currentModel.size"
+              name="size"
+              required
+            >
+              <option *ngFor="let s of availableSizes" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Elettrica *</label>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                [(ngModel)]="currentModel.elettrica"
+                [value]="true"
+                name="elettrica"
+                required
+              />
+              <label class="form-check-label">Sì</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                [(ngModel)]="currentModel.elettrica"
+                [value]="false"
+                name="elettrica"
+              />
+              <label class="form-check-label">No</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prezzo Orario (€) *</label>
+            <input
+              type="number"
+              class="form-control bg-dark text-light border-secondary"
+              [(ngModel)]="currentModel.prezzo"
+              name="prezzo"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">URL Immagine *</label>
+            <input
+              type="url"
+              class="form-control bg-dark text-light border-secondary"
+              [(ngModel)]="currentModel.imgUrl"
+              name="imgUrl"
+              required
+            />
+          </div>
+          <div class="modal-footer border-secondary">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="showModal = false"
+            >
+              Annulla
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="
+                !currentModel.descrizione ||
+                !currentModel.type ||
+                !currentModel.size ||
+                currentModel.elettrica === undefined ||
+                !currentModel.prezzo ||
+                !currentModel.imgUrl
+              "
+            >
+              {{ isEditMode ? "Salva Modifiche" : "Aggiungi" }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
