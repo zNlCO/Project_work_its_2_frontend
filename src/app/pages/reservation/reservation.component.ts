@@ -3,6 +3,8 @@ import { Bike, BikeService } from '../../services/bike.service';
 import { Store, StoreService } from '../../services/store.service';
 import { Accessory, AccessoryService } from '../../services/accessory.service';
 import { Insurance, InsuranceService } from '../../services/insurance.service';
+import { PrenotazioneInput, PrenotazioneService } from '../../services/prenotazione.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-reservation',
@@ -26,14 +28,16 @@ export class ReservationComponent implements OnInit {
     // Step 2
     selectedBikes: {
         bike: Bike;
-        accessories?: [];
+        accessories?: string[];
         insurance?: string;
     }[] = [];
     accessories: Accessory[] = [];
     insurances: Insurance[] = [];
     bikeDisponibili: Bike[] = [];
+    prenotazioneInput?: PrenotazioneInput
+    showAuthPopup = true;
 
-    constructor(protected bikeSrv: BikeService, protected storeSrv: StoreService, protected accessorySrv: AccessoryService, protected insuranceSrv: InsuranceService) {
+    constructor(protected bikeSrv: BikeService, protected storeSrv: StoreService, protected accessorySrv: AccessoryService, protected insuranceSrv: InsuranceService, protected prenotazioneSrv: PrenotazioneService, protected authSrv: AuthService) {
         this.generateHours();
     }
 
@@ -138,5 +142,30 @@ export class ReservationComponent implements OnInit {
 
     prenota() {
         console.log(this.selectedBikes);
+        // if authenticated save id
+        var idUser: string | undefined;
+        if (this.authSrv.isLoggedIn()) {
+            this.authSrv.currentUser$.subscribe(user => idUser =user?.id);
+        }
+
+        if (!idUser) {
+            const prenotazioneInput: PrenotazioneInput = {
+                bikes: this.selectedBikes.map(selectedBike => ({
+                    id: selectedBike.bike._id ?? '',
+                    quantity: 1,
+                    accessori: selectedBike.accessories ?? [],
+                    assicurazione: selectedBike.insurance
+                })),
+                start: new Date(`${this.pickupDate}T${this.pickupTime}`),
+                stop: new Date(`${this.dropoffDate}T${this.dropoffTime}`),
+                pickupLocation: this.pickupLocation?._id!,
+                dropLocation: this.dropoffLocation?._id!
+            };
+            this.prenotazioneSrv.addPrenotazioneUnlogged(prenotazioneInput).subscribe(prenotazione => {
+                this.showAuthPopup = true;
+            });
+        }
+
+        
     }
 }

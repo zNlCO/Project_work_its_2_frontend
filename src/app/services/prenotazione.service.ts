@@ -7,29 +7,29 @@ import { map, Observable } from 'rxjs';
 export interface Prenotazione {
     id: string;
     idUser: string;
-    bikes: [{
+    bikes: {
         bike: Bike;
-        accessori: [String];
-        assicurazione: String
-    }];
+        accessori: [string];
+        assicurazione: string
+    }[];
     start: Date;
     stop: Date;
     pickupLocation: Store;
     dropLocation: Store;
     manutenzione: boolean;
     cancelled: boolean;
-    status: String;
+    status: string;
 }
 
 // prenotazione input
 export interface PrenotazioneInput {
     idUser?: string;
-    bikes: [{
+    bikes: {
         id: string;
         quantity: number;
-        accessori: [String];
-        assicurazione: String
-    }];
+        accessori: string[];
+        assicurazione?: string
+    }[];
     start: Date;
     stop: Date;
     pickupLocation: string;
@@ -45,7 +45,7 @@ export class PrenotazioneService {
 
     constructor(private http: HttpClient) { }
 
-        addPrenotazione(prenotazioneInput: PrenotazioneInput): Observable<Prenotazione> {
+        addPrenotazioneUnlogged(prenotazioneInput: PrenotazioneInput): Observable<Prenotazione> {
             return this.http.post<{ message: string; data: Prenotazione }>(this.conStr + '/api/bookings/insert', prenotazioneInput) 
                 .pipe(
                     // Extract only the Data property

@@ -5,7 +5,7 @@ import { BikeModel } from './bike-model.service';
 import { Store } from './store.service';
 
 export interface Bike {
-    id?: string;
+    _id?: string;
     idPuntoVendita: String;
     idModello: BikeModel;
     quantity: number;

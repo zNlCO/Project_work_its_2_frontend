@@ -417,3 +417,52 @@
     </div>
   </div>
 </div>
+
+<!-- Popup login/registrazione -->
+<div
+  *ngIf="showAuthPopup"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="background: rgba(0, 0, 0, 0.5); z-index: 2000"
+>
+  <div
+    class="bg-white rounded-4 shadow-lg p-4 position-relative"
+    style="min-width: 320px; max-width: 90vw"
+  >
+    <!-- X visibile in alto a destra -->
+    <button
+      type="button"
+      class="btn position-absolute top-0 end-0 m-2 p-0"
+      style="
+        font-size: 2rem;
+        line-height: 1;
+        color: #dc3545;
+        background: none;
+        border: none;
+      "
+      aria-label="Chiudi"
+      (click)="showAuthPopup = false"
+    >
+      &times;
+    </button>
+    <div class="mb-3 text-center">
+      <h5 class="text-danger mb-3">
+        <i class="fas fa-user-lock me-2"></i>Accesso richiesto
+      </h5>
+      <p class="mb-0 text-black">
+        Per completare la prenotazione devi <b>registrarti</b> o
+        <b>accedere</b> al tuo account.
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-3">
+      <a routerLink="/login" class="btn my-red-btn bai-jamjuree-semibold">
+        <i class="fas fa-sign-in-alt me-1"></i> Login
+      </a>
+      <a
+        routerLink="/register"
+        class="btn my-red-btn-opposite bai-jamjuree-semibold me-2"
+      >
+        <i class="fas fa-user-plus me-1"></i> Registrati
+      </a>
+    </div>
+  </div>
+</div>
