@@ -56,6 +56,7 @@
         type="date"
         class="form-control"
         [(ngModel)]="pickupDate"
+        [min]="today"
         (change)="checkDates()"
       />
     </div>
@@ -82,6 +83,7 @@
         type="date"
         class="form-control"
         [(ngModel)]="dropoffDate"
+        [min]="today"
         (change)="checkDates()"
       />
     </div>

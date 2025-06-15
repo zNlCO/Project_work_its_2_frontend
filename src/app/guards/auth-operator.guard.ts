@@ -1,0 +1,22 @@
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { inject } from '@angular/core';
+
+export const authOperatorGuard: CanActivateFn = (route, state) => {
+  const authSrv = inject(AuthService);
+  const router = inject(Router);
+
+  const isAuthenticated = authSrv.isLoggedIn();
+
+  if (isAuthenticated) {
+    authSrv.currentUser$.subscribe((user) => {
+      if (user?.isOperator) {
+        return true;
+      }
+    });
+    return false;
+  } else {
+    router.navigate(['/login']);
+    return false;
+  }
+};

@@ -32,6 +32,7 @@ export class ReservationComponent implements OnInit {
   dropoffTime: string = '10:00';
   hours: string[] = [];
   invalidDateRange = false;
+  today = '';
 
   // Step 2
   selectedBikes: PrenotazioneBikeGualti[] = [];
@@ -57,6 +58,8 @@ export class ReservationComponent implements OnInit {
   // Generale
 
   ngOnInit(): void {
+    const now = new Date();
+    this.today = now.toISOString().split('T')[0];
     this.storeSrv.getStores().subscribe((stores) => {
       this.stores = stores;
     });
