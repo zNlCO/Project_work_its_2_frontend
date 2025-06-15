@@ -7,10 +7,18 @@
     <div class="filter-group">
       <label for="locationFilter">Visualizza inventario per:</label>
       <select id="locationFilter" class="custom-select dark-select" [(ngModel)]="selectedLocationId" (ngModelChange)="onLocationChange()">
-        <option *ngFor="let location of locations" [value]="location.id">
-          {{ location.name }}
+        <option *ngFor="let location of locations" [value]="location._id">
+          {{ location.location }}
         </option>
       </select>
+    </div>
+    <div class="error-message" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ errorMessage }}
+    </div>
+    <div class="success-message" *ngIf="successMessage">
+      <i class="fas fa-check-circle"></i>
+      {{ successMessage }}
     </div>
   </section>
 
@@ -30,7 +38,11 @@
         <div class="item-info">
           <div class="item-title">
             {{ bike.modelName }}
-            <span class="bike-id">#{{ bike.id }}</span>
+            <span class="bike-id">#{{ bike._id }}</span>
+            <span class="quantity-badge" *ngIf="bike.quantity > 0">
+              <i class="fas fa-layer-group"></i>
+              {{ bike.quantity }}
+            </span>
           </div>
           <div class="item-details">
              <span class="propulsion-badge" [class.elettrica]="bike.propulsion === 'Elettrica'">
@@ -72,7 +84,7 @@
           <span>Programma Manutenzione</span>
         </div>
         <div class="modal-subtitle">
-          Bici: <strong>{{ selectedBike.modelName }} (#{{ selectedBike.id }})</strong>
+          Bici: <strong>{{ selectedBike.modelName }} (#{{ selectedBike._id }})</strong>
         </div>
       </div>
 
@@ -107,11 +119,12 @@
       </div>
 
       <div class="modal-actions">
-        <button class="btn btn-cancel" (click)="closeMaintenanceModal()">
+        <button class="btn btn-cancel" (click)="closeMaintenanceModal()" [disabled]="isProcessing">
           <i class="fas fa-times"></i> Annulla
         </button>
-        <button class="btn btn-confirm" (click)="confirmMaintenance()" [disabled]="!canConfirmMaintenance()">
-          <i class="fas fa-check"></i> Conferma
+        <button class="btn btn-confirm" (click)="confirmMaintenance()" [disabled]="!canConfirmMaintenance() || isProcessing">
+          <i class="fas" [class.fa-spinner]="isProcessing" [class.fa-spin]="isProcessing" [class.fa-check]="!isProcessing"></i>
+          {{ isProcessing ? 'Elaborazione...' : 'Conferma' }}
         </button>
       </div>
     </div>
