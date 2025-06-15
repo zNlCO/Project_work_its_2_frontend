@@ -94,6 +94,7 @@ export interface PrenotazioneInput {
   stop: Date;
   pickupLocation: string;
   dropLocation: string;
+  manutenzione?: boolean;
 }
 
 export interface PrenotazioneInputPol {
