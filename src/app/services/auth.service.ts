@@ -60,6 +60,10 @@ export class AuthService {
     }
 
     fetchUsers(): Observable<User[]> {
-        return this.http.get<User[]>('/api/users/auth/operators');
+        return this.http.get<User[]>('/api/users/auth/all');
+    }
+
+    editUser(user: User): Observable<User> {
+        return this.http.put<User>('/api/users/auth/modify'+user.id, user);
     }
 }
