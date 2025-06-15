@@ -10,7 +10,7 @@ export const authOperatorGuard: CanActivateFn = (route, state) => {
 
   if (isAuthenticated && authSrv.currentUser$) {
     authSrv.currentUser$.subscribe((user) => {
-      console.log(authSrv.currentUser$);
+      console.log(user);
       if (user?.isOperator) {
         return true;
       }
