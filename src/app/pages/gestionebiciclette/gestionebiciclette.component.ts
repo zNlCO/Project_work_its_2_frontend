@@ -1,19 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-// Tipi per maggiore sicurezza
-type BikeSize = 'S' | 'M' | 'L' | 'XL';
-type BikeCategory = 'City bike' | 'Mountain bike' | 'Gravel' | 'Road bike';
-type BikePropulsion = 'Muscolare' | 'Elettrica';
-
-// Interfaccia per definire la struttura di un tipo di bici
-interface BikeType {
-  id: number;
-  name: string;
-  category: BikeCategory;
-  propulsion: BikePropulsion;
-  size: BikeSize;
-  hourlyPrice: number;
-}
+import { BikeModel, BikeModelService } from '../../services/bike-model.service';
 
 @Component({
   selector: 'app-gestionebiciclette',
@@ -21,145 +7,73 @@ interface BikeType {
   styleUrls: ['./gestionebiciclette.component.scss']
 })
 export class GestionebicicletteComponent implements OnInit {
+  bikeModels: BikeModel[] = [];
+  showModal = false;
+  isEditMode = false;
+  currentModel: BikeModel = this.emptyModel();
 
-  public allBikeTypes: BikeType[] = [];
-  public filteredBikeTypes: BikeType[] = [];
-  public searchTerm: string = '';
+  bikeTypes = ['Mountain bike', 'City bike', 'Road bike', 'Gravel'];
+  availableSizes = ['S', 'M', 'L', 'XL'];
 
-  public showAddEditModal: boolean = false;
-  public showDeleteModal: boolean = false;
-  public isEditMode: boolean = false;
-
-  public currentBikeType: Partial<BikeType> = {};
-
-  // Dati per i dropdown dei form
-  public readonly availableCategories: BikeCategory[] = ['City bike', 'Mountain bike', 'Gravel', 'Road bike'];
-  public readonly availablePropulsions: BikePropulsion[] = ['Muscolare', 'Elettrica'];
-  public readonly availableSizes: BikeSize[] = ['S', 'M', 'L', 'XL'];
-
-  constructor() { }
+  constructor(private bikeModelSrv: BikeModelService) { }
 
   ngOnInit(): void {
-    this.loadMockData();
+    this.load();
   }
 
-  private loadMockData(): void {
-    this.allBikeTypes = [
-      { id: 1, name: 'City Voyager X', category: 'City bike', propulsion: 'Muscolare', size: 'S', hourlyPrice: 8.50 },
-      { id: 2, name: 'City Voyager X', category: 'City bike', propulsion: 'Muscolare', size: 'M', hourlyPrice: 8.50 },
-      { id: 3, name: 'City Voyager X', category: 'City bike', propulsion: 'Muscolare', size: 'L', hourlyPrice: 8.50 },
-      { id: 4, name: 'Mountain Peak E-Pro', category: 'Mountain bike', propulsion: 'Elettrica', size: 'M', hourlyPrice: 15.00 },
-      { id: 5, name: 'Mountain Peak E-Pro', category: 'Mountain bike', propulsion: 'Elettrica', size: 'L', hourlyPrice: 15.00 },
-      { id: 6, name: 'Gravel Pathfinder', category: 'Gravel', propulsion: 'Muscolare', size: 'M', hourlyPrice: 12.00 },
-      { id: 7, name: 'Road Sprinter SL', category: 'Road bike', propulsion: 'Muscolare', size: 'L', hourlyPrice: 10.50 }
-    ];
-    this.applyFilters();
+  load() {
+    this.bikeModelSrv.getBikeModels().subscribe(res => {
+      this.bikeModels = res
+    })
+  }
+  
+  emptyModel(): BikeModel {
+    return {
+      descrizione: '',
+      type: '',
+      size: '',
+      elettrica: false,
+      prezzo: 0,
+      imgUrl: ''
+    };
   }
 
-  public onSearch(): void {
-    this.applyFilters();
-  }
-
-  private applyFilters(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    if (!term) {
-      this.filteredBikeTypes = [...this.allBikeTypes];
-    } else {
-      this.filteredBikeTypes = this.allBikeTypes.filter(bike =>
-        bike.name.toLowerCase().includes(term) ||
-        bike.category.toLowerCase().includes(term)
-      );
-    }
-  }
-
-  // --- Gestione Modali ---
-  public openAddModal(): void {
+  openAdd() {
     this.isEditMode = false;
-    this.currentBikeType = { 
-      name: '', 
-      category: 'City bike', 
-      propulsion: 'Muscolare', 
-      size: 'M',
-      hourlyPrice: 8.00
-    };
-    this.showAddEditModal = true;
+    this.currentModel = this.emptyModel();
+    this.showModal = true;
   }
 
-  public openEditModal(bikeType: BikeType): void {
+  openEdit(model: BikeModel) {
     this.isEditMode = true;
-    this.currentBikeType = { ...bikeType };
-    this.showAddEditModal = true;
+    this.currentModel = { ...model };
+    this.showModal = true;
   }
 
-  public openDeleteModal(bikeType: BikeType): void {
-    this.currentBikeType = bikeType;
-    this.showDeleteModal = true;
-  }
-
-  public closeModals(): void {
-    this.showAddEditModal = false;
-    this.showDeleteModal = false;
-    this.currentBikeType = {};
-  }
-
-  public saveBikeType(): void {
-    if (!this.isFormValid()) {
-      console.warn('Tutti i campi sono obbligatori e il prezzo deve essere maggiore di 0');
-      return;
-    }
-
+  save() {
     if (this.isEditMode) {
-      this.updateExistingBike();
+      this.bikeModelSrv.updateBikeModel(this.currentModel).subscribe(
+        bike => {
+            const idx = this.bikeModels.findIndex(b => b._id === bike._id);
+            if (idx > -1) {
+                this.bikeModels[idx] = bike;
+            }
+        }
+      );
     } else {
-      this.addNewBike();
+      this.bikeModelSrv.createBikeModel(this.currentModel).subscribe(bike => {
+        this.bikeModels.push(bike);
+      });
     }
-
-    this.applyFilters();
-    this.closeModals();
+    this.showModal = false;
   }
 
-  private isFormValid(): boolean {
-    return !!(
-      this.currentBikeType.name?.trim() && 
-      this.currentBikeType.category && 
-      this.currentBikeType.propulsion && 
-      this.currentBikeType.size && 
-      this.currentBikeType.hourlyPrice && 
-      this.currentBikeType.hourlyPrice > 0
-    );
-  }
-
-  private updateExistingBike(): void {
-    const index = this.allBikeTypes.findIndex(bike => bike.id === this.currentBikeType.id);
-    if (index !== -1) {
-      this.allBikeTypes[index] = { ...this.currentBikeType } as BikeType;
-      console.log('Bici modificata:', this.currentBikeType);
+  delete(id: string | undefined) {
+    if (!id) return;
+    if (confirm('Sei sicuro di voler eliminare questo modello?')) {
+      this.bikeModelSrv.deleteBikeModel(id).subscribe(() => {
+        this.bikeModels = this.bikeModels.filter(b => b._id !== id);
+      });
     }
-  }
-
-  private addNewBike(): void {
-    const newBike: BikeType = {
-      id: this.generateNewId(),
-      name: this.currentBikeType.name!.trim(),
-      category: this.currentBikeType.category!,
-      propulsion: this.currentBikeType.propulsion!,
-      size: this.currentBikeType.size!,
-      hourlyPrice: this.currentBikeType.hourlyPrice!
-    };
-    this.allBikeTypes.push(newBike);
-    console.log('Nuova bici creata:', newBike);
-  }
-
-  private generateNewId(): number {
-    return Math.max(...this.allBikeTypes.map(b => b.id), 0) + 1;
-  }
-
-  public deleteBikeType(): void {
-    if (this.currentBikeType.id) {
-      this.allBikeTypes = this.allBikeTypes.filter(bike => bike.id !== this.currentBikeType.id);
-      this.applyFilters();
-      console.log('Bici eliminata:', this.currentBikeType);
-    }
-    this.closeModals();
   }
 }

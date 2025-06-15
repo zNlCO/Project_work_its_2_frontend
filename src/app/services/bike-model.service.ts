@@ -27,4 +27,28 @@ export class BikeModelService {
                 map(response => response.data)
             );
     }
+
+    createBikeModel(bikeModelInput: BikeModel): Observable<BikeModel> {
+        return this.http.post<{ message: string; data: BikeModel }>(this.conStr + '/api/modelli/', bikeModelInput)
+            .pipe(
+                // Extract only the Data property
+                map(response => response.data)
+            );
+    }
+
+    updateBikeModel(bikeModelInput: BikeModel): Observable<BikeModel> {
+        return this.http.put<{ message: string; data: BikeModel }>(this.conStr + '/api/bike-model/update/' + bikeModelInput._id, bikeModelInput)
+            .pipe(
+                // Extract only the Data property
+                map(response => response.data)
+            );
+    }
+
+    deleteBikeModel(id: string): Observable<BikeModel> {
+        return this.http.delete<{ message: string; data: BikeModel }>(this.conStr + '/api/modelli/delete/' + id)
+            .pipe(
+                // Extract only the Data property
+                map(response => response.data)
+            );
+    }
 }
