@@ -35,7 +35,7 @@ export class ReservationComponent implements OnInit {
     insurances: Insurance[] = [];
     bikeDisponibili: Bike[] = [];
     prenotazioneInput?: PrenotazioneInput
-    showAuthPopup = true;
+    showAuthPopup = false;
 
     constructor(protected bikeSrv: BikeService, protected storeSrv: StoreService, protected accessorySrv: AccessoryService, protected insuranceSrv: InsuranceService, protected prenotazioneSrv: PrenotazioneService, protected authSrv: AuthService) {
         this.generateHours();
