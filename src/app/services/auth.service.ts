@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { BehaviorSubject, catchError, map, of, tap } from "rxjs"
+import { BehaviorSubject, catchError, map, Observable, of, tap } from "rxjs"
 import { JwtService } from "./jwt.service";
 
 export interface User {
@@ -18,9 +18,6 @@ export interface User {
 export class AuthService {
     private _currentUser$ = new BehaviorSubject<User | null>(null);
     currentUser$ = this._currentUser$.asObservable();
-
-    private _users$ = new BehaviorSubject<User[] | null>(null);
-    users$ = this._users$.asObservable();
 
     conStr: string = 'https://cloneride-spa.onrender.com'
 
@@ -62,10 +59,7 @@ export class AuthService {
             .subscribe(user => this._currentUser$.next(user));
     }
 
-    /*
-    fetchUsers() {
-        this.http.get<User[]>('/api/users/fetch')
-            .subscribe(users => this._users$.next(users));
+    fetchUsers(): Observable<User[]> {
+        return this.http.get<User[]>('/api/users/auth/operators');
     }
-    */
 }
