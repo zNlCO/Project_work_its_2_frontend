@@ -15,7 +15,7 @@ export interface Utente {
 @Component({
   selector: 'app-gestione-operatori',
   templateUrl: './gestione-operatori.component.html',
-  styleUrls: ['./gestione-operatori.component.scss']
+  styleUrls: ['./gestione-operatori.component.scss', './gestione-operatori-modal.component.scss']
 })
 export class GestioneOperatoriComponent implements OnInit {
   utenti: User[] = [];
