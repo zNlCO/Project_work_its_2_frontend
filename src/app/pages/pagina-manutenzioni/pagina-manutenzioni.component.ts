@@ -1,61 +1,33 @@
 import { Component, OnInit } from '@angular/core';
+import { Store, StoreService } from '../../services/store.service';
+import { Bike, BikeService } from '../../services/bike.service';
+import { BikeModel } from '../../services/bike-model.service';
+import { PrenotazioneService, PrenotazioneInput, PrenotazioneGualti } from '../../services/prenotazione.service';
 
 // INTERFACCE DATI
 export interface SingleBike {
-  id: number;
+  _id: string;
   modelName: string;
   propulsion: 'Muscolare' | 'Elettrica';
   status: 'Disponibile' | 'Noleggiata' | 'In Manutenzione';
   locationId: string;
-  maintenanceEnd?: string; // Data di fine manutenzione (opzionale)
+  maintenanceEnd?: string;
+  quantity: number;
 }
-
-export interface Location {
-  id: string;
-  name: string;
-}
-
-// DATI MOCK
-const mockBikesData: SingleBike[] = [
-  // Stazione
-  { id: 101, modelName: 'City Voyager X', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'stazione' },
-  { id: 102, modelName: 'City Voyager X', propulsion: 'Muscolare', status: 'Noleggiata', locationId: 'stazione' },
-  { id: 103, modelName: 'City Voyager X', propulsion: 'Elettrica', status: 'Disponibile', locationId: 'stazione' },
-  { id: 104, modelName: 'Mountain Peak E-Pro', propulsion: 'Elettrica', status: 'In Manutenzione', locationId: 'stazione', maintenanceEnd: '2025-06-20' },
-  { id: 105, modelName: 'City Voyager X', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'stazione' },
-
-  // Rialto
-  { id: 201, modelName: 'Rialto Sprinter', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'rialto' },
-  { id: 202, modelName: 'Rialto Sprinter', propulsion: 'Muscolare', status: 'Noleggiata', locationId: 'rialto' },
-  { id: 203, modelName: 'Lagoon Cruiser E-Bike', propulsion: 'Elettrica', status: 'Disponibile', locationId: 'rialto' },
-  { id: 204, modelName: 'Lagoon Cruiser E-Bike', propulsion: 'Elettrica', status: 'Disponibile', locationId: 'rialto' },
-
-  // Lido
-  { id: 301, modelName: 'Lido Beach Cruiser', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'lido' },
-  { id: 302, modelName: 'Lido Beach Cruiser', propulsion: 'Muscolare', status: 'In Manutenzione', locationId: 'lido', maintenanceEnd: '2025-06-15' },
-  { id: 303, modelName: 'Mountain Peak Pro', propulsion: 'Muscolare', status: 'Disponibile', locationId: 'lido' },
-];
-
-const mockLocations: Location[] = [
-  { id: 'stazione', name: 'Noleggio Centrale Stazione' },
-  { id: 'rialto', name: 'Bike Point Rialto' },
-  { id: 'lido', name: 'Deposito Lido' },
-];
-
 
 @Component({
   selector: 'app-pagina-manutenzioni',
   templateUrl: './pagina-manutenzioni.component.html',
-  styleUrls: ['./pagina-manutenzioni.component.scss', './pagina-manutenzioni.component2.scss', './pagina-manutenzioni.component3.scss']
+  styleUrls: ['./pagina-manutenzioni.component.scss', './pagina-manutenzioni.component2.scss', './pagina-manutenzioni.component3.scss', './pagina-manutenzioni.component4.scss']
 })
 export class PaginaManutenzioniComponent implements OnInit {
-
   // --- STATO DEL COMPONENTE ---
-  locations: Location[] = mockLocations;
-  allBikes: SingleBike[] = mockBikesData;
+  locations: Store[] = [];
+  allBikes: SingleBike[] = [];
   bikesForCurrentLocation: SingleBike[] = [];
+  activeMaintenances: PrenotazioneGualti[] = [];
   
-  selectedLocationId: string = 'stazione';
+  selectedLocationId: string = '';
   selectedLocationName: string = '';
   currentYear = new Date().getFullYear();
 
@@ -69,15 +41,105 @@ export class PaginaManutenzioniComponent implements OnInit {
   endDate: string = '';
   today: string = new Date().toISOString().split('T')[0];
 
+  // Error handling
+  errorMessage: string = '';
+  isProcessing: boolean = false;
+  successMessage: string = '';
+
+  constructor(
+    private storeSrv: StoreService,
+    private bikeSrv: BikeService,
+    private prenotazioneSrv: PrenotazioneService
+  ) {}
+
   ngOnInit(): void {
-    this.onLocationChange();
+    this.loadStores();
+    this.loadActiveMaintenances();
+  }
+
+  loadStores() {
+    this.storeSrv.getStores().subscribe({
+      next: (stores) => {
+        this.locations = stores;
+        if (stores.length > 0) {
+          this.selectedLocationId = stores[0]._id!;
+          this.selectedLocationName = stores[0].location;
+          this.loadBikesForStore(this.selectedLocationId);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading stores:', error);
+        this.errorMessage = 'Errore nel caricamento dei punti vendita';
+      }
+    });
+  }
+
+  loadActiveMaintenances() {
+    this.prenotazioneSrv.getPrenotazioniGualti().subscribe({
+      next: (prenotazioni) => {
+        this.activeMaintenances = prenotazioni.filter(p => 
+          p.manutenzione && 
+          !p.cancelled && 
+          new Date(p.stop) > new Date()
+        );
+        // If we have bikes loaded, update their statuses
+        if (this.allBikes.length > 0) {
+          this.updateBikeStatuses();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading maintenances:', error);
+      }
+    });
+  }
+
+  updateBikeStatuses() {
+    this.allBikes = this.allBikes.map(bike => {
+      const maintenance = this.activeMaintenances.find(m => 
+        m.bikes.some(b => b.id._id === bike._id)
+      );
+      
+      if (maintenance) {
+        return {
+          ...bike,
+          status: 'In Manutenzione',
+          maintenanceEnd: maintenance.stop
+        };
+      }
+      return bike;
+    });
+    
+    this.bikesForCurrentLocation = this.allBikes.filter(
+      bike => bike.locationId === this.selectedLocationId
+    );
+  }
+
+  loadBikesForStore(storeId: string) {
+    this.bikeSrv.getAllBikes().subscribe({
+      next: (bikes) => {
+        this.allBikes = bikes.map(bike => ({
+          _id: bike._id!,
+          modelName: bike.idModello.descrizione,
+          propulsion: bike.idModello.elettrica ? 'Elettrica' : 'Muscolare',
+          status: 'Disponibile',
+          locationId: bike.idPuntoVendita as string,
+          quantity: bike.quantity
+        }));
+        // Aggiorniamo gli stati delle bici in base alle manutenzioni attive
+        this.updateBikeStatuses();
+      },
+      error: (error) => {
+        console.error('Error loading bikes:', error);
+        this.errorMessage = 'Errore nel caricamento delle bici';
+      }
+    });
   }
 
   onLocationChange(): void {
-    const selectedLocation = this.locations.find(loc => loc.id === this.selectedLocationId);
+    const selectedLocation = this.locations.find(loc => loc._id === this.selectedLocationId);
     if (selectedLocation) {
-      this.selectedLocationName = selectedLocation.name;
-      this.bikesForCurrentLocation = this.allBikes.filter(bike => bike.locationId === this.selectedLocationId);
+      this.selectedLocationName = selectedLocation.location;
+      this.loadBikesForStore(this.selectedLocationId);
     }
   }
 
@@ -85,6 +147,7 @@ export class PaginaManutenzioniComponent implements OnInit {
   openMaintenanceModal(bike: SingleBike): void {
     this.selectedBike = bike;
     this.isMaintenanceModalOpen = true;
+    this.errorMessage = '';
     // Resetta lo stato interno del modale
     this.maintenanceType = null;
     this.startDate = '';
@@ -93,7 +156,7 @@ export class PaginaManutenzioniComponent implements OnInit {
 
   closeMaintenanceModal(): void {
     this.isMaintenanceModalOpen = false;
-    // Un piccolo ritardo per permettere all'animazione di chiusura di completarsi
+    this.errorMessage = '';
     setTimeout(() => {
       this.selectedBike = null;
     }, 300);
@@ -106,19 +169,42 @@ export class PaginaManutenzioniComponent implements OnInit {
   confirmMaintenance(): void {
     if (!this.selectedBike || !this.canConfirmMaintenance()) return;
 
-    // Logica di aggiornamento della bici
-    this.selectedBike.status = 'In Manutenzione';
-    this.selectedBike.maintenanceEnd = this.endDate;
+    this.isProcessing = true;
+    this.errorMessage = '';
 
-    console.log(`Manutenzione confermata per la bici #${this.selectedBike.id}`);
-    console.log('Inizio:', this.maintenanceType === 'immediate' ? this.today : this.startDate);
-    console.log('Fine:', this.endDate);
+    const startDate = this.maintenanceType === 'immediate' ? new Date(this.today) : new Date(this.startDate);
+    const endDate = new Date(this.endDate);
 
-    this.closeMaintenanceModal();
+    const prenotazioneInput: PrenotazioneInput = {
+      bikes: [{
+        id: this.selectedBike._id,
+        quantity: 1,
+        accessori: [],
+      }],
+      start: startDate,
+      stop: endDate,
+      pickupLocation: this.selectedLocationId,
+      dropLocation: this.selectedLocationId,
+      manutenzione: true
+    };
+
+    this.prenotazioneSrv.addPrenotazione(prenotazioneInput).subscribe({
+      next: (response) => {
+        console.log('Maintenance booking created:', response);
+        this.showSuccessMessage('Manutenzione programmata con successo!');
+        this.loadActiveMaintenances(); // Ricarica le manutenzioni per coerenza futura
+        this.closeMaintenanceModal();
+        this.isProcessing = false;
+      },
+      error: (error) => {
+        console.error('Error creating maintenance booking:', error);
+        this.errorMessage = 'Errore nella creazione della manutenzione';
+        this.isProcessing = false;
+      }
+    });
   }
 
   // --- METODI UTILITY PER LA UI ---
-
   getCardClass(bike: SingleBike): string {
     return `status-${bike.status.toLowerCase().replace(' ', '-')}`;
   }
@@ -153,5 +239,12 @@ export class PaginaManutenzioniComponent implements OnInit {
       return !!this.endDate && this.today <= this.endDate;
     }
     return false;
+  }
+
+  showSuccessMessage(message: string): void {
+    this.successMessage = message;
+    setTimeout(() => {
+      this.successMessage = '';
+    }, 3000);
   }
 }
