@@ -91,4 +91,12 @@ export class BikeService {
         map((response) => response.data)
       );
   }
+
+  getAllBikes(): Observable<Bike[]> {
+        return this.http.get<{ message: string; data: Bike[] }>(this.conStr + '/api/bikes')
+            .pipe(
+                // Extract only the Data property
+                map(response => response.data)
+            );
+    }
 }
