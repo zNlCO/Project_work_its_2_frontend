@@ -103,6 +103,15 @@ export interface PrenotazioneInput {
     dropLocation: string;
 }
 
+export interface Analytics{
+    prenotazioniMeseCorrente:number,
+    ricaviMeseCorrente: number,
+    biciInNoleggio: number,
+    biciInManutenzione: number,
+    ricaviUltimi6Mesi: number[],
+    prenotazioniUltimi6Mesi: number[]
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -138,6 +147,11 @@ export class PrenotazioneService {
               })
             );
         }
+
+        getAnalytics(): Observable<Analytics> {
+          return this.http.get<Analytics>(this.conStr + 'api/bookings/analytics');
+        }
+
 
       // funzione helper per mappare un singolo oggetto
       private mapToPrenotazioneGualti(raw: any): PrenotazioneGualti {
