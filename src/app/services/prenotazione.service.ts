@@ -110,6 +110,15 @@ export interface PrenotazioneInputPol {
   dropLocation: string;
 }
 
+export interface Analytics {
+  prenotazioniMeseCorrente: number;
+  ricaviMeseCorrente: number;
+  biciInNoleggio: number;
+  biciInManutenzione: number;
+  ricaviUltimi6Mesi: number[];
+  prenotazioniUltimi6Mesi: number[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -180,6 +189,19 @@ export class PrenotazioneService {
           );
         })
       );
+  }
+
+  getAnalytics(): Observable<Analytics> {
+    return this.http.get<Analytics>(this.conStr + '/api/bookings/analytics');
+  }
+
+  deletePrenotazione(id: string): Observable<PrenotazioneGualti> {
+    return this.http
+      .put<{ message: string; data: PrenotazioneGualti }>(
+        `${this.conStr}/api/bookings/cancel/${id}`,
+        null // corpo vuoto, ma serve per non avere errore
+      )
+      .pipe(map((response) => this.mapToPrenotazioneGualti(response.data)));
   }
 
   // funzione helper per mappare un singolo oggetto
