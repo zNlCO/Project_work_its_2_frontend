@@ -6,22 +6,19 @@ import { map, Observable } from 'rxjs';
 import { BikeModel } from './bike-model.service';
 
 export interface Prenotazione {
-    id: string;
-    idUser: string;
-    bikes: {
-        bike: Bike;
-        accessori: [string];
-        assicurazione: string
-    }[];
-    start: Date;
-    stop: Date;
-    pickupLocation: Store;
-    dropLocation: Store;
-    manutenzione: boolean;
-    cancelled: boolean;
-    status: string;
+  _id: string;
+  idUser: string;
+  bikes: PrenotazioneBikeGualti[];
+  start: string; // oppure Date, se già convertito
+  stop: string;
+  pickupLocation: Store;
+  dropLocation: Store;
+  manutenzione: boolean;
+  cancelled: boolean;
+  status: 'Cancellato' | 'In corso' | 'Completato' | 'Prenotato';
+  createdAt: string;
+  problems: string[];
 }
-
 
 export interface PrenotazioneGualti {
   _id: string;
@@ -33,7 +30,7 @@ export interface PrenotazioneGualti {
   dropLocation: Store;
   manutenzione: boolean;
   cancelled: boolean;
-  status: "Cancellato" | "In corso" | "Completato" | "Prenotato";
+  status: 'Cancellato' | 'In corso' | 'Completato' | 'Prenotato';
   createdAt: string;
   problems: string[];
 }
@@ -84,94 +81,139 @@ export interface StoreGualti {
   location: string;
 }
 
-
-
-
-
 // prenotazione input
 export interface PrenotazioneInput {
-    idUser?: string;
-    bikes: {
-        id: string;
-        quantity: number;
-        accessori: string[];
-        assicurazione?: string
-    }[];
-    start: Date;
-    stop: Date;
-    pickupLocation: string;
-    dropLocation: string;
+  idUser?: string;
+  bikes: {
+    id: string;
+    quantity: number;
+    accessori: string[];
+    assicurazione?: string;
+  }[];
+  start: Date;
+  stop: Date;
+  pickupLocation: string;
+  dropLocation: string;
+}
+
+export interface PrenotazioneInputPol {
+  idUser?: string;
+  bikes: {
+    id: string;
+    quantity: number;
+    accessori: AccessoryGualti[];
+    assicurazione: InsuranceGualti | null;
+  }[];
+  start: Date;
+  stop: Date;
+  pickupLocation: string;
+  dropLocation: string;
 }
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class PrenotazioneService {
+  conStr = 'https://cloneride-spa.onrender.com';
+  //conStr = 'http://localhost:3001'
 
-    conStr = 'https://cloneride-spa.onrender.com'
-    //conStr = 'http://localhost:3001'
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
+  addPrenotazioneUnlogged(
+    prenotazioneInput: PrenotazioneInput
+  ): Observable<Prenotazione> {
+    return this.http
+      .post<{ message: string; data: Prenotazione }>(
+        this.conStr + '/api/bookings/insert',
+        prenotazioneInput
+      )
+      .pipe(
+        // Extract only the Data property
+        map((response) => response.data)
+      );
+  }
 
-        addPrenotazioneUnlogged(prenotazioneInput: PrenotazioneInput): Observable<Prenotazione> {
-            return this.http.post<{ message: string; data: Prenotazione }>(this.conStr + '/api/bookings/insert', prenotazioneInput) 
-                .pipe(
-                    // Extract only the Data property
-                    map(response => response.data)
-                );
-        }
+  addPrenotazione(
+    prenotazioneInput: PrenotazioneInput
+  ): Observable<Prenotazione> {
+    return this.http
+      .post<{ message: string; data: Prenotazione }>(
+        this.conStr + '/api/bookings/insertLogged',
+        prenotazioneInput
+      )
+      .pipe(
+        // Extract only the Data property
+        map((response) => response.data)
+      );
+  }
 
-        getUserPrenotazioni(): Observable<PrenotazioneGualti[]> {
-            return this.http.get<{message: string, data: PrenotazioneGualti[] }>(this.conStr + '/api/bookings/mie')
-            .pipe(
-                    // Extract only the Data property
-                    map(response => response.data)
-                );;
-        }
+  getPrenotazione(id: string): Observable<Prenotazione> {
+    return this.http
+      .get<{ message: string; data: Prenotazione }>(
+        this.conStr + '/api/bookings/detail/' + id
+      )
+      .pipe(
+        // Extract only the Data property
+        map((response) => response.data)
+      );
+  }
 
-        getPrenotazioniGualti(): Observable<PrenotazioneGualti[]> {
-          return this.http.get<{ message: string; data: any[] }>(this.conStr + '/api/bookings/all') // cambia '/api/nuova-rotta' con la tua url reale
-            .pipe(
-              map(response => {
-                // mappiamo ogni oggetto raw nel tipo PrenotazioneGualti
-                return response.data.map(item => this.mapToPrenotazioneGualti(item));
-              })
-            );
-        }
+  getUserPrenotazioni(): Observable<PrenotazioneGualti[]> {
+    return this.http
+      .get<{ message: string; data: PrenotazioneGualti[] }>(
+        this.conStr + '/api/bookings/mie'
+      )
+      .pipe(
+        // Extract only the Data property
+        map((response) => response.data)
+      );
+  }
 
-      // funzione helper per mappare un singolo oggetto
-      private mapToPrenotazioneGualti(raw: any): PrenotazioneGualti {
-        return {
-           _id: raw._id,
-          idUser: {
-            id: raw.idUser.id,
-            name: raw.idUser.name,
-            email: raw.idUser.email,
-            isOperator: raw.idUser.isOperator,
-            isVerified: raw.idUser.isVerified,
-          },
-          bikes: raw.bikes.map((b: any) => ({
-            _id: b._id,
-            id: {
-              _id: b.id._id,
-              idPuntoVendita: b.id.idPuntoVendita,
-              idModello: b.id.idModello,
-              quantity: b.id.quantity,
-            },
-            quantity: b.quantity,
-            accessori: b.accessori,
-            assicurazione: b.assicurazione,
-          })),
-          start: raw.start,
-          stop: raw.stop,
-          pickupLocation: raw.pickupLocation,
-          dropLocation: raw.dropLocation,
-          manutenzione: raw.manutenzione,
-          cancelled: raw.cancelled,
-          status: raw.status,
-          createdAt: raw.createdAt,
-          problems: raw.problems
-        };
-      }
+  getPrenotazioniGualti(): Observable<PrenotazioneGualti[]> {
+    return this.http
+      .get<{ message: string; data: any[] }>(this.conStr + '/api/bookings/all') // cambia '/api/nuova-rotta' con la tua url reale
+      .pipe(
+        map((response) => {
+          // mappiamo ogni oggetto raw nel tipo PrenotazioneGualti
+          return response.data.map((item) =>
+            this.mapToPrenotazioneGualti(item)
+          );
+        })
+      );
+  }
 
+  // funzione helper per mappare un singolo oggetto
+  private mapToPrenotazioneGualti(raw: any): PrenotazioneGualti {
+    return {
+      _id: raw._id,
+      idUser: {
+        id: raw.idUser.id,
+        name: raw.idUser.name,
+        email: raw.idUser.email,
+        isOperator: raw.idUser.isOperator,
+        isVerified: raw.idUser.isVerified,
+      },
+      bikes: raw.bikes.map((b: any) => ({
+        _id: b._id,
+        id: {
+          _id: b.id._id,
+          idPuntoVendita: b.id.idPuntoVendita,
+          idModello: b.id.idModello,
+          quantity: b.id.quantity,
+        },
+        quantity: b.quantity,
+        accessori: b.accessori,
+        assicurazione: b.assicurazione,
+      })),
+      start: raw.start,
+      stop: raw.stop,
+      pickupLocation: raw.pickupLocation,
+      dropLocation: raw.dropLocation,
+      manutenzione: raw.manutenzione,
+      cancelled: raw.cancelled,
+      status: raw.status,
+      createdAt: raw.createdAt,
+      problems: raw.problems,
+    };
+  }
 }
