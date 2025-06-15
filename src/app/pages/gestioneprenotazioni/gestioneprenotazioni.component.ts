@@ -1,33 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-
-// Interfacce per tipizzare i dati
-interface Prenotazione {
-  id: string;
-  utente: {
-    nome: string;
-    cognome: string;
-    email: string;
-  };
-  periodo: {
-    dataInizio: Date;
-    dataFine: Date;
-    oraInizio: string;
-    oraFine: string;
-  };
-  puntoRitiro: string;
-  puntoRiconsegna: string;
-  bicicletta: {
-    tipo: string;
-    taglia: string;
-    accessori?: string[];
-  };
-  statoRitiro: 'da_ritirare' | 'ritirata';
-  statoRiconsegna: 'da_riconsegnare' | 'riconsegnata' | 'riconsegnata_con_problemi';
-  problemiSegnalati?: string[];
-}
+import { PrenotazioneService, PrenotazioneGualti } from '../../services/prenotazione.service'; // aggiorna con il path corretto
 
 interface FiltriPrenotazioni {
   utente?: string;
@@ -43,79 +15,31 @@ interface FiltriPrenotazioni {
 })
 export class GestioneprenotazioniComponent implements OnInit {
   
-  // Dati delle prenotazioni
-  prenotazioni: Prenotazione[] = [];
-  prenotazioniFiltrate: Prenotazione[] = [];
+  prenotazioni: PrenotazioneGualti[] = [];
+  prenotazioniFiltrate: PrenotazioneGualti[] = [];
   
-  // Filtri
   filtri: FiltriPrenotazioni = {};
   
-  // Stati di caricamento e errore
   loading = false;
   error: string | null = null;
   
-  // Opzioni per i filtri
   puntiRitiro = [
     { value: 'all', label: 'Tutti i Punti' },
-    { value: 'stazione', label: 'Stazione Centrale' },
-    { value: 'rialto', label: 'Bike Point Rialto' },
-    { value: 'lido', label: 'Deposito Lido' }
+    { value: 'Sto cazzo', label: 'Sto cazzo' },  // usa i nomi reali
+    // aggiungi altri punti ritiro se necessario
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private prenotazioneService: PrenotazioneService) {}
 
   ngOnInit(): void {
-    this.caricaPrenotazioni();
+    this.caricaPrenotazioniDaAPI();
   }
 
-  caricaPrenotazioni(): void {
+  caricaPrenotazioniDaAPI(): void {
     this.loading = true;
     this.error = null;
-    
-    // --- CORREZIONE QUI ---
-    // Dichiariamo esplicitamente che questo array è di tipo Prenotazione[]
-    const datiMock: Prenotazione[] = [
-      {
-        id: 'BK00123',
-        utente: { nome: 'Mario', cognome: 'Rossi', email: 'mario.rossi@email.com' },
-        periodo: { dataInizio: new Date('2025-06-10T10:00:00'), dataFine: new Date('2025-06-10T18:00:00'), oraInizio: '10:00', oraFine: '18:00' },
-        puntoRitiro: 'Stazione Centrale', puntoRiconsegna: 'Stazione Centrale',
-        bicicletta: { tipo: 'City Bike', taglia: 'M' },
-        statoRitiro: 'da_ritirare',
-        statoRiconsegna: 'da_riconsegnare'
-      },
-      {
-        id: 'BK00124',
-        utente: { nome: 'Anna', cognome: 'Verdi', email: 'anna.verdi@email.com' },
-        periodo: { dataInizio: new Date('2025-06-10T14:00:00'), dataFine: new Date('2025-06-11T14:00:00'), oraInizio: '14:00', oraFine: '14:00' },
-        puntoRitiro: 'Bike Point Rialto', puntoRiconsegna: 'Deposito Lido',
-        bicicletta: { tipo: 'E-MTB', taglia: 'L', accessori: ['Casco'] },
-        statoRitiro: 'ritirata',
-        statoRiconsegna: 'da_riconsegnare'
-      },
-      {
-        id: 'BK00121',
-        utente: { nome: 'Paolo', cognome: 'Gialli', email: 'paolo.gialli@email.com' },
-        periodo: { dataInizio: new Date('2025-06-09T11:00:00'), dataFine: new Date('2025-06-09T16:00:00'), oraInizio: '11:00', oraFine: '16:00' },
-        puntoRitiro: 'Stazione Centrale', puntoRiconsegna: 'Stazione Centrale',
-        bicicletta: { tipo: 'Gravel', taglia: 'L' },
-        statoRitiro: 'ritirata',
-        statoRiconsegna: 'riconsegnata_con_problemi',
-        problemiSegnalati: ['Graffio sul telaio', 'Riconsegna in ritardo di 30 min.']
-      },
-      {
-        id: 'BK00120',
-        utente: { nome: 'Luca', cognome: 'Bianchi', email: 'luca.bianchi@email.com' },
-        periodo: { dataInizio: new Date('2025-06-08T09:00:00'), dataFine: new Date('2025-06-08T13:00:00'), oraInizio: '09:00', oraFine: '13:00' },
-        puntoRitiro: 'Deposito Lido', puntoRiconsegna: 'Deposito Lido',
-        bicicletta: { tipo: 'Road Bike', taglia: 'M' },
-        statoRitiro: 'ritirata',
-        statoRiconsegna: 'riconsegnata'
-      }
-    ];
 
-    // Simula la chiamata API
-    of(datiMock).pipe(delay(500)).subscribe({
+    this.prenotazioneService.getPrenotazioniGualti().subscribe({
       next: (data) => {
         this.prenotazioni = data;
         this.prenotazioniFiltrate = [...data];
@@ -129,103 +53,142 @@ export class GestioneprenotazioniComponent implements OnInit {
     });
   }
 
-  // --- (Tutti gli altri metodi rimangono invariati) ---
-
   applicaFiltri(): void {
     let risultatoFiltrato = [...this.prenotazioni];
 
     if (this.filtri.utente) {
       const termineRicerca = this.filtri.utente.toLowerCase();
       risultatoFiltrato = risultatoFiltrato.filter(p =>
-        `${p.utente.nome} ${p.utente.cognome}`.toLowerCase().includes(termineRicerca) ||
-        p.utente.email.toLowerCase().includes(termineRicerca)
+        p.idUser.name.toLowerCase().includes(termineRicerca) ||
+        p.idUser.email.toLowerCase().includes(termineRicerca)
       );
     }
-    
+
     if (this.filtri.puntoRitiro && this.filtri.puntoRitiro !== 'all') {
       const nomePuntoSelezionato = this.puntiRitiro.find(pr => pr.value === this.filtri.puntoRitiro)?.label;
-      risultatoFiltrato = risultatoFiltrato.filter(p => p.puntoRitiro === nomePuntoSelezionato);
+      if (nomePuntoSelezionato) {
+        risultatoFiltrato = risultatoFiltrato.filter(p => p.pickupLocation.location === nomePuntoSelezionato);
+      }
     }
-    
+
     if (this.filtri.dataRitiro) {
       const dataFiltro = new Date(this.filtri.dataRitiro).toDateString();
-      risultatoFiltrato = risultatoFiltrato.filter(p => new Date(p.periodo.dataInizio).toDateString() === dataFiltro);
+      risultatoFiltrato = risultatoFiltrato.filter(p => new Date(p.start).toDateString() === dataFiltro);
     }
-    
+
     if (this.filtri.conProblemi) {
-      risultatoFiltrato = risultatoFiltrato.filter(p => p.statoRiconsegna === 'riconsegnata_con_problemi');
+      risultatoFiltrato = risultatoFiltrato.filter(p => p.status.toLowerCase().includes('problemi'));
     }
-    
+
     this.prenotazioniFiltrate = risultatoFiltrato;
   }
 
   onFiltroUtenteChange(event: Event): void {
     this.filtri.utente = (event.target as HTMLInputElement).value;
+    this.applicaFiltri();
   }
 
   onFiltroPuntoRitiroChange(event: Event): void {
     this.filtri.puntoRitiro = (event.target as HTMLSelectElement).value;
+    this.applicaFiltri();
   }
 
   onFiltroDataChange(event: Event): void {
     this.filtri.dataRitiro = (event.target as HTMLInputElement).value;
+    this.applicaFiltri();
   }
 
   onFiltroProblemiChange(event: Event): void {
     this.filtri.conProblemi = (event.target as HTMLInputElement).checked;
+    this.applicaFiltri();
   }
 
-  formatPeriodo(prenotazione: Prenotazione): string {
+  formatPeriodo(prenotazione: PrenotazioneGualti): string {
+    const start = new Date(prenotazione.start);
+    const stop = new Date(prenotazione.stop);
     const formatOptions: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    const dataInizio = new Date(prenotazione.periodo.dataInizio).toLocaleDateString('it-IT', formatOptions);
-    const dataFine = new Date(prenotazione.periodo.dataFine).toLocaleDateString('it-IT', formatOptions);
-    
+
+    const dataInizio = start.toLocaleDateString('it-IT', formatOptions);
+    const dataFine = stop.toLocaleDateString('it-IT', formatOptions);
+
+    const oraInizio = start.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    const oraFine = stop.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+
     if (dataInizio === dataFine) {
-      return `${dataInizio} ${prenotazione.periodo.oraInizio} - ${prenotazione.periodo.oraFine}`;
+      return `${dataInizio} ${oraInizio} - ${oraFine}`;
     } else {
-      return `${dataInizio} ${prenotazione.periodo.oraInizio} - ${dataFine} ${prenotazione.periodo.oraFine}`;
+      return `${dataInizio} ${oraInizio} - ${dataFine} ${oraFine}`;
     }
   }
 
-  formatBicicletta(prenotazione: Prenotazione): string {
-    let risultato = `${prenotazione.bicicletta.tipo} (${prenotazione.bicicletta.taglia})`;
-    if (prenotazione.bicicletta.accessori && prenotazione.bicicletta.accessori.length > 0) {
-      risultato += ' + Accessori';
-    }
-    return risultato;
+  formatBicicletta(prenotazione: PrenotazioneGualti): string {
+    return prenotazione.bikes
+      .map(b => {
+        const modello = b.id.idModello;
+        const descrizione = modello?.descrizione ?? 'N/D';
+        const taglia = modello?.size ?? '';
+        return `${descrizione} (${taglia})`;
+      })
+      .join('; ');
   }
 
-  getStatoRitiroClass(stato: string): string {
-    return stato === 'da_ritirare' ? 'status-pending' : 'status-completed';
+  formatAccessori(prenotazione: PrenotazioneGualti): string {
+    return prenotazione.bikes
+      .map(b => {
+        const accessori = b.accessori?.map(a => a.descrizione).join(', ');
+        return accessori ? `${accessori}` : `N/A`;
+      })
+      .join('; ');
   }
-
-  getStatoRiconsegnaClass(stato: string): string {
-    switch (stato) {
-      case 'da_riconsegnare': return 'status-pending';
-      case 'riconsegnata': return 'status-completed';
-      case 'riconsegnata_con_problemi': return 'status-with-issues';
-      default: return '';
-    }
-  }
-
-  getStatoRitiroText(stato: string): string {
-    return stato === 'da_ritirare' ? 'Da Ritirare' : 'Ritirata';
-  }
-
-  getStatoRiconsegnaText(stato: string): string {
-    switch (stato) {
-      case 'da_riconsegnare': return 'Da Riconsegnare';
-      case 'riconsegnata': return 'Riconsegnata';
-      case 'riconsegnata_con_problemi': return 'Con Problemi';
-      default: return stato;
-    }
+  formatAssicurazione(prenotazione: PrenotazioneGualti): string {
+    return prenotazione.bikes
+      .map(b => {
+        const assicurazione = b.assicurazione?.descrizione;
+        return assicurazione ? `${assicurazione}` : `N/A`;
+      })
+      .join('; ');
   }
 
   onPrenotazioneClick(prenotazioneId: string): void {
     console.log('Visualizzazione dettagli per la prenotazione:', prenotazioneId);
   }
 
-  trackByPrenotazioneId(index: number, prenotazione: Prenotazione): string {
-    return prenotazione.id;
+  trackByPrenotazioneId(index: number, prenotazione: PrenotazioneGualti): string {
+    return prenotazione._id;
   }
+
+  getStatoClass(status: string): string {
+  switch (status) {
+    case 'Prenotato':
+      return 'status-warning';  // colore giallo/arancione
+    case 'In corso':
+      return 'status-info';     // colore blu
+    case 'Completato':
+      return 'status-success';  // colore verde
+    case 'Con Problemi':
+      return 'status-danger';   // colore rosso
+    case 'Cancellato':
+      return 'status-danger';
+    default:
+      return 'status-unknown';  // colore grigio/neutro
+  }
+}
+
+getStatoIcon(status: string): string {
+  switch (status) {
+    case 'Prenotato':
+      return 'fa-hourglass-start';  // clessidra inizio
+    case 'In corso':
+      return 'fa-truck-loading';    // icona simbolica ritiro (puoi cambiare)
+    case 'Completato':
+      return 'fa-check-circle';     // cerchio check verde
+    case 'Con Problemi':
+      return 'fa-exclamation-triangle'; // triangolo warning rosso
+    case 'Cancellato':
+      return 'fa-times'
+    default:
+      return 'fa-question-circle';  // punto interrogativo
+  }
+}
+
 }

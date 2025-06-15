@@ -3,121 +3,106 @@
     <h1><i class="fas fa-calendar-check"></i> Consultazione Prenotazioni</h1>
   </header>
 
- <!-- Sostituisci la sezione dei filtri con questa versione collegata al componente -->
-<section class="filter-bar">
-  <div class="search-filter-group">
-    <label for="userSearch">Cerca Utente:</label>
-    <input type="text" 
-           id="userSearch" 
-           placeholder="Nome o email..." 
-           class="search-input dark-input"
-           (input)="onFiltroUtenteChange($event)">
-  </div>
-  
-  <div class="search-filter-group">
-    <label for="locationFilter">P.to Ritiro:</label>
-    <select id="locationFilter" 
-            class="custom-select dark-select"
-            (change)="onFiltroPuntoRitiroChange($event)">
-      <option *ngFor="let punto of puntiRitiro" [value]="punto.value">
-        {{punto.label}}
-      </option>
-    </select>
-  </div>
-  
-  <div class="search-filter-group">
-    <label for="dateFilter">Data Ritiro:</label>
-    <input type="date" 
-           id="dateFilter" 
-           class="custom-date-input dark-input"
-           (change)="onFiltroDataChange($event)">
-  </div>
-  
-  <div class="search-filter-group checkbox-group">
-    <input type="checkbox" 
-           id="issuesFilter"
-           (change)="onFiltroProblemiChange($event)">
-    <label for="issuesFilter">Con problemi segnalati</label>
-  </div>
-  
-  <button class="btn btn-primary btn-apply-filters" (click)="applicaFiltri()">
-    <i class="fas fa-search"></i> Cerca
-  </button>
-</section>
-
-<!-- Sostituisci la tabella con questa versione dinamica -->
-<section class="content-area">
-  <!-- Indicatore di caricamento -->
-  <div *ngIf="loading" class="loading-indicator">
-    <i class="fas fa-spinner fa-spin"></i> Caricamento prenotazioni...
-  </div>
-  
-  <!-- Messaggio di errore -->
-  <div *ngIf="error" class="error-message">
-    <i class="fas fa-exclamation-triangle"></i> {{error}}
-    <button (click)="caricaPrenotazioni()" class="btn btn-secondary">
-      <i class="fas fa-redo"></i> Riprova
+  <section class="filter-bar">
+    <div class="search-filter-group">
+      <label for="userSearch">Cerca Utente:</label>
+      <input type="text" 
+             id="userSearch" 
+             placeholder="Nome o email..." 
+             class="search-input dark-input"
+             (input)="onFiltroUtenteChange($event)">
+    </div>
+    
+    <div class="search-filter-group">
+      <label for="locationFilter">P.to Ritiro:</label>
+      <select id="locationFilter" 
+              class="custom-select dark-select"
+              (change)="onFiltroPuntoRitiroChange($event)">
+        <option *ngFor="let punto of puntiRitiro" [value]="punto.value">
+          {{punto.label}}
+        </option>
+      </select>
+    </div>
+    
+    <div class="search-filter-group">
+      <label for="dateFilter">Data Ritiro:</label>
+      <input type="date" 
+             id="dateFilter" 
+             class="custom-date-input dark-input"
+             (change)="onFiltroDataChange($event)">
+    </div>
+    
+    <div class="search-filter-group checkbox-group">
+      <input type="checkbox" 
+             id="issuesFilter"
+             (change)="onFiltroProblemiChange($event)">
+      <label for="issuesFilter">Con problemi segnalati</label>
+    </div>
+    
+    <button class="btn btn-primary btn-apply-filters" (click)="applicaFiltri()">
+      <i class="fas fa-search"></i> Cerca
     </button>
-  </div>
-  
-  <!-- Tabella delle prenotazioni -->
-  <div class="table-responsive-container" *ngIf="!loading && !error">
-    <table class="data-table dark-table bookings-table">
-      <thead>
-        <tr>
-          <th>ID Pren.</th>
-          <th>Utente</th>
-          <th>Periodo</th>
-          <th>P.to Ritiro</th>
-          <th>P.to Riconsegna</th>
-          <th>Bici</th>
-          <th>Stato Ritiro</th>
-          <th>Stato Riconsegna</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let prenotazione of prenotazioniFiltrate; trackBy: trackByPrenotazioneId">
-          <td>
-            <a href="#" 
-               class="booking-id-link" 
-               (click)="onPrenotazioneClick(prenotazione.id); $event.preventDefault()">
-              {{prenotazione.id}}
-            </a>
-          </td>
-          <td>{{prenotazione.utente.nome}} {{prenotazione.utente.cognome}}</td>
-          <td>{{formatPeriodo(prenotazione)}}</td>
-          <td>{{prenotazione.puntoRitiro}}</td>
-          <td>{{prenotazione.puntoRiconsegna}}</td>
-          <td>{{formatBicicletta(prenotazione)}}</td>
-          <td>
-            <span class="status-flag" [ngClass]="getStatoRitiroClass(prenotazione.statoRitiro)">
-              <i class="fas" 
-                 [ngClass]="{
-                   'fa-hourglass-start': prenotazione.statoRitiro === 'da_ritirare',
-                   'fa-check-circle': prenotazione.statoRitiro === 'ritirata'
-                 }"></i>
-              {{getStatoRitiroText(prenotazione.statoRitiro)}}
-            </span>
-          </td>
-          <td>
-            <span class="status-flag" [ngClass]="getStatoRiconsegnaClass(prenotazione.statoRiconsegna)">
-              <i class="fas" 
-                 [ngClass]="{
-                   'fa-hourglass-end': prenotazione.statoRiconsegna === 'da_riconsegnare',
-                   'fa-check-double': prenotazione.statoRiconsegna === 'riconsegnata',
-                   'fa-exclamation-triangle': prenotazione.statoRiconsegna === 'riconsegnata_con_problemi'
-                 }"></i>
-              {{getStatoRiconsegnaText(prenotazione.statoRiconsegna)}}
-            </span>
-          </td>
-        </tr>
-        
-        
-        <tr *ngIf="prenotazioniFiltrate.length === 0">
-          <td colspan="8" style="text-align: center; padding: 20px; color: #888;">
-            <i class="fas fa-search"></i> Nessuna prenotazione trovata con i filtri selezionati
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  </section>
+
+  <section class="content-area">
+    <div *ngIf="loading" class="loading-indicator">
+      <i class="fas fa-spinner fa-spin"></i> Caricamento prenotazioni...
+    </div>
+    
+    <div *ngIf="error" class="error-message">
+      <i class="fas fa-exclamation-triangle"></i> {{error}}
+      <button (click)="caricaPrenotazioniDaAPI()" class="btn btn-secondary">
+        <i class="fas fa-redo"></i> Riprova
+      </button>
+    </div>
+    
+    <div class="table-responsive-container" *ngIf="!loading && !error">
+      <table class="data-table dark-table bookings-table">
+        <thead>
+          <tr>
+            <th>ID Pren.</th>
+            <th>Utente</th>
+            <th>Periodo</th>
+            <th>P.to Ritiro</th>
+            <th>P.to Riconsegna</th>
+            <th>Bici</th>
+            <th>Accessori</th>
+            <th>Assicurazione</th>
+            <th>Stato Prenotazione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prenotazione of prenotazioniFiltrate; trackBy: trackByPrenotazioneId">
+            <td>
+              <a href="#" 
+                 class="booking-id-link" 
+                 (click)="onPrenotazioneClick(prenotazione._id); $event.preventDefault()">
+                {{prenotazione._id}}
+              </a>
+            </td>
+            <td>{{prenotazione.idUser.name}}</td>
+            <td>{{formatPeriodo(prenotazione)}}</td>
+            <td>{{prenotazione.pickupLocation.location}}</td>
+            <td>{{prenotazione.dropLocation.location}}</td>
+            <td>{{formatBicicletta(prenotazione)}}</td>
+            <td>{{formatAccessori(prenotazione)}}</td>
+            <td>{{formatAssicurazione(prenotazione)}}</td>
+            <td></td>
+            <td>
+              <span class="status-flag" [ngClass]="getStatoClass(prenotazione.status)">
+                <i class="fas" [ngClass]="getStatoIcon(prenotazione.status)"></i>
+                {{prenotazione.status}}
+              </span>
+            </td>
+          </tr>
+
+          <tr *ngIf="prenotazioniFiltrate.length === 0">
+            <td colspan="8" style="text-align: center; padding: 20px; color: #888;">
+              <i class="fas fa-search"></i> Nessuna prenotazione trovata con i filtri selezionati
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

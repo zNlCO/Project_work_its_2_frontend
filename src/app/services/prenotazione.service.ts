@@ -108,7 +108,8 @@ export interface PrenotazioneInput {
 })
 export class PrenotazioneService {
 
-    conStr = 'https://cloneride-spa.onrender.com'
+    //conStr = 'https://cloneride-spa.onrender.com'
+    conStr = 'http://localhost:3001'
 
     constructor(private http: HttpClient) { }
 
@@ -127,4 +128,50 @@ export class PrenotazioneService {
                     map(response => response.data)
                 );;
         }
+
+        getPrenotazioniGualti(): Observable<PrenotazioneGualti[]> {
+          return this.http.get<{ message: string; data: any[] }>(this.conStr + '/api/bookings/all') // cambia '/api/nuova-rotta' con la tua url reale
+            .pipe(
+              map(response => {
+                // mappiamo ogni oggetto raw nel tipo PrenotazioneGualti
+                return response.data.map(item => this.mapToPrenotazioneGualti(item));
+              })
+            );
+        }
+
+      // funzione helper per mappare un singolo oggetto
+      private mapToPrenotazioneGualti(raw: any): PrenotazioneGualti {
+        return {
+           _id: raw._id,
+          idUser: {
+            id: raw.idUser.id,
+            name: raw.idUser.name,
+            email: raw.idUser.email,
+            isOperator: raw.idUser.isOperator,
+            isVerified: raw.idUser.isVerified,
+          },
+          bikes: raw.bikes.map((b: any) => ({
+            _id: b._id,
+            id: {
+              _id: b.id._id,
+              idPuntoVendita: b.id.idPuntoVendita,
+              idModello: b.id.idModello,
+              quantity: b.id.quantity,
+            },
+            quantity: b.quantity,
+            accessori: b.accessori,
+            assicurazione: b.assicurazione,
+          })),
+          start: raw.start,
+          stop: raw.stop,
+          pickupLocation: raw.pickupLocation,
+          dropLocation: raw.dropLocation,
+          manutenzione: raw.manutenzione,
+          cancelled: raw.cancelled,
+          status: raw.status,
+          createdAt: raw.createdAt,
+          problems: raw.problems
+        };
+      }
+
 }
