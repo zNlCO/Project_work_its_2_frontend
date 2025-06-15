@@ -40,8 +40,8 @@ export class AuthService {
             );
     }
 
-    register(name: string, email: string, password: string) {
-        return this.http.post<User>(this.conStr + '/api/auth/register', { name, email, password });
+    register(name: string, email: string, password: string, isOperator: boolean = false, isVerified: boolean = false) {
+        return this.http.post<User>(this.conStr + '/api/auth/register', { name, email, password, isOperator, isVerified });
     }
 
     logout() {
@@ -60,6 +60,10 @@ export class AuthService {
     }
 
     fetchUsers(): Observable<User[]> {
-        return this.http.get<User[]>('/api/users/auth/operators');
+        return this.http.get<User[]>(this.conStr + '/api/auth/all');
+    }
+
+    editUser(user: User): Observable<User> {
+        return this.http.put<User>(this.conStr + '/api/auth/modify/' + user.id, user);
     }
 }
