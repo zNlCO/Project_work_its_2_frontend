@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AuthService, User } from '../../services/auth.service';
 
 // Interfaccia unificata per Utente e Operatore
 export interface Utente {
@@ -16,124 +18,151 @@ export interface Utente {
   styleUrls: ['./gestione-operatori.component.scss']
 })
 export class GestioneOperatoriComponent implements OnInit {
-
-  utenti: Utente[] = [];
-  utentiFiltrati: Utente[] = [];
+  utenti: User[] = [];
+  utentiFiltrati: User[] = [];
   searchTerm: string = '';
-
   isAddModalOpen: boolean = false;
   isEditModalOpen: boolean = false;
-  isDeleteModalOpen: boolean = false;
+  utenteDaModificare: User | null = null;
+  errorMessage: string = '';
 
-  utenteDaModificare?: Utente;
-  utenteDaEliminare?: Utente;
-  
-  // Oggetto per il nuovo utente, include la password
-  nuovoUtente: Partial<Utente> = {
-    nomeCompleto: '',
-    email: '',
-    password: '',
-    ruolo: 'Operatore'
-  };
+  userForm: FormGroup;
 
-  ngOnInit(): void {
-    this.caricaDatiIniziali();
+  constructor(
+    private authService: AuthService,
+    private fb: FormBuilder
+  ) {
+    this.userForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: [''],
+      confirmPassword: [''],
+      isOperator: [true],
+      isVerified: [true]
+    }, { validators: this.matchPasswordValidator() });
   }
 
-  caricaDatiIniziali(): void {
-    // Dati di esempio con il campo ruolo flessibile
-    this.utenti = [
-      { id: 1, nomeCompleto: 'Mario Rossi', email: 'mario.rossi@bikerental.com', ruolo: 'Operatore', dataCreazione: '01/01/2025' },
-      { id: 2, nomeCompleto: 'Anna Verdi', email: 'anna.verdi@bikerental.com', ruolo: 'Operatore', dataCreazione: '15/03/2025' },
-      { id: 3, nomeCompleto: 'Luca Bianchi', email: 'luca.bianchi@bikerental.com', ruolo: 'Operatore', dataCreazione: '20/05/2025' },
-    ];
-    // Inizialmente mostra solo gli operatori
-    this.filtraUtenti();
+  ngOnInit() {
+    this.caricaUtenti();
   }
 
-  filtraUtenti(): void {
-    // Mostra solo gli operatori nella tabella principale
-    const operatori = this.utenti.filter(u => u.ruolo === 'Operatore');
-    const termine = this.searchTerm.toLowerCase();
-    
-    if (!termine) {
-      this.utentiFiltrati = [...operatori];
-      return;
+  matchPasswordValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const password = group.get('password')?.value;
+      const confirmPassword = group.get('confirmPassword')?.value;
+      
+      // Se entrambi i campi sono vuoti, non c'è errore
+      if (!password && !confirmPassword) {
+        return null;
+      }
+      
+      return password === confirmPassword ? null : { passwordMismatch: true };
+    };
+  }
+
+  caricaUtenti() {
+    this.authService.fetchUsers().subscribe({
+      next: (utenti) => {
+        this.utenti = utenti;
+        this.filtraUtenti();
+      },
+      error: (error) => {
+        this.errorMessage = 'Errore nel caricamento degli utenti';
+        console.error('Errore nel caricamento degli utenti:', error);
+      }
+    });
+  }
+
+  filtraUtenti() {
+    if (!this.searchTerm) {
+      this.utentiFiltrati = this.utenti;
+    } else {
+      const searchLower = this.searchTerm.toLowerCase();
+      this.utentiFiltrati = this.utenti.filter(utente =>
+        utente.name.toLowerCase().includes(searchLower) ||
+        utente.email.toLowerCase().includes(searchLower)
+      );
     }
-
-    this.utentiFiltrati = operatori.filter(op =>
-      op.nomeCompleto.toLowerCase().includes(termine) ||
-      op.email.toLowerCase().includes(termine)
-    );
   }
 
-  apriModaleAggiungi(): void {
-    this.nuovoUtente = { nomeCompleto: '', email: '', password: '', ruolo: 'Operatore' };
+  trackById(index: number, item: User): string {
+    return item.id;
+  }
+
+  apriModaleAggiungi() {
     this.isAddModalOpen = true;
+    this.isEditModalOpen = false;
+    this.userForm.reset({
+      isOperator: true,
+      isVerified: true
+    });
+    // Imposta i validatori per la password quando si aggiunge un nuovo operatore
+    this.userForm.get('password')?.setValidators([Validators.required]);
+    this.userForm.get('confirmPassword')?.setValidators([Validators.required]);
+    this.userForm.get('password')?.updateValueAndValidity();
+    this.userForm.get('confirmPassword')?.updateValueAndValidity();
   }
 
-  apriModaleModifica(utente: Utente): void {
-    this.utenteDaModificare = { ...utente };
+  apriModaleModifica(utente: User) {
     this.isEditModalOpen = true;
+    this.isAddModalOpen = false;
+    this.utenteDaModificare = utente;
+    // Rimuovi i validatori per la password quando si modifica un utente
+    this.userForm.get('password')?.clearValidators();
+    this.userForm.get('confirmPassword')?.clearValidators();
+    this.userForm.get('password')?.updateValueAndValidity();
+    this.userForm.get('confirmPassword')?.updateValueAndValidity();
+    this.userForm.patchValue({
+      name: utente.name,
+      email: utente.email,
+      isOperator: utente.isOperator,
+      password: '',
+      confirmPassword: ''
+    });
   }
 
-  apriModaleElimina(utente: Utente): void {
-    this.utenteDaEliminare = utente;
-    this.isDeleteModalOpen = true;
-  }
-
-  chiudiModali(): void {
+  chiudiModali() {
     this.isAddModalOpen = false;
     this.isEditModalOpen = false;
-    this.isDeleteModalOpen = false;
-    this.utenteDaModificare = undefined;
-    this.utenteDaEliminare = undefined;
+    this.utenteDaModificare = null;
+    this.errorMessage = '';
+    this.userForm.reset();
   }
 
-  aggiungiOperatore(): void {
-    if (!this.nuovoUtente.nomeCompleto || !this.nuovoUtente.email || !this.nuovoUtente.password) {
-      // Sostituire alert con un sistema di notifiche più elegante in un'app reale
-      alert('Tutti i campi sono obbligatori.');
-      return;
+  aggiungiOperatore() {
+    if (this.userForm.valid) {
+      const { name, email, password, isOperator, isVerified } = this.userForm.value;
+      this.authService.register(name, email, password, isOperator, isVerified).subscribe({
+        next: (user) => {
+          this.caricaUtenti();
+          this.chiudiModali();
+        },
+        error: (error) => {
+          this.errorMessage = error.error.message || 'Errore durante la creazione dell\'operatore';
+        }
+      });
     }
-    
-    const nuovo: Utente = {
-      id: new Date().getTime(),
-      nomeCompleto: this.nuovoUtente.nomeCompleto,
-      email: this.nuovoUtente.email,
-      ruolo: 'Operatore', // I nuovi utenti sono sempre Operatori
-      dataCreazione: new Date().toLocaleDateString('it-IT')
-      // La password non viene salvata nell'oggetto in memoria per sicurezza
-    };
-
-    this.utenti.push(nuovo);
-    this.filtraUtenti();
-    this.chiudiModali();
   }
 
-  salvaModificheUtente(): void {
-    if (!this.utenteDaModificare) return;
+  salvaModificheUtente() {
+    if (this.userForm.valid && this.utenteDaModificare) {
+      const { name, email, isOperator } = this.userForm.value;
+      const utenteModificato: User = {
+        ...this.utenteDaModificare,
+        name,
+        email,
+        isOperator
+      };
 
-    const index = this.utenti.findIndex(op => op.id === this.utenteDaModificare!.id);
-
-    if (index !== -1) {
-       // Se il ruolo viene cambiato a 'Utente', l'oggetto viene aggiornato
-       // ma non sarà più visibile nella lista principale grazie a filtraUtenti().
-      this.utenti[index] = this.utenteDaModificare;
+      this.authService.editUser(utenteModificato).subscribe({
+        next: (user) => {
+          this.caricaUtenti();
+          this.chiudiModali();
+        },
+        error: (error) => {
+          this.errorMessage = error.error.message || 'Errore durante la modifica dell\'utente';
+        }
+      });
     }
-    
-    this.filtraUtenti(); // Riapplica i filtri per aggiornare la vista
-    this.chiudiModali();
-  }
-
-  confermaEliminazione(): void {
-    if (!this.utenteDaEliminare) return;
-    this.utenti = this.utenti.filter(op => op.id !== this.utenteDaEliminare!.id);
-    this.filtraUtenti();
-    this.chiudiModali();
-  }
-  
-  trackById(index: number, utente: Utente): number {
-    return utente.id;
   }
 }
