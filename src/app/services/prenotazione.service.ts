@@ -152,6 +152,17 @@ export class PrenotazioneService {
           return this.http.get<Analytics>(this.conStr + '/api/bookings/analytics');
         }
 
+        deletePrenotazione(id: string): Observable<PrenotazioneGualti> {
+          return this.http.put<{ message: string; data: PrenotazioneGualti }>(
+            `${this.conStr}/api/bookings/cancel/${id}`, 
+            null // corpo vuoto, ma serve per non avere errore
+          ).pipe(
+            map(response => this.mapToPrenotazioneGualti(response.data))
+          );
+
+        }
+
+
 
       // funzione helper per mappare un singolo oggetto
       private mapToPrenotazioneGualti(raw: any): PrenotazioneGualti {
