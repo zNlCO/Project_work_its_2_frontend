@@ -60,7 +60,6 @@ const routes: Routes = [
       {
         path: 'home',
         component: BackofficeHomeComponent,
-        canActivate: [authOperatorGuard],
       },
       {
         path: 'puntivendita',
@@ -87,6 +86,7 @@ const routes: Routes = [
         component: GestioneOperatoriComponent,
       },
     ],
+    canActivate: [authOperatorGuard],
   },
 ];
 
