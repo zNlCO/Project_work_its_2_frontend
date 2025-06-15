@@ -99,21 +99,16 @@ export class GestioneprezziComponent implements OnInit {
     if (!this.editingItem) return;
 
     // Verifica se è un accessorio o un'assicurazione
-    const isAccessorio = 'descrizione' in this.editingItem && '_id' in this.editingItem;
+    const isAccessorio = 'descrizione' in this.editingItem && '_id' in this.editingItem && (this.accessori.find(a => a._id === this.editingItem!._id) !== undefined);
 
     if (isAccessorio) {
       // Aggiorna accessorio
       const accessorio = this.editingItem as Accessorio;
-      const updateData = {
+      this.http.put<{message: string, data: any}>(`${this.insuranceService.conStr}/api/accessories/update/${accessorio._id}`, {
         descrizione: accessorio.descrizione,
         prezzo: this.editedPrice
-      };
-
-      console.log('Dati inviati al backend:', updateData); // Debug
-
-      this.http.put<{message: string, data: any}>(`${this.insuranceService.conStr}/api/accessories/update/${accessorio._id}`, updateData).subscribe({
+      }).subscribe({
         next: (response) => {
-          console.log('Risposta dal backend:', response); // Debug
           const index = this.accessori.findIndex(a => a._id === accessorio._id);
           if (index !== -1) {
             this.accessori[index].prezzo = this.editedPrice;
@@ -121,7 +116,6 @@ export class GestioneprezziComponent implements OnInit {
           this.closeModal();
         },
         error: (error) => {
-          console.error('Errore completo:', error); // Debug dettagliato
           this.errorMessage = error.error?.message || 'Errore durante l\'aggiornamento dell\'accessorio';
         }
       });
@@ -141,7 +135,6 @@ export class GestioneprezziComponent implements OnInit {
           this.closeModal();
         },
         error: (error) => {
-          console.error('Errore durante l\'aggiornamento dell\'assicurazione:', error);
           this.errorMessage = error.error?.message || 'Errore durante l\'aggiornamento dell\'assicurazione';
         }
       });
