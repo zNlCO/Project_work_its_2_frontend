@@ -8,15 +8,16 @@ export const authOperatorGuard: CanActivateFn = (route, state) => {
 
   const isAuthenticated = authSrv.isLoggedIn();
 
-  if (isAuthenticated) {
+  if (isAuthenticated && authSrv.currentUser$) {
     authSrv.currentUser$.subscribe((user) => {
       if (user?.isOperator) {
         return true;
       }
+      return false;
     });
     return false;
   } else {
-    router.navigate(['/login']);
+    router.navigate(['/']);
     return false;
   }
 };

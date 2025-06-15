@@ -15,87 +15,88 @@ import { MainComponent } from './pages/main/main.component';
 import { BackofficeComponent } from './pages/backoffice/backoffice.component';
 import { PuntivenditaComponent } from './pages/puntivendita/puntivendita.component';
 import { MyReservationsComponent } from './pages/my-reservations/my-reservations.component';
+import { authOperatorGuard } from './guards/auth-operator.guard';
 
 const routes: Routes = [
-    {
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
-    },
-    {
-        path: 'login',
-        component: LoginComponent
-    },
-    {
-        path: 'register',
-        component: RegisterComponent,
-    },
-    {
-        path: 'activate',
-        component: ActivateComponent,
-    },
-    {
-        path: '',
-        component: MainComponent,
-        children: [
-            {
-                path: 'home',
-                component: LandingpageComponent
-            },
-            {
-                path: 'reservation',
-                component: ReservationComponent
-            },
-            {
-                path: 'my-reservations',
-                component: MyReservationsComponent
-            }
-        ]
-    },
-    {
-        path: 'backoffice',
-        component: BackofficeComponent,
-        children: [
-            {
-                path: 'home',
-                component: BackofficeHomeComponent
-            },
-            {
-                path: 'puntivendita',
-                component: PuntivenditaComponent
-            },
-            {
-                path: 'gestionebiciclette',
-                component: GestionebicicletteComponent
-
-            },
-            {
-                path: 'gestioneprezzi',
-                component: GestioneprezziComponent
-
-            },
-            {
-                path: 'gestioneprenotazioni',
-                component: GestioneprenotazioniComponent
-            },
-            {
-                path: 'pagina-manutenzioni',
-                component: PaginaManutenzioniComponent
-            },
-            {
-                path: 'gestione-operatori',
-                component: GestioneOperatoriComponent
-            }
-        ]
-    },
-
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
+  {
+    path: 'activate',
+    component: ActivateComponent,
+  },
+  {
+    path: '',
+    component: MainComponent,
+    children: [
+      {
+        path: 'home',
+        component: LandingpageComponent,
+      },
+      {
+        path: 'reservation',
+        component: ReservationComponent,
+      },
+      {
+        path: 'my-reservations',
+        component: MyReservationsComponent,
+      },
+    ],
+  },
+  {
+    path: 'backoffice',
+    component: BackofficeComponent,
+    children: [
+      {
+        path: 'home',
+        component: BackofficeHomeComponent,
+      },
+      {
+        path: 'puntivendita',
+        component: PuntivenditaComponent,
+      },
+      {
+        path: 'gestionebiciclette',
+        component: GestionebicicletteComponent,
+      },
+      {
+        path: 'gestioneprezzi',
+        component: GestioneprezziComponent,
+      },
+      {
+        path: 'gestioneprenotazioni',
+        component: GestioneprenotazioniComponent,
+      },
+      {
+        path: 'pagina-manutenzioni',
+        component: PaginaManutenzioniComponent,
+      },
+      {
+        path: 'gestione-operatori',
+        component: GestioneOperatoriComponent,
+      },
+    ],
+    canActivate: [authOperatorGuard],
+  },
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, {
-        anchorScrolling: 'enabled',
-        scrollPositionRestoration: 'enabled'
-    })],
-    exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      anchorScrolling: 'enabled',
+      scrollPositionRestoration: 'enabled',
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
