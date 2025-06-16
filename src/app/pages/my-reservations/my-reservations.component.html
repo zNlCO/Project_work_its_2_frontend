@@ -1,67 +1,87 @@
-<div class="container mt-5 height-80">
-  <h2 class="mb-4">Le tue prenotazioni</h2>
+<div class="container-fluid min-vh-100 d-flex flex-column">
+  <div class="container py-5 flex-grow-1">
+    <h2 class="mb-4 text-primary">
+      <i class="fas fa-calendar-check me-2"></i>Le tue prenotazioni
+    </h2>
 
-  <div *ngIf="myReservations.length === 0" class="alert alert-info">
-    Nessuna prenotazione trovata.
-  </div>
+    <div *ngIf="myReservations.length === 0" class="alert alert-info shadow-sm">
+      <i class="fas fa-info-circle me-2"></i>Nessuna prenotazione trovata.
+    </div>
 
-  <div *ngFor="let prenotazione of myReservations" class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <h5 class="card-title mb-3">
-        <i class="fas fa-bicycle text-danger me-2"></i>
-        Prenotazione di {{ prenotazione.idUser.name }}
-      </h5>
-
-      <ul class="list-unstyled mb-3">
-        <li>
-          <strong>Ritiro:</strong> {{ prenotazione.pickupLocation.location }}<br />
-          <strong>Consegna:</strong> {{ prenotazione.dropLocation.location }}
-        </li>
-        <li>
-          <strong>Dal:</strong> {{ prenotazione.start | date : "medium" }}<br />
-          <strong>Al:</strong> {{ prenotazione.stop | date : "medium" }}
-        </li>
-        <li>
-          <strong>Stato:</strong>
-          <span class="badge bg-success" *ngIf="prenotazione.status === 'Prenotato'">Prenotato</span>
-          <span class="badge bg-warning text-dark" *ngIf="prenotazione.status === 'In corso'">In corso</span>
-          <span class="badge bg-secondary" *ngIf="prenotazione.status === 'Completato'">Completato</span>
-          <span class="badge bg-danger" *ngIf="prenotazione.status === 'Cancellato'">Cancellato</span>
-        </li>
-      </ul>
-
-      <div *ngFor="let b of prenotazione.bikes" class="mb-3">
-        <div class="d-flex align-items-center">
-          <img
-            [src]="b.id.idModello.imgUrl"
-            alt="Bici"
-            width="80"
-            class="rounded me-3"
-            style="object-fit: cover"
-          />
-          <div>
-            <div>
-              <strong>{{ b.id.idModello.type }}</strong>
-              <span class="badge bg-secondary ms-2">Taglia: {{ b.id.idModello.size }}</span>
-              <span class="badge bg-success ms-2" *ngIf="b.id.idModello.elettrica">Elettrica</span>
-              <span class="badge bg-secondary ms-2" *ngIf="!b.id.idModello.elettrica">Muscolare</span>
+    <div class="row">
+      <div *ngFor="let prenotazione of myReservations" class="col-12 col-lg-6 mb-4">
+        <div class="card h-100 shadow-sm hover-shadow">
+          <div class="card-header bg-white">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-bicycle text-primary me-2"></i>
+              Prenotazione di {{ prenotazione.idUser.name }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="reservation-details mb-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <h6 class="text-muted mb-2"><i class="fas fa-map-marker-alt me-2"></i>Luoghi</h6>
+                    <p class="mb-1"><strong>Ritiro:</strong> {{ prenotazione.pickupLocation.location }}</p>
+                    <p class="mb-0"><strong>Consegna:</strong> {{ prenotazione.dropLocation.location }}</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <h6 class="text-muted mb-2"><i class="fas fa-clock me-2"></i>Periodo</h6>
+                    <p class="mb-1"><strong>Dal:</strong> {{ prenotazione.start | date : "medium" }}</p>
+                    <p class="mb-0"><strong>Al:</strong> {{ prenotazione.stop | date : "medium" }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="status-badge mb-3">
+                <h6 class="text-muted mb-2"><i class="fas fa-info-circle me-2"></i>Stato</h6>
+                <span class="badge bg-success" *ngIf="prenotazione.status === 'Prenotato'">Prenotato</span>
+                <span class="badge bg-warning text-dark" *ngIf="prenotazione.status === 'In corso'">In corso</span>
+                <span class="badge bg-secondary" *ngIf="prenotazione.status === 'Completato'">Completato</span>
+                <span class="badge bg-danger" *ngIf="prenotazione.status === 'Cancellato'">Cancellato</span>
+              </div>
             </div>
-            <div class="text-muted small">
-              {{ b.id.idModello.descrizione }}
-            </div>
-            <div class="mt-1">
-              <span *ngIf="b.accessori?.length">
-                <i class="fas fa-tools me-1"></i> Accessori:
-                <ng-container *ngFor="let acc of b.accessori; let isLast = last">
-                  {{ acc.descrizione }}<span *ngIf="!isLast">, </span>
-                </ng-container>
-              </span>
 
-              <span *ngIf="b.assicurazione" class="ms-3">
-                <i class="fas fa-shield-alt me-1"></i> Assicurazione:
-                {{ b.assicurazione.descrizione }}
-              </span>
-
+            <div class="bikes-section">
+              <h6 class="text-muted mb-3"><i class="fas fa-bicycle me-2"></i>Bici prenotate</h6>
+              <div *ngFor="let b of prenotazione.bikes" class="bike-card p-3 mb-3 bg-light rounded">
+                <div class="d-flex align-items-center">
+                  <img
+                    [src]="b.id.idModello.imgUrl"
+                    alt="Bici"
+                    width="100"
+                    height="100"
+                    class="rounded me-3"
+                    style="object-fit: cover"
+                  />
+                  <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                      <h6 class="mb-0 me-2">{{ b.id.idModello.type }}</h6>
+                      <span class="badge bg-secondary me-2">Taglia: {{ b.id.idModello.size }}</span>
+                      <span class="badge" [ngClass]="b.id.idModello.elettrica ? 'bg-success' : 'bg-info'">
+                        {{ b.id.idModello.elettrica ? 'Elettrica' : 'Muscolare' }}
+                      </span>
+                    </div>
+                    <p class="text-muted small mb-2">{{ b.id.idModello.descrizione }}</p>
+                    <div class="accessories">
+                      <span *ngIf="b.accessori?.length" class="me-3">
+                        <i class="fas fa-tools me-1"></i>
+                        <small>
+                          <ng-container *ngFor="let acc of b.accessori; let isLast = last">
+                            {{ acc.descrizione }}<span *ngIf="!isLast">, </span>
+                          </ng-container>
+                        </small>
+                      </span>
+                      <span *ngIf="b.assicurazione">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        <small>{{ b.assicurazione.descrizione }}</small>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
