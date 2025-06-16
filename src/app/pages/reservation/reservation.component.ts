@@ -198,10 +198,13 @@ export class ReservationComponent implements OnInit {
     // Calcolo ore totali di prenotazione
     const start = new Date(`${this.pickupDate}T${this.pickupTime}`);
     const end = new Date(`${this.dropoffDate}T${this.dropoffTime}`);
-
+    var supplement = 0;
+    if (this.pickupLocation?.location === this.dropoffLocation?.location) {
+      supplement = 5;
+    }
     const bikeTotal =
       bikePricePerHour * this.calcolaOreNoleggioMezzeGiornate8_18(start, end);
-    return bikeTotal + accessoriesPrice + insurancePrice;
+    return bikeTotal + accessoriesPrice + insurancePrice + supplement;
   }
 
   confirmGoBack() {
@@ -241,7 +244,7 @@ export class ReservationComponent implements OnInit {
         .addPrenotazioneUnlogged(prenotazioneInput)
         .subscribe((prenotazione) => {
           // Salvo in localStorage con timestamp
-          const expiresAt = Date.now() + 120 * 1000; // 120 secondi
+          const expiresAt = Date.now() + 300 * 1000; // 5 min
           const data = {
             expiresAt,
             prenotazione: prenotazione._id,

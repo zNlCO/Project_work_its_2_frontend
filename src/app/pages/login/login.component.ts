@@ -53,12 +53,15 @@ export class LoginComponent {
         .subscribe(() => {
           const data = localStorage.getItem('pendingPrenotazione');
           if (data) {
+            console.log('a');
             const parsed = JSON.parse(data);
             if (parsed.expiresAt > Date.now()) {
+              console.log('b');
               this.router.navigate(['/reservation']);
             }
+          } else {
+            this.router.navigate(['/']);
           }
-          this.router.navigate(['/']);
         });
     }
   }

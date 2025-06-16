@@ -47,6 +47,22 @@
       </select>
     </div>
 
+    <!-- Supplemento se diverso -->
+    <div
+      *ngIf="
+        pickupLocation &&
+        dropoffLocation &&
+        pickupLocation.location.trim().toLowerCase() !==
+          dropoffLocation.location.trim().toLowerCase()
+      "
+      class="alert alert-warning mt-2 py-1 px-2 small d-flex align-items-center"
+      style="max-width: 100%"
+    >
+      <i class="fas fa-euro-sign me-2"></i>
+      Supplemento di <strong class="ms-1">5€ </strong> per consegna in luogo
+      diverso.
+    </div>
+
     <!-- Data e ora di ritiro -->
     <div class="mb-3">
       <label class="form-label bai-jamjuree-semibold text-black"
@@ -152,6 +168,19 @@
                 </span>
                 <strong>Luogo consegna:</strong>
                 <span class="ms-1">{{ dropoffLocation?.location }}</span>
+
+                <div
+                  *ngIf="
+                    pickupLocation?.location &&
+                    dropoffLocation?.location &&
+                    pickupLocation?.location !== dropoffLocation?.location
+                  "
+                  class="text-warning small mt-1 ms-4"
+                >
+                  <i class="fas fa-euro-sign me-1"></i>
+                  Supplemento di <strong>5€</strong> per consegna in luogo
+                  diverso
+                </div>
               </li>
               <li class="mb-2">
                 <span class="badge bg-danger-subtle text-danger-emphasis me-2">
