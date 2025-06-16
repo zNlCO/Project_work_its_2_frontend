@@ -271,7 +271,7 @@ export class ReservationComponent implements OnInit {
         .addPrenotazione(prenotazioneInput)
         .subscribe((prenotazione) => {
           localStorage.removeItem('pendingPrenotazione');
-          this.showAuthPopup = true;
+          this.showSuccessPopup = true;
         });
     }
   }
